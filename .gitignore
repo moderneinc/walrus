@@ -1,0 +1,11 @@
+build/
+.gradle/
+out/
+*/src/main/gen/
+*/src/main/antlr/gen
+.idea/
+bin/
+.project
+.classpath
+.settings/
+.DS_Store
