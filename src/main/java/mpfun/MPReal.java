@@ -1,6 +1,7 @@
 package mpfun;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class MPReal {
     private BigDecimal real;
@@ -24,7 +25,10 @@ public class MPReal {
     }
 
     public MPReal divide(MPReal s) {
-        real = real.divide(s.real);
+        if(s.doubleValue() == 0) {
+            return new MPReal(0);
+        }
+        real = real.divide(s.real, RoundingMode.HALF_UP);
         return this;
     }
 
