@@ -256,7 +256,7 @@ public abstract class H3PickerCommon
             System.out.println("pick.time[" + (stopTime - startTime) + "]");
         }
 
-        return (closestIndex >= 0 ? getNodeInEye(closestIndex) : -1);
+        return closestIndex >= 0 ? getNodeInEye(closestIndex) : -1;
     }
 
     ////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ public class H3NonadaptivePicker
                                H3ViewParameters parameters) {
         super(graph, canvas, parameters);
 
-        m_numNodes = graph.getNumNodes();
+        mNumNodes = graph.getNumNodes();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ public class H3NonadaptivePicker
     ////////////////////////////////////////////////////////////////////////
 
     public void reset() {
-        m_computedPointsInEye = false;
+        mComputedPointsInEye = false;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -49,13 +49,13 @@ public class H3NonadaptivePicker
     ////////////////////////////////////////////////////////////////////////
 
     protected void computePointsInEye() {
-        if (!m_computedPointsInEye) {
-            m_computedPointsInEye = true;
+        if (!mComputedPointsInEye) {
+            mComputedPointsInEye = true;
 
             Transform3D transform = m_parameters.getObjectToEyeTransform();
 
             Point3d p = new Point3d();
-            for (int i = 0; i < m_numNodes; i++) {
+            for (int i = 0; i < mNumNodes; i++) {
                 m_graph.getNodeCoordinates(i, p);
                 transform.transform(p);
 
@@ -67,7 +67,7 @@ public class H3NonadaptivePicker
     }
 
     protected int getNumComputedPointsInEye() {
-        return m_numNodes;
+        return mNumNodes;
     }
 
     protected int getNodeInEye(int index) {
@@ -78,6 +78,6 @@ public class H3NonadaptivePicker
     // PRIVATE FIELDS
     ////////////////////////////////////////////////////////////////////////
 
-    private final int m_numNodes;
-    private boolean m_computedPointsInEye = false;
+    private final int mNumNodes;
+    private boolean mComputedPointsInEye;
 }

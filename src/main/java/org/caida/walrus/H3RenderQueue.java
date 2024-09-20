@@ -26,7 +26,7 @@ public class H3RenderQueue {
     ////////////////////////////////////////////////////////////////////////
 
     public H3RenderQueue(int size) {
-        m_data = new long[size];
+        mData = new long[size];
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -39,12 +39,12 @@ public class H3RenderQueue {
         boolean tryAgain;
         do {
             tryAgain = false;
-            if (index < m_numElements) {
-                decode(m_data[index], element);
+            if (index < mNumElements) {
+                decode(mData[index], element);
                 retval = true;
             } else {
-                if (!m_isComplete) {
-                    m_isWaitingForData = true;
+                if (!mIsComplete) {
+                    mIsWaitingForData = true;
                     waitIgnore();
                     tryAgain = true;
                 }
@@ -56,33 +56,33 @@ public class H3RenderQueue {
     }
 
     public synchronized int getMaxNumElements() {
-        return m_data.length;
+        return mData.length;
     }
 
     public synchronized int getCurrentNumElements() {
-        return m_numElements;
+        return mNumElements;
     }
 
     public synchronized boolean isComplete() {
-        return m_isComplete;
+        return mIsComplete;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public synchronized void add(int n, long[] data) {
-        System.arraycopy(data, 0, m_data, m_numElements, n);
-        m_numElements += n;
+        System.arraycopy(data, 0, mData, mNumElements, n);
+        mNumElements += n;
         notifyIfWaiting();
     }
 
     public synchronized void clear() {
-        m_numElements = 0;
-        m_isComplete = false;
+        mNumElements = 0;
+        mIsComplete = false;
         notifyIfWaiting();
     }
 
     public synchronized void end() {
-        m_isComplete = true;
+        mIsComplete = true;
         notifyIfWaiting();
     }
 
@@ -99,8 +99,8 @@ public class H3RenderQueue {
     }
 
     private synchronized void notifyIfWaiting() {
-        if (m_isWaitingForData) {
-            m_isWaitingForData = false;
+        if (mIsWaitingForData) {
+            mIsWaitingForData = false;
             notifyAll();
         }
     }
@@ -116,10 +116,10 @@ public class H3RenderQueue {
     // PRIVATE FIELDS
     ////////////////////////////////////////////////////////////////////////
 
-    private final long[] m_data;
-    private int m_numElements = 0;
-    private boolean m_isComplete = false;
-    private boolean m_isWaitingForData = false;
+    private final long[] mData;
+    private int mNumElements;
+    private boolean mIsComplete;
+    private boolean mIsWaitingForData;
 
     ////////////////////////////////////////////////////////////////////////
     // PUBLIC CLASSES

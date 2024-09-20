@@ -54,16 +54,16 @@ public class H3GraphLoader {
 
         IDMap map = populateNodeIDs(retval, graph);
         findSpanningTreeQualifierAttributes(graph, spanningTree);
-        int rootID = findSpanningTreeRootNodeID(graph, m_rootAttribute);
+        int rootID = findSpanningTreeRootNodeID(graph, mRootAttribute);
         retval.setRootNode(map.map(rootID));
-        populateLinks(retval, graph, map, m_treeLinkAttribute);
+        populateLinks(retval, graph, map, mTreeLinkAttribute);
 
         return retval;
     }
 
     // Returns List<String>.
     public List loadSpanningTreeQualifiers(Graph graph) {
-        List<String> retval = new ArrayList<String>();
+        List<String> retval = new ArrayList<>();
 
         QualifierIterator iterator =
                 graph.getQualifiersByType(SPANNING_TREE_QUALIFIER);
@@ -78,7 +78,7 @@ public class H3GraphLoader {
 
     // Returns List<String>.
     public List loadAttributes(Graph graph, AttributeTypeMatcher matcher) {
-        List<String> retval = new ArrayList<String>();
+        List<String> retval = new ArrayList<>();
 
         AttributeDefinitionIterator iterator = graph.getAttributeDefinitions();
         while (!iterator.atEnd()) {
@@ -115,18 +115,18 @@ public class H3GraphLoader {
             String name = qualifierAttributeIterator.getName();
             if (name.equals(ROOT_ATTRIBUTE)) {
                 foundRootAttribute = true;
-                m_rootAttribute =
+                mRootAttribute =
                         qualifierAttributeIterator.getAttributeID();
                 checkAttributeType
                         (graph, SPANNING_TREE_QUALIFIER, ROOT_ATTRIBUTE,
-                                m_rootAttribute, ValueType.BOOLEAN);
+                                mRootAttribute, ValueType.BOOLEAN);
             } else if (name.equals(TREE_LINK_ATTRIBUTE)) {
                 foundTreeLinkAttribute = true;
-                m_treeLinkAttribute =
+                mTreeLinkAttribute =
                         qualifierAttributeIterator.getAttributeID();
                 checkAttributeType
                         (graph, SPANNING_TREE_QUALIFIER, TREE_LINK_ATTRIBUTE,
-                                m_treeLinkAttribute, ValueType.BOOLEAN);
+                                mTreeLinkAttribute, ValueType.BOOLEAN);
             }
 
             qualifierAttributeIterator.advance();
@@ -287,8 +287,8 @@ public class H3GraphLoader {
     private static final String ROOT_ATTRIBUTE = "root";
     private static final String TREE_LINK_ATTRIBUTE = "tree_link";
 
-    private int m_rootAttribute;
-    private int m_treeLinkAttribute;
+    private int mRootAttribute;
+    private int mTreeLinkAttribute;
 
     ////////////////////////////////////////////////////////////////////////
     // PUBLIC CLASSES

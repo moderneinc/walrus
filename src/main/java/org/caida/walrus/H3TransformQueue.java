@@ -26,10 +26,10 @@ public class H3TransformQueue {
     ////////////////////////////////////////////////////////////////////////
 
     public H3TransformQueue(int numNodes) {
-        m_elements = new int[numNodes + 1];
-        m_radii = new double[numNodes + 1];
+        mElements = new int[numNodes + 1];
+        mRadii = new double[numNodes + 1];
 
-        m_radii[0] = Double.MAX_VALUE; // sentinel for use in enqueue()
+        mRadii[0] = Double.MAX_VALUE; // sentinel for use in enqueue()
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -37,72 +37,72 @@ public class H3TransformQueue {
     ////////////////////////////////////////////////////////////////////////
 
     public int dequeue() {
-        if (m_numElements == 0) {
+        if (mNumElements == 0) {
             throw new RuntimeException("Queue is empty.");
         }
 
-        int retval = m_elements[1];
+        int retval = mElements[1];
 
-        double lastRadius = m_radii[m_numElements];
-        int lastElement = m_elements[m_numElements];
-        --m_numElements;
+        double lastRadius = mRadii[mNumElements];
+        int lastElement = mElements[mNumElements];
+        --mNumElements;
 
         int i = 1;
         boolean more = true;
-        while (more && i * 2 <= m_numElements) {
+        while (more && i * 2 <= mNumElements) {
             int child = i * 2;
-            if (child < m_numElements) {
-                if (m_radii[child + 1] > m_radii[child]) {
+            if (child < mNumElements) {
+                if (mRadii[child + 1] > mRadii[child]) {
                     ++child;
                 }
             }
 
-            if (lastRadius < m_radii[child]) {
-                m_radii[i] = m_radii[child];
-                m_elements[i] = m_elements[child];
+            if (lastRadius < mRadii[child]) {
+                mRadii[i] = mRadii[child];
+                mElements[i] = mElements[child];
                 i = child;
             } else {
                 more = false;
             }
         }
 
-        m_radii[i] = lastRadius;
-        m_elements[i] = lastElement;
+        mRadii[i] = lastRadius;
+        mElements[i] = lastElement;
 
         return retval;
     }
 
     public void enqueue(int node, double radius) {
-        if (m_numElements == m_elements.length - 1) {
+        if (mNumElements == mElements.length - 1) {
             throw new RuntimeException("Queue is full.");
         }
 
-        int i = ++m_numElements;
-        while (m_radii[i / 2] < radius) {
-            m_radii[i] = m_radii[i / 2];
-            m_elements[i] = m_elements[i / 2];
+        int i = ++mNumElements;
+        while (mRadii[i / 2] < radius) {
+            mRadii[i] = mRadii[i / 2];
+            mElements[i] = mElements[i / 2];
             i /= 2;
         }
 
-        m_radii[i] = radius;
-        m_elements[i] = node;
+        mRadii[i] = radius;
+        mElements[i] = node;
     }
 
     public void clear() {
-        m_numElements = 0;
+        mNumElements = 0;
     }
 
     public boolean isEmpty() {
-        return m_numElements == 0;
+        return mNumElements == 0;
     }
 
     ////////////////////////////////////////////////////////////////////////
     // PRIVATE FIELDS
     ////////////////////////////////////////////////////////////////////////
 
-    private int m_numElements = 0;
-    private final int[] m_elements;
-    private final double[] m_radii;
+    private int mNumElements;
+    private final int[] mElements;
+    private final double[] mRadii;
 
     ////////////////////////////////////////////////////////////////////////
     // TEST METHODS
@@ -111,21 +111,21 @@ public class H3TransformQueue {
     public void dumpForTesting() {
         System.out.println();
         System.out.println(this + ":");
-        System.out.println("\tnumElements: " + m_numElements);
-        System.out.println("\telements.length: " + m_elements.length);
-        System.out.println("\tradii.length: " + m_radii.length);
+        System.out.println("\tnumElements: " + mNumElements);
+        System.out.println("\telements.length: " + mElements.length);
+        System.out.println("\tradii.length: " + mRadii.length);
 
-        for (int i = 1; i <= m_numElements; i++) {
+        for (int i = 1; i <= mNumElements; i++) {
             System.out.println("\t" + i + ": ("
-                    + m_elements[i] + ", "
-                    + m_radii[i] + ")");
+                    + mElements[i] + ", "
+                    + mRadii[i] + ")");
 
-            if (i * 2 <= m_numElements) {
-                if (m_radii[i * 2] > m_radii[i]) {
+            if (i * 2 <= mNumElements) {
+                if (mRadii[i * 2] > mRadii[i]) {
                     System.out.println("ERROR: Heap order violated "
                             + "by left child.");
-                } else if (i * 2 < m_numElements
-                        && m_radii[i * 2 + 1] > m_radii[i]) {
+                } else if (i * 2 < mNumElements
+                        && mRadii[i * 2 + 1] > mRadii[i]) {
                     System.out.println("ERROR: Heap order violated "
                             + "by right child.");
                 }
@@ -138,11 +138,11 @@ public class H3TransformQueue {
     public void dumpForTesting2() {
         System.out.println();
         System.out.println(this + ":");
-        System.out.println("\tnumElements: " + m_numElements);
-        System.out.println("\telements.length: " + m_elements.length);
-        System.out.println("\tradii.length: " + m_radii.length);
+        System.out.println("\tnumElements: " + mNumElements);
+        System.out.println("\telements.length: " + mElements.length);
+        System.out.println("\tradii.length: " + mRadii.length);
 
-        if (m_numElements > 0) {
+        if (mNumElements > 0) {
             dumpForTesting2Aux(1, 1);
         }
 
@@ -150,20 +150,20 @@ public class H3TransformQueue {
     }
 
     public void dumpForTesting2Aux(int n, int level) {
-        if (n * 2 + 1 <= m_numElements) {
+        if (n * 2 + 1 <= mNumElements) {
             dumpForTesting2Aux(n * 2 + 1, level + 1);
         }
 
         indentForTesting(level);
         System.out.println("[" + n + "] ("
-                + m_elements[n] + ", "
-                + m_radii[n] + ")");
+                + mElements[n] + ", "
+                + mRadii[n] + ")");
 
-        if (m_radii[n] > m_radii[n / 2]) {
+        if (mRadii[n] > mRadii[n / 2]) {
             System.out.println("ERROR: Heap order violated by " + n + ".");
         }
 
-        if (n * 2 <= m_numElements) {
+        if (n * 2 <= mNumElements) {
             dumpForTesting2Aux(n * 2, level + 1);
         }
     }

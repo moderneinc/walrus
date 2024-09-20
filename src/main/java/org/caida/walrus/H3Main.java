@@ -76,31 +76,31 @@ public class H3Main {
     public H3Main() {
         initializeCanvas3D();
 
-        m_frame = new JFrame(WALRUS_TITLE);
-        m_frame.setBackground(Color.black);
-        m_frame.getContentPane().setBackground(Color.black);
+        mFrame = new JFrame(WALRUS_TITLE);
+        mFrame.setBackground(Color.black);
+        mFrame.getContentPane().setBackground(Color.black);
 
         // XXX: Preserve frame dimensions in properties across sessions.
-        m_frame.setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
-        m_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mFrame.setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
+        mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         java.net.URL url = H3Main.class.getResource(SPLASH_ICON_PATH);
         if (url != null) {
-            m_splashLabel = new JLabel(new ImageIcon(url));
+            mSplashLabel = new JLabel(new ImageIcon(url));
         } else {
-            m_splashLabel = new JLabel(SPLASH_HTML_LABEL, JLabel.CENTER);
+            mSplashLabel = new JLabel(SPLASH_HTML_LABEL, JLabel.CENTER);
         }
-        m_frame.getContentPane().add(m_splashLabel, BorderLayout.CENTER);
+        mFrame.getContentPane().add(mSplashLabel, BorderLayout.CENTER);
 
         m_statusBar = new JTextField();
         m_statusBar.setEditable(false);
         m_statusBar.setText(MSG_NO_GRAPH_LOADED);
-        m_frame.getContentPane().add(m_statusBar, BorderLayout.SOUTH);
+        mFrame.getContentPane().add(m_statusBar, BorderLayout.SOUTH);
 
-        m_frame.setJMenuBar(createInitialMenuBar());
+        mFrame.setJMenuBar(createInitialMenuBar());
         m_colorSchemeMenu.enableDefaultColorScheme();
 
-        m_frame.setVisible(true);
+        mFrame.setVisible(true);
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -120,24 +120,24 @@ public class H3Main {
                 Graph backingGraph = loadGraph(file, reader);
 
                 if (DEBUG_PRINT_LOAD_MEMORY) {
-                    m_memoryUsage.gatherAtPeak();
+                    mMemoryUsage.gatherAtPeak();
                 }
                 if (DEBUG_PRINT_LOAD_MEMORY) {
-                    m_memoryUsage.gatherAtFinal();
-                    m_memoryUsage.printUsage();
+                    mMemoryUsage.gatherAtFinal();
+                    mMemoryUsage.printUsage();
                 }
 
                 if (backingGraph != null) {
                     populateMenus(backingGraph);
 
                     m_backingGraph = backingGraph;
-                    m_viewParameters.resetObjectTransform();
+                    mViewParameters.resetObjectTransform();
 
-                    m_frame.setTitle(WALRUS_TITLE + " -- " + file.getPath());
+                    mFrame.setTitle(WALRUS_TITLE + " -- " + file.getPath());
                     m_statusBar.setText(MSG_GRAPH_LOADED);
 
-                    m_closeMenuItem.setEnabled(true);
-                    m_startMenuItem.setEnabled(true);
+                    mCloseMenuItem.setEnabled(true);
+                    mStartMenuItem.setEnabled(true);
                 }
             } catch (FileNotFoundException e) {
                 String msg = "File not found: " + file.getPath();
@@ -159,23 +159,23 @@ public class H3Main {
     private RenderingConfiguration createRenderingConfigurationSnapshot() {
         RenderingConfiguration retval = new RenderingConfiguration();
 
-        int numSpanningTrees = m_spanningTreeMenu.getItemCount();
+        int numSpanningTrees = mSpanningTreeMenu.getItemCount();
         for (int i = 0; i < numSpanningTrees; i++) {
-            JMenuItem menuItem = m_spanningTreeMenu.getItem(i);
+            JMenuItem menuItem = mSpanningTreeMenu.getItem(i);
             if (menuItem.isSelected()) {
                 retval.spanningTree = menuItem.getText();
                 break;
             }
         }
 
-        retval.adaptiveRendering = m_adaptiveMenuItem.isSelected();
-        retval.multipleNodeSizes = m_multipleNodeSizesMenuItem.isSelected();
-        retval.depthCueing = m_depthCueingMenuItem.isSelected();
-        retval.axes = m_axesMenuItem.isSelected();
-        retval.onScreenLabels = m_onScreenLabelsMenuItem.isSelected();
-        retval.automaticRefresh = m_automaticRefreshMenuItem.isSelected();
+        retval.adaptiveRendering = mAdaptiveMenuItem.isSelected();
+        retval.multipleNodeSizes = mMultipleNodeSizesMenuItem.isSelected();
+        retval.depthCueing = mDepthCueingMenuItem.isSelected();
+        retval.axes = mAxesMenuItem.isSelected();
+        retval.onScreenLabels = mOnScreenLabelsMenuItem.isSelected();
+        retval.automaticRefresh = mAutomaticRefreshMenuItem.isSelected();
         retval.automaticExtendedPrecision =
-                m_automaticExtendedPrecisionMenuItem.isSelected();
+                mAutomaticExtendedPrecisionMenuItem.isSelected();
         retval.nodeColor =
                 m_colorSchemeMenu.createNodeColorConfigurationSnapshot();
         retval.treeLinkColor =
@@ -183,14 +183,14 @@ public class H3Main {
         retval.nontreeLinkColor =
                 m_colorSchemeMenu.createNontreeLinkColorConfigurationSnapshot();
 
-        int numSelected = countNumSelectedItems(m_nodeLabelMenu);
+        int numSelected = countNumSelectedItems(mNodeLabelMenu);
         retval.nodeLabelAttributes = new int[numSelected];
         retval.nodeLabelAttributeNames = new String[numSelected];
 
         int numAdded = 0;
-        int numAttributes = m_nodeLabelMenu.getItemCount();
+        int numAttributes = mNodeLabelMenu.getItemCount();
         for (int i = 0; i < numAttributes; i++) {
-            JMenuItem menuItem = m_nodeLabelMenu.getItem(i);
+            JMenuItem menuItem = mNodeLabelMenu.getItem(i);
             if (menuItem != null && menuItem.isSelected()) {
                 String name = menuItem.getText();
                 AttributeDefinitionIterator iterator =
@@ -211,36 +211,36 @@ public class H3Main {
     ///////////////////////////////////////////////////////////////////////
 
     private void populateMenus(Graph graph) {
-        m_spanningTreeQualifiers =
-                m_graphLoader.loadSpanningTreeQualifiers(graph);
+        mSpanningTreeQualifiers =
+                mGraphLoader.loadSpanningTreeQualifiers(graph);
         {
-            m_spanningTreeButtonGroup = new ButtonGroup();
-            ListIterator iterator = m_spanningTreeQualifiers.listIterator();
+            mSpanningTreeButtonGroup = new ButtonGroup();
+            ListIterator iterator = mSpanningTreeQualifiers.listIterator();
             while (iterator.hasNext()) {
                 String name = (String) iterator.next();
                 JRadioButtonMenuItem menuItem =
                         new JRadioButtonMenuItem(name);
-                m_spanningTreeMenu.add(menuItem);
-                m_spanningTreeButtonGroup.add(menuItem);
+                mSpanningTreeMenu.add(menuItem);
+                mSpanningTreeButtonGroup.add(menuItem);
             }
 
-            if (m_spanningTreeMenu.getItemCount() > 0) {
-                m_spanningTreeMenu.getItem(0).setSelected(true);
+            if (mSpanningTreeMenu.getItemCount() > 0) {
+                mSpanningTreeMenu.getItem(0).setSelected(true);
             }
         }
 
-        m_nodeLabelAttributes = m_graphLoader.loadAttributes
-                (graph, m_allAttributeTypeMatcher);
+        m_nodeLabelAttributes = mGraphLoader.loadAttributes
+                (graph, mAllAttributeTypeMatcher);
         {
             ListIterator iterator = m_nodeLabelAttributes.listIterator();
             while (iterator.hasNext()) {
                 String name = (String) iterator.next();
                 JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(name);
-                m_nodeLabelMenu.add(menuItem);
+                mNodeLabelMenu.add(menuItem);
             }
         }
 
-        m_colorSchemeMenu.populateAttributeMenus(m_graphLoader, graph);
+        m_colorSchemeMenu.populateAttributeMenus(mGraphLoader, graph);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -250,63 +250,63 @@ public class H3Main {
             stopRendering();
         }
 
-        m_renderingConfiguration = null;
+        mRenderingConfiguration = null;
         m_rootNode = -1;
         m_currentNode = -1;
         m_previousNode = -1;
         m_backingGraph = null;
         m_graph = null;
-        m_displayPosition = null;
-        m_savedDisplayPosition = null;
-        m_isDisplayNarrowed = false;
+        mDisplayPosition = null;
+        mSavedDisplayPosition = null;
+        mIsDisplayNarrowed = false;
 
         // UI.
-        m_frame.setTitle(WALRUS_TITLE);
+        mFrame.setTitle(WALRUS_TITLE);
         m_statusBar.setText(MSG_NO_GRAPH_LOADED);
         reinstateSplashScreenContentPane();
 
         // File menu.
-        m_saveWithLayoutMenuItem.setEnabled(false);
-        m_saveWithLayoutAsMenuItem.setEnabled(false);
-        m_closeMenuItem.setEnabled(false);
+        mSaveWithLayoutMenuItem.setEnabled(false);
+        mSaveWithLayoutAsMenuItem.setEnabled(false);
+        mCloseMenuItem.setEnabled(false);
 
         // Rendering menu.
-        m_startMenuItem.setEnabled(false);
-        m_stopMenuItem.setEnabled(false);
-        m_updateMenuItem.setEnabled(false);
-        m_resetRenderingMenuItem.setEnabled(false);
-        m_recomputeLayoutExtendedMenuItem.setEnabled(false);
+        mStartMenuItem.setEnabled(false);
+        mStopMenuItem.setEnabled(false);
+        mUpdateMenuItem.setEnabled(false);
+        mResetRenderingMenuItem.setEnabled(false);
+        mRecomputeLayoutExtendedMenuItem.setEnabled(false);
 
         // Display menu.
-        m_narrowToSubtreeMenuItem.setEnabled(false);
-        m_widenSubtreeMenuItem.setEnabled(false);
-        m_widenTowardRootMenuItem.setEnabled(false);
-        m_widenToGraphMenuItem.setEnabled(false);
-        m_pruneSubtreeMenuItem.setEnabled(false);
-        m_pruneToChildrenMenuItem.setEnabled(false);
-        m_pruneToNeighborhoodMenu.setEnabled(false);
-        m_zoomInMenuItem.setEnabled(false);
-        m_zoomOutMenuItem.setEnabled(false);
-        m_zoomResetMenuItem.setEnabled(false);
-        m_refreshDisplayMenuItem.setEnabled(false);
-        m_wobbleDisplayMenuItem.setEnabled(false);
-        m_showRootNodeMenuItem.setEnabled(false);
-        m_showParentNodeMenuItem.setEnabled(false);
-        m_showPreviousNodeMenuItem.setEnabled(false);
-        m_savePositionMenuItem.setEnabled(false);
-        m_restorePositionMenuItem.setEnabled(false);
+        mNarrowToSubtreeMenuItem.setEnabled(false);
+        mWidenSubtreeMenuItem.setEnabled(false);
+        mWidenTowardRootMenuItem.setEnabled(false);
+        mWidenToGraphMenuItem.setEnabled(false);
+        mPruneSubtreeMenuItem.setEnabled(false);
+        mPruneToChildrenMenuItem.setEnabled(false);
+        mPruneToNeighborhoodMenu.setEnabled(false);
+        mZoomInMenuItem.setEnabled(false);
+        mZoomOutMenuItem.setEnabled(false);
+        mZoomResetMenuItem.setEnabled(false);
+        mRefreshDisplayMenuItem.setEnabled(false);
+        mWobbleDisplayMenuItem.setEnabled(false);
+        mShowRootNodeMenuItem.setEnabled(false);
+        mShowParentNodeMenuItem.setEnabled(false);
+        mShowPreviousNodeMenuItem.setEnabled(false);
+        mSavePositionMenuItem.setEnabled(false);
+        mRestorePositionMenuItem.setEnabled(false);
 
         // Spanning Tree menu.
-        m_spanningTreeMenu.removeAll();
-        m_spanningTreeButtonGroup = null;
-        m_spanningTreeQualifiers = null;
+        mSpanningTreeMenu.removeAll();
+        mSpanningTreeButtonGroup = null;
+        mSpanningTreeQualifiers = null;
 
         // Color Scheme menu.
         m_colorSchemeMenu.removeAttributeMenus();
         m_colorSchemeMenu.enableReasonableColorScheme();
 
         // Node Label menu.
-        m_nodeLabelMenu.removeAll();
+        mNodeLabelMenu.removeAll();
         m_nodeLabelAttributes = null;
 
         System.out.println("Finished handleCloseFileRequest()");
@@ -355,13 +355,13 @@ public class H3Main {
                 ColoringAttributes attributes =
                         makeColoringAttributes(configuration.fixedColor);
 
-                m_viewParameters.getNodeAppearance()
+                mViewParameters.getNodeAppearance()
                         .setColoringAttributes(attributes);
-                m_viewParameters.getNearNodeAppearance()
+                mViewParameters.getNearNodeAppearance()
                         .setColoringAttributes(attributes);
-                m_viewParameters.getMiddleNodeAppearance()
+                mViewParameters.getMiddleNodeAppearance()
                         .setColoringAttributes(attributes);
-                m_viewParameters.getFarNodeAppearance()
+                mViewParameters.getFarNodeAppearance()
                         .setColoringAttributes(attributes);
             }
             break;
@@ -380,15 +380,15 @@ public class H3Main {
 
     private void setNodeTransparencyEnabled(boolean state) {
         TransparencyAttributes attributes =
-                (state ? m_viewParameters.getTransparencyAttributes() : null);
+                state ? mViewParameters.getTransparencyAttributes() : null;
 
-        m_viewParameters.getNodeAppearance()
+        mViewParameters.getNodeAppearance()
                 .setTransparencyAttributes(attributes);
-        m_viewParameters.getNearNodeAppearance()
+        mViewParameters.getNearNodeAppearance()
                 .setTransparencyAttributes(attributes);
-        m_viewParameters.getMiddleNodeAppearance()
+        mViewParameters.getMiddleNodeAppearance()
                 .setTransparencyAttributes(attributes);
-        m_viewParameters.getFarNodeAppearance()
+        mViewParameters.getFarNodeAppearance()
                 .setTransparencyAttributes(attributes);
     }
 
@@ -414,7 +414,7 @@ public class H3Main {
             case ColorConfiguration.FIXED_COLOR: {
                 ColoringAttributes attributes =
                         makeColoringAttributes(configuration.fixedColor);
-                m_viewParameters.getTreeLinkAppearance()
+                mViewParameters.getTreeLinkAppearance()
                         .setColoringAttributes(attributes);
             }
             break;
@@ -433,9 +433,9 @@ public class H3Main {
 
     private void setTreeLinkTransparencyEnabled(boolean state) {
         TransparencyAttributes attributes =
-                (state ? m_viewParameters.getTransparencyAttributes() : null);
+                state ? mViewParameters.getTransparencyAttributes() : null;
 
-        m_viewParameters.getTreeLinkAppearance()
+        mViewParameters.getTreeLinkAppearance()
                 .setTransparencyAttributes(attributes);
     }
 
@@ -461,7 +461,7 @@ public class H3Main {
             case ColorConfiguration.FIXED_COLOR: {
                 ColoringAttributes attributes =
                         makeColoringAttributes(configuration.fixedColor);
-                m_viewParameters.getNontreeLinkAppearance()
+                mViewParameters.getNontreeLinkAppearance()
                         .setColoringAttributes(attributes);
             }
             break;
@@ -480,9 +480,9 @@ public class H3Main {
 
     private void setNontreeLinkTransparencyEnabled(boolean state) {
         TransparencyAttributes attributes =
-                (state ? m_viewParameters.getTransparencyAttributes() : null);
+                state ? mViewParameters.getTransparencyAttributes() : null;
 
-        m_viewParameters.getNontreeLinkAppearance()
+        mViewParameters.getNontreeLinkAppearance()
                 .setTransparencyAttributes(attributes);
     }
 
@@ -575,16 +575,16 @@ public class H3Main {
                 break;
 
             case ValueType._FLOAT3: {
-                iterator.getFloat3Value(m_float3Temporary);
-                normalizeColorComponents(m_float3Temporary);
-                retval = makeColor(m_float3Temporary);
+                iterator.getFloat3Value(mFloat3Temporary);
+                normalizeColorComponents(mFloat3Temporary);
+                retval = makeColor(mFloat3Temporary);
             }
             break;
 
             case ValueType._DOUBLE3: {
-                iterator.getDouble3Value(m_double3Temporary);
-                normalizeColorComponents(m_double3Temporary);
-                retval = makeColor(m_double3Temporary);
+                iterator.getDouble3Value(mDouble3Temporary);
+                normalizeColorComponents(mDouble3Temporary);
+                retval = makeColor(mDouble3Temporary);
             }
             break;
 
@@ -729,31 +729,31 @@ public class H3Main {
     ///////////////////////////////////////////////////////////////////////
 
     private void handleResetRenderingRequest() {
-        boolean isRendering = (m_renderLoop != null);
+        boolean isRendering = m_renderLoop != null;
         if (isRendering) {
             stopRendering();
         }
 
         m_rootNode = m_currentNode = m_previousNode = m_graph.getRootNode();
-        m_displayPosition = null;
-        m_savedDisplayPosition = null;
-        m_isDisplayNarrowed = false;
+        mDisplayPosition = null;
+        mSavedDisplayPosition = null;
+        mIsDisplayNarrowed = false;
 
         m_graph.setNodeDisplayability(true);
         m_graph.setLinkDisplayability(true);
         m_graph.computeVisibility();
 
         m_graph.transformNodes(H3Transform.I4);
-        m_viewParameters.resetObjectTransform();
+        mViewParameters.resetObjectTransform();
 
         // Display menu.
-        m_widenSubtreeMenuItem.setEnabled(false);
-        m_widenTowardRootMenuItem.setEnabled(false);
-        m_widenToGraphMenuItem.setEnabled(false);
-        m_restorePositionMenuItem.setEnabled(false);
+        mWidenSubtreeMenuItem.setEnabled(false);
+        mWidenTowardRootMenuItem.setEnabled(false);
+        mWidenToGraphMenuItem.setEnabled(false);
+        mRestorePositionMenuItem.setEnabled(false);
 
         if (isRendering) {
-            startRendering(m_renderingConfiguration);
+            startRendering(mRenderingConfiguration);
         }
     }
 
@@ -772,12 +772,12 @@ public class H3Main {
             setupIdleRenderingMenu();
         }
 
-        if (layoutGraph(m_renderingConfiguration, true)) {
+        if (layoutGraph(mRenderingConfiguration, true)) {
             reinstateCanvasContentPane();
             setupActiveRenderingMenu();
-            startRendering(m_renderingConfiguration);
+            startRendering(mRenderingConfiguration);
         } else {
-            m_renderingConfiguration = null;
+            mRenderingConfiguration = null;
         }
     }
 
@@ -827,17 +827,17 @@ public class H3Main {
 
     private void updateDisplayNarrowingMenusAndRefresh() {
         setupDisplayNarrowingMenus(!m_graph.checkNodesVisible());
-        m_eventHandler.forceIdleState();
-        m_eventHandler.refreshDisplay();
+        mEventHandler.forceIdleState();
+        mEventHandler.refreshDisplay();
     }
 
     ///////////////////////////////////////////////////////////////////////
 
     private void setupDisplayNarrowingMenus(boolean status) {
-        m_isDisplayNarrowed = status;
-        m_widenSubtreeMenuItem.setEnabled(status);
-        m_widenTowardRootMenuItem.setEnabled(status);
-        m_widenToGraphMenuItem.setEnabled(status);
+        mIsDisplayNarrowed = status;
+        mWidenSubtreeMenuItem.setEnabled(status);
+        mWidenTowardRootMenuItem.setEnabled(status);
+        mWidenToGraphMenuItem.setEnabled(status);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -846,14 +846,14 @@ public class H3Main {
             (RenderingConfiguration renderingConfiguration) {
         boolean retval = true;
         try {
-            if (m_renderingConfiguration == null
+            if (mRenderingConfiguration == null
                     || !renderingConfiguration.spanningTree.equals
-                    (m_renderingConfiguration.spanningTree)) {
-                m_displayPosition = null;
-                m_savedDisplayPosition = null;
-                m_isDisplayNarrowed = false;
+                    (mRenderingConfiguration.spanningTree)) {
+                mDisplayPosition = null;
+                mSavedDisplayPosition = null;
+                mIsDisplayNarrowed = false;
 
-                m_graph = m_graphLoader.load
+                m_graph = mGraphLoader.load
                         (m_backingGraph, renderingConfiguration.spanningTree);
 
                 m_rootNode = m_graph.getRootNode();
@@ -909,28 +909,28 @@ public class H3Main {
                 boolean visibilityChanged = false;
 
                 if (!renderingConfiguration.nodeColor
-                        .equalColoring(m_renderingConfiguration.nodeColor)) {
+                        .equalColoring(mRenderingConfiguration.nodeColor)) {
                     visibilityChanged = true;
                     colorNodes(renderingConfiguration.nodeColor);
                     selectNodes(renderingConfiguration.nodeColor);
                 }
 
                 if (!renderingConfiguration.treeLinkColor
-                        .equalColoring(m_renderingConfiguration.treeLinkColor)) {
+                        .equalColoring(mRenderingConfiguration.treeLinkColor)) {
                     visibilityChanged = true;
                     colorTreeLinks(renderingConfiguration.treeLinkColor);
                     selectLinks(renderingConfiguration.treeLinkColor, true);
                 }
 
                 if (!renderingConfiguration.nontreeLinkColor
-                        .equalColoring(m_renderingConfiguration.nontreeLinkColor)) {
+                        .equalColoring(mRenderingConfiguration.nontreeLinkColor)) {
                     visibilityChanged = true;
                     colorNontreeLinks(renderingConfiguration.nontreeLinkColor);
                     selectLinks(renderingConfiguration.nontreeLinkColor, false);
                 }
 
                 if (visibilityChanged) {
-                    if (!m_isDisplayNarrowed) {
+                    if (!mIsDisplayNarrowed) {
                         m_graph.setNodeDisplayability(true);
                         m_graph.setLinkDisplayability(true);
                     }
@@ -940,7 +940,7 @@ public class H3Main {
             }
 
             if (retval) {
-                m_renderingConfiguration = renderingConfiguration;
+                mRenderingConfiguration = renderingConfiguration;
             }
         } catch (H3GraphLoader.InvalidGraphDataException e) {
             retval = false;
@@ -964,7 +964,7 @@ public class H3Main {
         int numNodes = m_graph.getNumNodes();
         int numGoodNodes = m_graph.checkLayoutCoordinates();
 
-        boolean retval = (numGoodNodes == numNodes);
+        boolean retval = numGoodNodes == numNodes;
         if (!retval) {
             int numBadNodes = numNodes - numGoodNodes;
 
@@ -979,7 +979,7 @@ public class H3Main {
                 int response = JOptionPane.showConfirmDialog
                         (null, msg, "Graph Layout Failed",
                                 JOptionPane.YES_NO_OPTION);
-                retval = (response == JOptionPane.YES_OPTION);
+                retval = response == JOptionPane.YES_OPTION;
                 if (retval) {
                     m_graph.sanitizeLayoutCoordinates();
                 }
@@ -1064,9 +1064,9 @@ public class H3Main {
         System.out.println("numTreeLinks = " + m_graph.getNumTreeLinks());
         System.out.println("numNontreeLinks = " + m_graph.getNumNontreeLinks());
 
-        m_viewParameters.setDepthCueingEnabled
+        mViewParameters.setDepthCueingEnabled
                 (renderingConfiguration.depthCueing);
-        m_viewParameters.setAxesEnabled
+        mViewParameters.setAxesEnabled
                 (renderingConfiguration.axes);
 
         boolean useNodeSizes =
@@ -1092,24 +1092,24 @@ public class H3Main {
 
         renderList.setNearNodeAppearance
                 (useNodeSizes
-                        ? m_viewParameters.getNearNodeAppearance()
-                        : m_viewParameters.getMiddleNodeAppearance());
+                        ? mViewParameters.getNearNodeAppearance()
+                        : mViewParameters.getMiddleNodeAppearance());
         renderList.setMiddleNodeAppearance
-                (m_viewParameters.getMiddleNodeAppearance());
+                (mViewParameters.getMiddleNodeAppearance());
         renderList.setFarNodeAppearance
-                (m_viewParameters.getFarNodeAppearance());
+                (mViewParameters.getFarNodeAppearance());
         renderList.setTreeLinkAppearance
-                (m_viewParameters.getTreeLinkAppearance());
+                (mViewParameters.getTreeLinkAppearance());
         renderList.setNontreeLinkAppearance
-                (m_viewParameters.getNontreeLinkAppearance());
+                (mViewParameters.getNontreeLinkAppearance());
 
         if (renderingConfiguration.adaptiveRendering) {
             int queueSize = m_graph.getNumNodes() + m_graph.getTotalNumLinks();
             H3RenderQueue queue = new H3RenderQueue(queueSize);
 
             boolean processNontreeLinks =
-                    (renderingConfiguration.nontreeLinkColor.scheme
-                            != ColorConfiguration.INVISIBLE);
+                    renderingConfiguration.nontreeLinkColor.scheme
+                            != ColorConfiguration.INVISIBLE;
 
             H3Transformer transformer =
                     new H3Transformer(m_graph, queue, processNontreeLinks);
@@ -1138,13 +1138,13 @@ public class H3Main {
                 // serves as an example of how the architecture supports
                 // variation in the rendering of nodes.
                 renderer = new H3CircleRenderer
-                        (m_graph, m_viewParameters, queue, renderList);
+                        (m_graph, mViewParameters, queue, renderList);
             }
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
             H3AdaptiveRenderLoop adaptive = new H3AdaptiveRenderLoop
-                    (m_graph, m_canvas, m_viewParameters,
+                    (m_graph, m_canvas, mViewParameters,
                             transformer, queue, renderer);
 
             new Thread(adaptive).start();
@@ -1159,17 +1159,17 @@ public class H3Main {
             // There is no upper bound on the frame rate given a sufficiently
             // powerful computer.  The following only specifies the lower
             // bound.
-            final int DURATION = 50; // in milliseconds
-            adaptive.setMaxRotationDuration(DURATION);
-            adaptive.setMaxTranslationDuration(DURATION);
-            adaptive.setMaxCompletionDuration(DURATION);
+            final int duration = 50; // in milliseconds
+            adaptive.setMaxRotationDuration(duration);
+            adaptive.setMaxTranslationDuration(duration);
+            adaptive.setMaxCompletionDuration(duration);
 
             System.out.println("Started H3AdaptiveRenderLoop.");
         } else {
             m_graph.transformNodes(H3Transform.I4);
 
             H3NonadaptiveRenderLoop nonadaptive = new H3NonadaptiveRenderLoop
-                    (m_graph, m_canvas, m_viewParameters,
+                    (m_graph, m_canvas, mViewParameters,
                             renderList, useNodeSizes);
 
             new Thread(nonadaptive).start();
@@ -1204,8 +1204,8 @@ public class H3Main {
             }
         };
 
-        m_eventHandler = new EventHandler
-                (m_viewParameters, m_canvas, m_renderLoop,
+        mEventHandler = new EventHandler
+                (mViewParameters, m_canvas, m_renderLoop,
                         narrowingHandler,
                         m_rootNode, m_currentNode, m_previousNode,
                         m_graph, m_backingGraph,
@@ -1217,8 +1217,8 @@ public class H3Main {
 
         System.out.println("EventHandler installed.");
 
-        if (m_displayPosition != null) {
-            m_renderLoop.setDisplayPosition(m_displayPosition);
+        if (mDisplayPosition != null) {
+            m_renderLoop.setDisplayPosition(mDisplayPosition);
         }
 
         System.out.println("Rendering started.");
@@ -1228,25 +1228,25 @@ public class H3Main {
 
     private boolean determineWhetherToIncludeColor
             (ColorConfiguration configuration) {
-        return (configuration.scheme != ColorConfiguration.INVISIBLE
-                && configuration.scheme != ColorConfiguration.FIXED_COLOR);
+        return configuration.scheme != ColorConfiguration.INVISIBLE
+                && configuration.scheme != ColorConfiguration.FIXED_COLOR;
     }
 
     private boolean determineWhetherToIncludeObject
             (ColorConfiguration configuration) {
-        return (configuration.scheme != ColorConfiguration.INVISIBLE);
+        return configuration.scheme != ColorConfiguration.INVISIBLE;
     }
 
     ///////////////////////////////////////////////////////////////////////
 
     private void stopRendering() {
-        m_eventHandler.forceIdleState();
-        m_currentNode = m_eventHandler.getCurrentNode();
-        m_previousNode = m_eventHandler.getPreviousNode();
-        m_displayPosition = m_renderLoop.getDisplayPosition();
+        mEventHandler.forceIdleState();
+        m_currentNode = mEventHandler.getCurrentNode();
+        m_previousNode = mEventHandler.getPreviousNode();
+        mDisplayPosition = m_renderLoop.getDisplayPosition();
 
-        m_eventHandler.dispose();
-        m_eventHandler = null;
+        mEventHandler.dispose();
+        mEventHandler = null;
 
         // We must call waitForShutdown() to avoid problems that occur
         // when multiple H3RenderLoop instances overlap in lifetime.
@@ -1279,7 +1279,7 @@ public class H3Main {
         Graph retval = null;
 
         if (DEBUG_PRINT_LOAD_MEMORY) {
-            m_memoryUsage.startGathering();
+            mMemoryUsage.startGathering();
         }
 
         long startTime = 0;
@@ -1298,7 +1298,7 @@ public class H3Main {
             retval = builder.endConstruction();
 
             if (DEBUG_PRINT_LOAD_MEMORY) {
-                m_memoryUsage.gatherAfterBufferLoaded();
+                mMemoryUsage.gatherAfterBufferLoaded();
             }
         } catch (antlr.ANTLRException e) {
             // NOTE: ANTLRException.toMessage() doesn't include position.
@@ -1323,9 +1323,9 @@ public class H3Main {
 
     private File askUserForFile() {
         File retval = null;
-        int result = m_fileChooser.showOpenDialog(m_frame);
+        int result = mFileChooser.showOpenDialog(mFrame);
         if (result == JFileChooser.APPROVE_OPTION) {
-            retval = m_fileChooser.getSelectedFile();
+            retval = mFileChooser.getSelectedFile();
             if (!retval.isFile()) {
                 if (retval.exists()) {
                     String msg = "Path is not that of an ordinary file: "
@@ -1347,17 +1347,17 @@ public class H3Main {
     ///////////////////////////////////////////////////////////////////////
 
     private void reinstateCanvasContentPane() {
-        m_frame.getContentPane().remove(m_splashLabel);
-        m_frame.getContentPane().add(m_canvas, BorderLayout.CENTER);
-        m_frame.validate();
+        mFrame.getContentPane().remove(mSplashLabel);
+        mFrame.getContentPane().add(m_canvas, BorderLayout.CENTER);
+        mFrame.validate();
     }
 
     ///////////////////////////////////////////////////////////////////////
 
     private void reinstateSplashScreenContentPane() {
-        m_frame.getContentPane().remove(m_canvas);
-        m_frame.getContentPane().add(m_splashLabel, BorderLayout.CENTER);
-        m_frame.validate();
+        mFrame.getContentPane().remove(m_canvas);
+        mFrame.getContentPane().add(mSplashLabel, BorderLayout.CENTER);
+        mFrame.validate();
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1366,31 +1366,31 @@ public class H3Main {
     // rendering state (when the splash screen is being shown).
     private void setupIdleRenderingMenu() {
         // Rendering menu.
-        m_startMenuItem.setEnabled(true);
-        m_stopMenuItem.setEnabled(false);
-        m_updateMenuItem.setEnabled(false);
-        m_resetRenderingMenuItem.setEnabled(m_renderingConfiguration != null);
-        m_recomputeLayoutExtendedMenuItem.setEnabled
-                (m_renderingConfiguration != null);
+        mStartMenuItem.setEnabled(true);
+        mStopMenuItem.setEnabled(false);
+        mUpdateMenuItem.setEnabled(false);
+        mResetRenderingMenuItem.setEnabled(mRenderingConfiguration != null);
+        mRecomputeLayoutExtendedMenuItem.setEnabled
+                (mRenderingConfiguration != null);
 
         // Display menu.
-        m_narrowToSubtreeMenuItem.setEnabled(false);
-        m_widenSubtreeMenuItem.setEnabled(false);
-        m_widenTowardRootMenuItem.setEnabled(false);
-        m_widenToGraphMenuItem.setEnabled(false);
-        m_pruneSubtreeMenuItem.setEnabled(false);
-        m_pruneToChildrenMenuItem.setEnabled(false);
-        m_pruneToNeighborhoodMenu.setEnabled(false);
-        m_zoomInMenuItem.setEnabled(false);
-        m_zoomOutMenuItem.setEnabled(false);
-        m_zoomResetMenuItem.setEnabled(false);
-        m_refreshDisplayMenuItem.setEnabled(false);
-        m_wobbleDisplayMenuItem.setEnabled(false);
-        m_showRootNodeMenuItem.setEnabled(false);
-        m_showParentNodeMenuItem.setEnabled(false);
-        m_showPreviousNodeMenuItem.setEnabled(false);
-        m_savePositionMenuItem.setEnabled(false);
-        m_restorePositionMenuItem.setEnabled(false);
+        mNarrowToSubtreeMenuItem.setEnabled(false);
+        mWidenSubtreeMenuItem.setEnabled(false);
+        mWidenTowardRootMenuItem.setEnabled(false);
+        mWidenToGraphMenuItem.setEnabled(false);
+        mPruneSubtreeMenuItem.setEnabled(false);
+        mPruneToChildrenMenuItem.setEnabled(false);
+        mPruneToNeighborhoodMenu.setEnabled(false);
+        mZoomInMenuItem.setEnabled(false);
+        mZoomOutMenuItem.setEnabled(false);
+        mZoomResetMenuItem.setEnabled(false);
+        mRefreshDisplayMenuItem.setEnabled(false);
+        mWobbleDisplayMenuItem.setEnabled(false);
+        mShowRootNodeMenuItem.setEnabled(false);
+        mShowParentNodeMenuItem.setEnabled(false);
+        mShowPreviousNodeMenuItem.setEnabled(false);
+        mSavePositionMenuItem.setEnabled(false);
+        mRestorePositionMenuItem.setEnabled(false);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1399,30 +1399,30 @@ public class H3Main {
     // rendering state (when a Canvas3D is being shown).
     private void setupActiveRenderingMenu() {
         // Rendering menu.
-        m_startMenuItem.setEnabled(false);
-        m_stopMenuItem.setEnabled(true);
-        m_updateMenuItem.setEnabled(true);
-        m_resetRenderingMenuItem.setEnabled(true);
-        m_recomputeLayoutExtendedMenuItem.setEnabled(true);
+        mStartMenuItem.setEnabled(false);
+        mStopMenuItem.setEnabled(true);
+        mUpdateMenuItem.setEnabled(true);
+        mResetRenderingMenuItem.setEnabled(true);
+        mRecomputeLayoutExtendedMenuItem.setEnabled(true);
 
         // Display menu.
-        m_narrowToSubtreeMenuItem.setEnabled(true);
-        m_widenSubtreeMenuItem.setEnabled(m_isDisplayNarrowed);
-        m_widenTowardRootMenuItem.setEnabled(m_isDisplayNarrowed);
-        m_widenToGraphMenuItem.setEnabled(m_isDisplayNarrowed);
-        m_pruneSubtreeMenuItem.setEnabled(true);
-        m_pruneToChildrenMenuItem.setEnabled(true);
-        m_pruneToNeighborhoodMenu.setEnabled(true);
-        m_zoomInMenuItem.setEnabled(true);
-        m_zoomOutMenuItem.setEnabled(true);
-        m_zoomResetMenuItem.setEnabled(true);
-        m_refreshDisplayMenuItem.setEnabled(true);
-        m_wobbleDisplayMenuItem.setEnabled(true);
-        m_showRootNodeMenuItem.setEnabled(true);
-        m_showParentNodeMenuItem.setEnabled(true);
-        m_showPreviousNodeMenuItem.setEnabled(true);
-        m_savePositionMenuItem.setEnabled(true);
-        m_restorePositionMenuItem.setEnabled(m_savedDisplayPosition != null);
+        mNarrowToSubtreeMenuItem.setEnabled(true);
+        mWidenSubtreeMenuItem.setEnabled(mIsDisplayNarrowed);
+        mWidenTowardRootMenuItem.setEnabled(mIsDisplayNarrowed);
+        mWidenToGraphMenuItem.setEnabled(mIsDisplayNarrowed);
+        mPruneSubtreeMenuItem.setEnabled(true);
+        mPruneToChildrenMenuItem.setEnabled(true);
+        mPruneToNeighborhoodMenu.setEnabled(true);
+        mZoomInMenuItem.setEnabled(true);
+        mZoomOutMenuItem.setEnabled(true);
+        mZoomResetMenuItem.setEnabled(true);
+        mRefreshDisplayMenuItem.setEnabled(true);
+        mWobbleDisplayMenuItem.setEnabled(true);
+        mShowRootNodeMenuItem.setEnabled(true);
+        mShowParentNodeMenuItem.setEnabled(true);
+        mShowPreviousNodeMenuItem.setEnabled(true);
+        mSavePositionMenuItem.setEnabled(true);
+        mRestorePositionMenuItem.setEnabled(mSavedDisplayPosition != null);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1437,7 +1437,7 @@ public class H3Main {
         SimpleUniverse univ = new SimpleUniverse(m_canvas);
         univ.getViewingPlatform().setNominalViewingTransform();
 
-        m_viewParameters = new H3ViewParameters(m_canvas);
+        mViewParameters = new H3ViewParameters(m_canvas);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1456,23 +1456,23 @@ public class H3Main {
                 (KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         openMenuItem.addActionListener(e -> handleOpenFileRequest());
 
-        m_saveWithLayoutMenuItem = new JMenuItem("Save With Layout");
-        m_saveWithLayoutMenuItem.setMnemonic(KeyEvent.VK_S);
-        m_saveWithLayoutMenuItem.setAccelerator
+        mSaveWithLayoutMenuItem = new JMenuItem("Save With Layout");
+        mSaveWithLayoutMenuItem.setMnemonic(KeyEvent.VK_S);
+        mSaveWithLayoutMenuItem.setAccelerator
                 (KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-        m_saveWithLayoutMenuItem.setEnabled(false);
+        mSaveWithLayoutMenuItem.setEnabled(false);
 
-        m_saveWithLayoutAsMenuItem = new JMenuItem("Save With Layout As");
-        m_saveWithLayoutAsMenuItem.setMnemonic(KeyEvent.VK_A);
-        m_saveWithLayoutAsMenuItem.setEnabled(false);
+        mSaveWithLayoutAsMenuItem = new JMenuItem("Save With Layout As");
+        mSaveWithLayoutAsMenuItem.setMnemonic(KeyEvent.VK_A);
+        mSaveWithLayoutAsMenuItem.setEnabled(false);
 
-        m_closeMenuItem = new JMenuItem("Close");
-        m_closeMenuItem.setEnabled(false);
-        m_closeMenuItem.setMnemonic(KeyEvent.VK_C);
-        m_closeMenuItem.setAccelerator
+        mCloseMenuItem = new JMenuItem("Close");
+        mCloseMenuItem.setEnabled(false);
+        mCloseMenuItem.setMnemonic(KeyEvent.VK_C);
+        mCloseMenuItem.setAccelerator
                 (KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-        m_closeMenuItem.addActionListener(e -> {
-            m_closeMenuItem.setEnabled(false);
+        mCloseMenuItem.addActionListener(e -> {
+            mCloseMenuItem.setEnabled(false);
             handleCloseFileRequest();
         });
 
@@ -1486,252 +1486,252 @@ public class H3Main {
                 (KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         exitMenuItem.addActionListener(e -> System.exit(0));
 
-        m_fileMenu = new JMenu("File");
-        m_fileMenu.setMnemonic(KeyEvent.VK_F);
-        m_fileMenu.add(openMenuItem);
-        m_fileMenu.add(m_saveWithLayoutMenuItem);
-        m_fileMenu.add(m_saveWithLayoutAsMenuItem);
-        m_fileMenu.add(m_closeMenuItem);
-        m_fileMenu.addSeparator();
-        m_fileMenu.add(preferencesMenuItem);
-        m_fileMenu.addSeparator();
-        m_fileMenu.add(exitMenuItem);
+        mFileMenu = new JMenu("File");
+        mFileMenu.setMnemonic(KeyEvent.VK_F);
+        mFileMenu.add(openMenuItem);
+        mFileMenu.add(mSaveWithLayoutMenuItem);
+        mFileMenu.add(mSaveWithLayoutAsMenuItem);
+        mFileMenu.add(mCloseMenuItem);
+        mFileMenu.addSeparator();
+        mFileMenu.add(preferencesMenuItem);
+        mFileMenu.addSeparator();
+        mFileMenu.add(exitMenuItem);
 
         // Create "Rendering" menu. ----------------------------------------
 
-        m_startMenuItem = new JMenuItem("Start");
-        m_startMenuItem.setEnabled(false);
-        m_startMenuItem.setMnemonic(KeyEvent.VK_S);
-        m_startMenuItem.addActionListener(e -> handleStartRenderingRequest());
+        mStartMenuItem = new JMenuItem("Start");
+        mStartMenuItem.setEnabled(false);
+        mStartMenuItem.setMnemonic(KeyEvent.VK_S);
+        mStartMenuItem.addActionListener(e -> handleStartRenderingRequest());
 
-        m_stopMenuItem = new JMenuItem("Stop");
-        m_stopMenuItem.setMnemonic(KeyEvent.VK_P);
-        m_stopMenuItem.setEnabled(false);
-        m_stopMenuItem.addActionListener(e -> handleStopRenderingRequest());
+        mStopMenuItem = new JMenuItem("Stop");
+        mStopMenuItem.setMnemonic(KeyEvent.VK_P);
+        mStopMenuItem.setEnabled(false);
+        mStopMenuItem.addActionListener(e -> handleStopRenderingRequest());
 
-        m_updateMenuItem = new JMenuItem("Update");
-        m_updateMenuItem.setMnemonic(KeyEvent.VK_U);
-        m_updateMenuItem.setEnabled(false);
-        m_updateMenuItem.addActionListener(e -> handleUpdateRenderingRequest());
+        mUpdateMenuItem = new JMenuItem("Update");
+        mUpdateMenuItem.setMnemonic(KeyEvent.VK_U);
+        mUpdateMenuItem.setEnabled(false);
+        mUpdateMenuItem.addActionListener(e -> handleUpdateRenderingRequest());
 
-        m_resetRenderingMenuItem = new JMenuItem("Reset Rendering");
-        m_resetRenderingMenuItem.setMnemonic(KeyEvent.VK_T);
-        m_resetRenderingMenuItem.setEnabled(false);
-        m_resetRenderingMenuItem.addActionListener(e -> handleResetRenderingRequest());
+        mResetRenderingMenuItem = new JMenuItem("Reset Rendering");
+        mResetRenderingMenuItem.setMnemonic(KeyEvent.VK_T);
+        mResetRenderingMenuItem.setEnabled(false);
+        mResetRenderingMenuItem.addActionListener(e -> handleResetRenderingRequest());
 
-        m_recomputeLayoutExtendedMenuItem =
+        mRecomputeLayoutExtendedMenuItem =
                 new JMenuItem("Recompute Layout With Extended Precision");
-        m_recomputeLayoutExtendedMenuItem.setMnemonic(KeyEvent.VK_R);
-        m_recomputeLayoutExtendedMenuItem.setEnabled(false);
-        m_recomputeLayoutExtendedMenuItem.addActionListener
+        mRecomputeLayoutExtendedMenuItem.setMnemonic(KeyEvent.VK_R);
+        mRecomputeLayoutExtendedMenuItem.setEnabled(false);
+        mRecomputeLayoutExtendedMenuItem.addActionListener
                 (e -> handleRecomputeLayoutExtendedRequest());
 
-        m_adaptiveMenuItem = new JCheckBoxMenuItem("Adaptive Rendering");
-        m_adaptiveMenuItem.setMnemonic(KeyEvent.VK_A);
-        m_adaptiveMenuItem.setSelected(true);
+        mAdaptiveMenuItem = new JCheckBoxMenuItem("Adaptive Rendering");
+        mAdaptiveMenuItem.setMnemonic(KeyEvent.VK_A);
+        mAdaptiveMenuItem.setSelected(true);
 
-        m_multipleNodeSizesMenuItem =
+        mMultipleNodeSizesMenuItem =
                 new JCheckBoxMenuItem("Multiple Node Sizes");
-        m_multipleNodeSizesMenuItem.setMnemonic(KeyEvent.VK_M);
-        m_multipleNodeSizesMenuItem.setSelected(true);
+        mMultipleNodeSizesMenuItem.setMnemonic(KeyEvent.VK_M);
+        mMultipleNodeSizesMenuItem.setSelected(true);
 
-        m_depthCueingMenuItem =
+        mDepthCueingMenuItem =
                 new JCheckBoxMenuItem("Depth Cueing");
-        m_depthCueingMenuItem.setMnemonic(KeyEvent.VK_D);
-        m_depthCueingMenuItem.setSelected(true);
+        mDepthCueingMenuItem.setMnemonic(KeyEvent.VK_D);
+        mDepthCueingMenuItem.setSelected(true);
 
-        m_axesMenuItem =
+        mAxesMenuItem =
                 new JCheckBoxMenuItem("Coordinate Axes");
-        m_axesMenuItem.setMnemonic(KeyEvent.VK_X);
-        m_axesMenuItem.setSelected(true);
+        mAxesMenuItem.setMnemonic(KeyEvent.VK_X);
+        mAxesMenuItem.setSelected(true);
 
-        m_onScreenLabelsMenuItem =
+        mOnScreenLabelsMenuItem =
                 new JCheckBoxMenuItem("On-Screen Labels");
-        m_onScreenLabelsMenuItem.setMnemonic(KeyEvent.VK_L);
-        m_onScreenLabelsMenuItem.setSelected(true);
+        mOnScreenLabelsMenuItem.setMnemonic(KeyEvent.VK_L);
+        mOnScreenLabelsMenuItem.setSelected(true);
 
-        m_automaticRefreshMenuItem
+        mAutomaticRefreshMenuItem
                 = new JCheckBoxMenuItem("Automatic Refresh");
-        m_automaticRefreshMenuItem.setMnemonic(KeyEvent.VK_F);
-        m_automaticRefreshMenuItem.setSelected(true);
+        mAutomaticRefreshMenuItem.setMnemonic(KeyEvent.VK_F);
+        mAutomaticRefreshMenuItem.setSelected(true);
 
-        m_automaticExtendedPrecisionMenuItem
+        mAutomaticExtendedPrecisionMenuItem
                 = new JCheckBoxMenuItem("Automatic Extended Precision Layout");
-        m_automaticExtendedPrecisionMenuItem.setMnemonic(KeyEvent.VK_E);
-        m_automaticExtendedPrecisionMenuItem.setSelected(true);
+        mAutomaticExtendedPrecisionMenuItem.setMnemonic(KeyEvent.VK_E);
+        mAutomaticExtendedPrecisionMenuItem.setSelected(true);
 
-        m_renderingMenu = new JMenu("Rendering");
-        m_renderingMenu.setMnemonic(KeyEvent.VK_R);
-        m_renderingMenu.add(m_startMenuItem);
-        m_renderingMenu.add(m_stopMenuItem);
-        m_renderingMenu.add(m_updateMenuItem);
-        m_renderingMenu.addSeparator();
-        m_renderingMenu.add(m_resetRenderingMenuItem);
-        m_renderingMenu.add(m_recomputeLayoutExtendedMenuItem);
-        m_renderingMenu.addSeparator();
-        m_renderingMenu.add(m_adaptiveMenuItem);
-        m_renderingMenu.add(m_multipleNodeSizesMenuItem);
-        m_renderingMenu.add(m_depthCueingMenuItem);
-        m_renderingMenu.add(m_axesMenuItem);
-        m_renderingMenu.add(m_onScreenLabelsMenuItem);
-        m_renderingMenu.add(m_automaticRefreshMenuItem);
-        m_renderingMenu.add(m_automaticExtendedPrecisionMenuItem);
+        mRenderingMenu = new JMenu("Rendering");
+        mRenderingMenu.setMnemonic(KeyEvent.VK_R);
+        mRenderingMenu.add(mStartMenuItem);
+        mRenderingMenu.add(mStopMenuItem);
+        mRenderingMenu.add(mUpdateMenuItem);
+        mRenderingMenu.addSeparator();
+        mRenderingMenu.add(mResetRenderingMenuItem);
+        mRenderingMenu.add(mRecomputeLayoutExtendedMenuItem);
+        mRenderingMenu.addSeparator();
+        mRenderingMenu.add(mAdaptiveMenuItem);
+        mRenderingMenu.add(mMultipleNodeSizesMenuItem);
+        mRenderingMenu.add(mDepthCueingMenuItem);
+        mRenderingMenu.add(mAxesMenuItem);
+        mRenderingMenu.add(mOnScreenLabelsMenuItem);
+        mRenderingMenu.add(mAutomaticRefreshMenuItem);
+        mRenderingMenu.add(mAutomaticExtendedPrecisionMenuItem);
 
         // Create "Display" menu. ------------------------------------------
 
-        m_narrowToSubtreeMenuItem = new JMenuItem("Narrow To Subtree");
-        m_narrowToSubtreeMenuItem.setMnemonic(KeyEvent.VK_N);
-        m_narrowToSubtreeMenuItem.setEnabled(false);
-        m_narrowToSubtreeMenuItem.addActionListener(e -> {
-            int node = m_eventHandler.getCurrentNode();
+        mNarrowToSubtreeMenuItem = new JMenuItem("Narrow To Subtree");
+        mNarrowToSubtreeMenuItem.setMnemonic(KeyEvent.VK_N);
+        mNarrowToSubtreeMenuItem.setEnabled(false);
+        mNarrowToSubtreeMenuItem.addActionListener(e -> {
+            int node = mEventHandler.getCurrentNode();
             handleNarrowToSubtreeRequest(node);
         });
 
-        m_widenSubtreeMenuItem = new JMenuItem("Widen Subtree");
-        m_widenSubtreeMenuItem.setMnemonic(KeyEvent.VK_U);
-        m_widenSubtreeMenuItem.setEnabled(false);
-        m_widenSubtreeMenuItem.addActionListener
+        mWidenSubtreeMenuItem = new JMenuItem("Widen Subtree");
+        mWidenSubtreeMenuItem.setMnemonic(KeyEvent.VK_U);
+        mWidenSubtreeMenuItem.setEnabled(false);
+        mWidenSubtreeMenuItem.addActionListener
                 (e -> {
-                    int node = m_eventHandler.getCurrentNode();
+                    int node = mEventHandler.getCurrentNode();
                     handleWidenSubtreeRequest(node);
                 });
 
-        m_widenTowardRootMenuItem = new JMenuItem("Widen Toward Root");
-        m_widenTowardRootMenuItem.setMnemonic(KeyEvent.VK_W);
-        m_widenTowardRootMenuItem.setEnabled(false);
-        m_widenTowardRootMenuItem.addActionListener
+        mWidenTowardRootMenuItem = new JMenuItem("Widen Toward Root");
+        mWidenTowardRootMenuItem.setMnemonic(KeyEvent.VK_W);
+        mWidenTowardRootMenuItem.setEnabled(false);
+        mWidenTowardRootMenuItem.addActionListener
                 (e -> {
-                    int node = m_eventHandler.getCurrentNode();
+                    int node = mEventHandler.getCurrentNode();
                     handleWidenTowardRootRequest(node);
                 });
 
-        m_widenToGraphMenuItem = new JMenuItem("Widen To Entire Graph");
-        m_widenToGraphMenuItem.setMnemonic(KeyEvent.VK_G);
-        m_widenToGraphMenuItem.setEnabled(false);
-        m_widenToGraphMenuItem.addActionListener(e -> handleWidenToGraphRequest());
+        mWidenToGraphMenuItem = new JMenuItem("Widen To Entire Graph");
+        mWidenToGraphMenuItem.setMnemonic(KeyEvent.VK_G);
+        mWidenToGraphMenuItem.setEnabled(false);
+        mWidenToGraphMenuItem.addActionListener(e -> handleWidenToGraphRequest());
 
-        m_pruneSubtreeMenuItem = new JMenuItem("Prune Subtree");
-        m_pruneSubtreeMenuItem.setMnemonic(KeyEvent.VK_P);
-        m_pruneSubtreeMenuItem.setEnabled(false);
-        m_pruneSubtreeMenuItem.addActionListener(e -> {
-            int node = m_eventHandler.getCurrentNode();
+        mPruneSubtreeMenuItem = new JMenuItem("Prune Subtree");
+        mPruneSubtreeMenuItem.setMnemonic(KeyEvent.VK_P);
+        mPruneSubtreeMenuItem.setEnabled(false);
+        mPruneSubtreeMenuItem.addActionListener(e -> {
+            int node = mEventHandler.getCurrentNode();
             handlePruneSubtreeRequest(node);
         });
 
-        m_pruneToChildrenMenuItem = new JMenuItem("Prune To Children");
-        m_pruneToChildrenMenuItem.setMnemonic(KeyEvent.VK_C);
-        m_pruneToChildrenMenuItem.setEnabled(false);
-        m_pruneToChildrenMenuItem.addActionListener(e -> {
-            int node = m_eventHandler.getCurrentNode();
+        mPruneToChildrenMenuItem = new JMenuItem("Prune To Children");
+        mPruneToChildrenMenuItem.setMnemonic(KeyEvent.VK_C);
+        mPruneToChildrenMenuItem.setEnabled(false);
+        mPruneToChildrenMenuItem.addActionListener(e -> {
+            int node = mEventHandler.getCurrentNode();
             handlePruneToNeighborhoodRequest(node, 1);
         });
 
-        m_pruneToNeighborhoodMenu = new JMenu("Prune To Neighborhood");
-        m_pruneToNeighborhoodMenu.setMnemonic(KeyEvent.VK_E);
-        m_pruneToNeighborhoodMenu.setEnabled(false);
-        addPruneToNeighborhoodSubmenus(m_pruneToNeighborhoodMenu);
+        mPruneToNeighborhoodMenu = new JMenu("Prune To Neighborhood");
+        mPruneToNeighborhoodMenu.setMnemonic(KeyEvent.VK_E);
+        mPruneToNeighborhoodMenu.setEnabled(false);
+        addPruneToNeighborhoodSubmenus(mPruneToNeighborhoodMenu);
 
-        m_zoomInMenuItem = new JMenuItem("Zoom In");
-        m_zoomInMenuItem.setMnemonic(KeyEvent.VK_I);
-        m_zoomInMenuItem.setEnabled(false);
-        m_zoomInMenuItem.addActionListener(e -> m_eventHandler.increaseMagnification());
+        mZoomInMenuItem = new JMenuItem("Zoom In");
+        mZoomInMenuItem.setMnemonic(KeyEvent.VK_I);
+        mZoomInMenuItem.setEnabled(false);
+        mZoomInMenuItem.addActionListener(e -> mEventHandler.increaseMagnification());
 
-        m_zoomOutMenuItem = new JMenuItem("Zoom Out");
-        m_zoomOutMenuItem.setMnemonic(KeyEvent.VK_O);
-        m_zoomOutMenuItem.setEnabled(false);
-        m_zoomOutMenuItem.addActionListener(e -> m_eventHandler.decreaseMagnification());
+        mZoomOutMenuItem = new JMenuItem("Zoom Out");
+        mZoomOutMenuItem.setMnemonic(KeyEvent.VK_O);
+        mZoomOutMenuItem.setEnabled(false);
+        mZoomOutMenuItem.addActionListener(e -> mEventHandler.decreaseMagnification());
 
-        m_zoomResetMenuItem = new JMenuItem("Zoom 1:1");
-        m_zoomResetMenuItem.setMnemonic(KeyEvent.VK_Z);
-        m_zoomResetMenuItem.setEnabled(false);
-        m_zoomResetMenuItem.addActionListener(e -> m_eventHandler.resetMagnification());
+        mZoomResetMenuItem = new JMenuItem("Zoom 1:1");
+        mZoomResetMenuItem.setMnemonic(KeyEvent.VK_Z);
+        mZoomResetMenuItem.setEnabled(false);
+        mZoomResetMenuItem.addActionListener(e -> mEventHandler.resetMagnification());
 
-        m_refreshDisplayMenuItem = new JMenuItem("Refresh");
-        m_refreshDisplayMenuItem.setMnemonic(KeyEvent.VK_R);
-        m_refreshDisplayMenuItem.setEnabled(false);
-        m_refreshDisplayMenuItem.setAccelerator
+        mRefreshDisplayMenuItem = new JMenuItem("Refresh");
+        mRefreshDisplayMenuItem.setMnemonic(KeyEvent.VK_R);
+        mRefreshDisplayMenuItem.setEnabled(false);
+        mRefreshDisplayMenuItem.setAccelerator
                 (KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
-        m_refreshDisplayMenuItem.addActionListener(e -> m_eventHandler.refreshDisplay());
+        mRefreshDisplayMenuItem.addActionListener(e -> mEventHandler.refreshDisplay());
 
-        m_wobbleDisplayMenuItem = new JMenuItem("Wobble");
-        m_wobbleDisplayMenuItem.setMnemonic(KeyEvent.VK_B);
-        m_wobbleDisplayMenuItem.setEnabled(false);
-        m_wobbleDisplayMenuItem.setAccelerator
+        mWobbleDisplayMenuItem = new JMenuItem("Wobble");
+        mWobbleDisplayMenuItem.setMnemonic(KeyEvent.VK_B);
+        mWobbleDisplayMenuItem.setEnabled(false);
+        mWobbleDisplayMenuItem.setAccelerator
                 (KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
-        m_wobbleDisplayMenuItem.addActionListener(e -> {
-            m_wobbleDisplayMenuItem.setEnabled(false);
-            m_eventHandler.forceIdleState();
-            m_eventHandler.startWobbling(() -> m_wobbleDisplayMenuItem.setEnabled(true));
+        mWobbleDisplayMenuItem.addActionListener(e -> {
+            mWobbleDisplayMenuItem.setEnabled(false);
+            mEventHandler.forceIdleState();
+            mEventHandler.startWobbling(() -> mWobbleDisplayMenuItem.setEnabled(true));
         });
 
-        m_showRootNodeMenuItem = new JMenuItem("Show Root Node");
-        m_showRootNodeMenuItem.setMnemonic(KeyEvent.VK_H);
-        m_showRootNodeMenuItem.setEnabled(false);
-        m_showRootNodeMenuItem.addActionListener(e -> {
-            m_eventHandler.forceIdleState();
-            m_eventHandler.showRootNode();
+        mShowRootNodeMenuItem = new JMenuItem("Show Root Node");
+        mShowRootNodeMenuItem.setMnemonic(KeyEvent.VK_H);
+        mShowRootNodeMenuItem.setEnabled(false);
+        mShowRootNodeMenuItem.addActionListener(e -> {
+            mEventHandler.forceIdleState();
+            mEventHandler.showRootNode();
         });
 
-        m_showParentNodeMenuItem = new JMenuItem("Show Parent Node");
-        m_showParentNodeMenuItem.setMnemonic(KeyEvent.VK_A);
-        m_showParentNodeMenuItem.setEnabled(false);
-        m_showParentNodeMenuItem.addActionListener(e -> {
-            m_eventHandler.forceIdleState();
-            m_eventHandler.showParentNode();
+        mShowParentNodeMenuItem = new JMenuItem("Show Parent Node");
+        mShowParentNodeMenuItem.setMnemonic(KeyEvent.VK_A);
+        mShowParentNodeMenuItem.setEnabled(false);
+        mShowParentNodeMenuItem.addActionListener(e -> {
+            mEventHandler.forceIdleState();
+            mEventHandler.showParentNode();
         });
 
-        m_showPreviousNodeMenuItem = new JMenuItem("Show Previous Node");
-        m_showPreviousNodeMenuItem.setMnemonic(KeyEvent.VK_V);
-        m_showPreviousNodeMenuItem.setEnabled(false);
-        m_showPreviousNodeMenuItem.addActionListener(e -> {
-            m_eventHandler.forceIdleState();
-            m_eventHandler.showPreviousNode();
+        mShowPreviousNodeMenuItem = new JMenuItem("Show Previous Node");
+        mShowPreviousNodeMenuItem.setMnemonic(KeyEvent.VK_V);
+        mShowPreviousNodeMenuItem.setEnabled(false);
+        mShowPreviousNodeMenuItem.addActionListener(e -> {
+            mEventHandler.forceIdleState();
+            mEventHandler.showPreviousNode();
         });
 
-        m_savePositionMenuItem = new JMenuItem("Save Position");
-        m_savePositionMenuItem.setMnemonic(KeyEvent.VK_S);
-        m_savePositionMenuItem.setEnabled(false);
-        m_savePositionMenuItem.addActionListener(e -> {
-            m_eventHandler.forceIdleState();
-            m_savedDisplayPosition = m_eventHandler.savePosition();
-            m_restorePositionMenuItem.setEnabled(true);
+        mSavePositionMenuItem = new JMenuItem("Save Position");
+        mSavePositionMenuItem.setMnemonic(KeyEvent.VK_S);
+        mSavePositionMenuItem.setEnabled(false);
+        mSavePositionMenuItem.addActionListener(e -> {
+            mEventHandler.forceIdleState();
+            mSavedDisplayPosition = mEventHandler.savePosition();
+            mRestorePositionMenuItem.setEnabled(true);
         });
 
-        m_restorePositionMenuItem = new JMenuItem("Restore Position");
-        m_restorePositionMenuItem.setMnemonic(KeyEvent.VK_T);
-        m_restorePositionMenuItem.setEnabled(false);
-        m_restorePositionMenuItem.addActionListener(e -> {
-            m_eventHandler.forceIdleState();
-            m_eventHandler.restorePosition(m_savedDisplayPosition);
+        mRestorePositionMenuItem = new JMenuItem("Restore Position");
+        mRestorePositionMenuItem.setMnemonic(KeyEvent.VK_T);
+        mRestorePositionMenuItem.setEnabled(false);
+        mRestorePositionMenuItem.addActionListener(e -> {
+            mEventHandler.forceIdleState();
+            mEventHandler.restorePosition(mSavedDisplayPosition);
         });
 
-        m_displayMenu = new JMenu("Display");
-        m_displayMenu.setMnemonic(KeyEvent.VK_D);
-        m_displayMenu.add(m_narrowToSubtreeMenuItem);
-        m_displayMenu.add(m_widenSubtreeMenuItem);
-        m_displayMenu.add(m_widenTowardRootMenuItem);
-        m_displayMenu.add(m_widenToGraphMenuItem);
-        m_displayMenu.add(m_pruneSubtreeMenuItem);
-        m_displayMenu.add(m_pruneToChildrenMenuItem);
-        m_displayMenu.add(m_pruneToNeighborhoodMenu);
-        m_displayMenu.addSeparator();
-        m_displayMenu.add(m_zoomInMenuItem);
-        m_displayMenu.add(m_zoomOutMenuItem);
-        m_displayMenu.add(m_zoomResetMenuItem);
-        m_displayMenu.addSeparator();
-        m_displayMenu.add(m_refreshDisplayMenuItem);
-        m_displayMenu.add(m_wobbleDisplayMenuItem);
-        m_displayMenu.add(m_showRootNodeMenuItem);
-        m_displayMenu.add(m_showParentNodeMenuItem);
-        m_displayMenu.add(m_showPreviousNodeMenuItem);
-        m_displayMenu.addSeparator();
-        m_displayMenu.add(m_savePositionMenuItem);
-        m_displayMenu.add(m_restorePositionMenuItem);
+        mDisplayMenu = new JMenu("Display");
+        mDisplayMenu.setMnemonic(KeyEvent.VK_D);
+        mDisplayMenu.add(mNarrowToSubtreeMenuItem);
+        mDisplayMenu.add(mWidenSubtreeMenuItem);
+        mDisplayMenu.add(mWidenTowardRootMenuItem);
+        mDisplayMenu.add(mWidenToGraphMenuItem);
+        mDisplayMenu.add(mPruneSubtreeMenuItem);
+        mDisplayMenu.add(mPruneToChildrenMenuItem);
+        mDisplayMenu.add(mPruneToNeighborhoodMenu);
+        mDisplayMenu.addSeparator();
+        mDisplayMenu.add(mZoomInMenuItem);
+        mDisplayMenu.add(mZoomOutMenuItem);
+        mDisplayMenu.add(mZoomResetMenuItem);
+        mDisplayMenu.addSeparator();
+        mDisplayMenu.add(mRefreshDisplayMenuItem);
+        mDisplayMenu.add(mWobbleDisplayMenuItem);
+        mDisplayMenu.add(mShowRootNodeMenuItem);
+        mDisplayMenu.add(mShowParentNodeMenuItem);
+        mDisplayMenu.add(mShowPreviousNodeMenuItem);
+        mDisplayMenu.addSeparator();
+        mDisplayMenu.add(mSavePositionMenuItem);
+        mDisplayMenu.add(mRestorePositionMenuItem);
 
         // Create "Spanning Tree" menu. ------------------------------------
 
-        m_spanningTreeMenu = new JMenu("Spanning Tree");
-        m_spanningTreeMenu.setMnemonic(KeyEvent.VK_S);
+        mSpanningTreeMenu = new JMenu("Spanning Tree");
+        mSpanningTreeMenu.setMnemonic(KeyEvent.VK_S);
 
         // Create "Color Scheme" menu. -------------------------------------
 
@@ -1739,18 +1739,18 @@ public class H3Main {
 
         // Create "Node Label" menu. -------------------------------------
 
-        m_nodeLabelMenu = new JMenu("Node Label");
-        m_nodeLabelMenu.setMnemonic(KeyEvent.VK_N);
+        mNodeLabelMenu = new JMenu("Node Label");
+        mNodeLabelMenu.setMnemonic(KeyEvent.VK_N);
 
         // Create menu bar. ------------------------------------------------
 
         JMenuBar retval = new JMenuBar();
-        retval.add(m_fileMenu);
-        retval.add(m_renderingMenu);
-        retval.add(m_displayMenu);
-        retval.add(m_spanningTreeMenu);
+        retval.add(mFileMenu);
+        retval.add(mRenderingMenu);
+        retval.add(mDisplayMenu);
+        retval.add(mSpanningTreeMenu);
         retval.add(m_colorSchemeMenu.getColorSchemeMenu());
-        retval.add(m_nodeLabelMenu);
+        retval.add(mNodeLabelMenu);
         return retval;
     }
 
@@ -1761,7 +1761,7 @@ public class H3Main {
             }
 
             public void actionPerformed(ActionEvent e) {
-                int node = m_eventHandler.getCurrentNode();
+                int node = mEventHandler.getCurrentNode();
                 handlePruneToNeighborhoodRequest(node, m_distance);
             }
 
@@ -1815,79 +1815,79 @@ public class H3Main {
 
     // The following, m_renderingConfiguration, will be non-null if a graph
     // has been loaded and rendered (at least once).
-    private RenderingConfiguration m_renderingConfiguration;
+    private RenderingConfiguration mRenderingConfiguration;
     private int m_rootNode;
     private int m_currentNode;
     private int m_previousNode;
     private Graph m_backingGraph;  // Will be non-null if a graph is open.
     private H3Graph m_graph;  // ...non-null when a graph is being rendered.
-    private H3DisplayPosition m_displayPosition; // Saved while updating disp..
-    private H3DisplayPosition m_savedDisplayPosition; // Saved by user...
-    private boolean m_isDisplayNarrowed;
+    private H3DisplayPosition mDisplayPosition; // Saved while updating disp..
+    private H3DisplayPosition mSavedDisplayPosition; // Saved by user...
+    private boolean mIsDisplayNarrowed;
     private H3Canvas3D m_canvas; // Always non-null; one per program run.
-    private H3ViewParameters m_viewParameters; // Always non-null.
+    private H3ViewParameters mViewParameters; // Always non-null.
     private H3RenderLoop m_renderLoop; // ...non-null when ... being rendered.
-    private EventHandler m_eventHandler; // ...non-null when ...being rendered.
-    private final MemoryUsage m_memoryUsage = new MemoryUsage();
-    private final H3GraphLoader m_graphLoader = new H3GraphLoader();
+    private EventHandler mEventHandler; // ...non-null when ...being rendered.
+    private final MemoryUsage mMemoryUsage = new MemoryUsage();
+    private final H3GraphLoader mGraphLoader = new H3GraphLoader();
 
-    private final JFrame m_frame;
+    private final JFrame mFrame;
     private final JTextField m_statusBar;
-    private final JLabel m_splashLabel;
-    private final JFileChooser m_fileChooser = new JFileChooser();
+    private final JLabel mSplashLabel;
+    private final JFileChooser mFileChooser = new JFileChooser();
 
-    private JMenu m_fileMenu;
-    private JMenuItem m_saveWithLayoutMenuItem;
-    private JMenuItem m_saveWithLayoutAsMenuItem;
-    private JMenuItem m_closeMenuItem;
+    private JMenu mFileMenu;
+    private JMenuItem mSaveWithLayoutMenuItem;
+    private JMenuItem mSaveWithLayoutAsMenuItem;
+    private JMenuItem mCloseMenuItem;
 
-    private JMenu m_renderingMenu;
-    private JMenuItem m_startMenuItem;
-    private JMenuItem m_stopMenuItem;
-    private JMenuItem m_updateMenuItem;
-    private JMenuItem m_resetRenderingMenuItem;
-    private JMenuItem m_recomputeLayoutExtendedMenuItem;
-    private JCheckBoxMenuItem m_adaptiveMenuItem;
-    private JCheckBoxMenuItem m_multipleNodeSizesMenuItem;
-    private JCheckBoxMenuItem m_depthCueingMenuItem;
-    private JCheckBoxMenuItem m_axesMenuItem;
-    private JCheckBoxMenuItem m_onScreenLabelsMenuItem;
-    private JCheckBoxMenuItem m_automaticRefreshMenuItem;
-    private JCheckBoxMenuItem m_automaticExtendedPrecisionMenuItem;
+    private JMenu mRenderingMenu;
+    private JMenuItem mStartMenuItem;
+    private JMenuItem mStopMenuItem;
+    private JMenuItem mUpdateMenuItem;
+    private JMenuItem mResetRenderingMenuItem;
+    private JMenuItem mRecomputeLayoutExtendedMenuItem;
+    private JCheckBoxMenuItem mAdaptiveMenuItem;
+    private JCheckBoxMenuItem mMultipleNodeSizesMenuItem;
+    private JCheckBoxMenuItem mDepthCueingMenuItem;
+    private JCheckBoxMenuItem mAxesMenuItem;
+    private JCheckBoxMenuItem mOnScreenLabelsMenuItem;
+    private JCheckBoxMenuItem mAutomaticRefreshMenuItem;
+    private JCheckBoxMenuItem mAutomaticExtendedPrecisionMenuItem;
 
-    private JMenu m_displayMenu;
-    private JMenuItem m_narrowToSubtreeMenuItem;
-    private JMenuItem m_widenSubtreeMenuItem;
-    private JMenuItem m_widenTowardRootMenuItem;
-    private JMenuItem m_widenToGraphMenuItem;
-    private JMenuItem m_pruneSubtreeMenuItem;
-    private JMenuItem m_pruneToChildrenMenuItem;
-    private JMenu m_pruneToNeighborhoodMenu;
-    private JMenuItem m_zoomInMenuItem;
-    private JMenuItem m_zoomOutMenuItem;
-    private JMenuItem m_zoomResetMenuItem;
-    private JMenuItem m_refreshDisplayMenuItem;
-    private JMenuItem m_wobbleDisplayMenuItem;
-    private JMenuItem m_showRootNodeMenuItem;
-    private JMenuItem m_showParentNodeMenuItem;
-    private JMenuItem m_showPreviousNodeMenuItem;
-    private JMenuItem m_savePositionMenuItem;
-    private JMenuItem m_restorePositionMenuItem;
+    private JMenu mDisplayMenu;
+    private JMenuItem mNarrowToSubtreeMenuItem;
+    private JMenuItem mWidenSubtreeMenuItem;
+    private JMenuItem mWidenTowardRootMenuItem;
+    private JMenuItem mWidenToGraphMenuItem;
+    private JMenuItem mPruneSubtreeMenuItem;
+    private JMenuItem mPruneToChildrenMenuItem;
+    private JMenu mPruneToNeighborhoodMenu;
+    private JMenuItem mZoomInMenuItem;
+    private JMenuItem mZoomOutMenuItem;
+    private JMenuItem mZoomResetMenuItem;
+    private JMenuItem mRefreshDisplayMenuItem;
+    private JMenuItem mWobbleDisplayMenuItem;
+    private JMenuItem mShowRootNodeMenuItem;
+    private JMenuItem mShowParentNodeMenuItem;
+    private JMenuItem mShowPreviousNodeMenuItem;
+    private JMenuItem mSavePositionMenuItem;
+    private JMenuItem mRestorePositionMenuItem;
 
-    private JMenu m_spanningTreeMenu;
-    private ButtonGroup m_spanningTreeButtonGroup;
-    private List m_spanningTreeQualifiers;
+    private JMenu mSpanningTreeMenu;
+    private ButtonGroup mSpanningTreeButtonGroup;
+    private List mSpanningTreeQualifiers;
 
     private ColorSchemeMenu m_colorSchemeMenu;
 
-    private JMenu m_nodeLabelMenu;
+    private JMenu mNodeLabelMenu;
     private List m_nodeLabelAttributes;
 
     private final H3GraphLoader.AttributeTypeMatcher
-            m_allAttributeTypeMatcher = new AllAttributeTypeMatcher();
+            mAllAttributeTypeMatcher = new AllAttributeTypeMatcher();
 
-    private final float[] m_float3Temporary = new float[3];
-    private final double[] m_double3Temporary = new double[3];
+    private final float[] mFloat3Temporary = new float[3];
+    private final double[] mDouble3Temporary = new double[3];
 
     ///////////////////////////////////////////////////////////////////////
     // PRIVATE CLASSES
@@ -2606,7 +2606,7 @@ public class H3Main {
             double t = Math.atan(10.0 * (Math.abs(x) - 0.3))
                     / ROTATION_SCALE + 0.1987918;
 
-            return (x >= 0.0 ? t : -t);
+            return x >= 0.0 ? t : -t;
         }
 
         //---------------------------------------------------------------
@@ -2711,7 +2711,7 @@ public class H3Main {
         // each 'labelling session'.  Getting the timing perfect isn't
         // important; ensuring that it never grows too large (say > 200)
         // is all that matters.
-        private int m_labelZOffsetCounter = 0;
+        private int m_labelZOffsetCounter;
 
         private final Point2d m_center = new Point2d();
 
@@ -2895,21 +2895,21 @@ public class H3Main {
             createFixedColors();
 
             Map<String, JMenuItem> nodeMenuMap =
-                    new HashMap<String, JMenuItem>();
+                    new HashMap<>();
             m_nodeColorMenu = new JMenu("Node Color");
             m_nodeColorMenu.setMnemonic(KeyEvent.VK_N);
             m_nodeColorSelection = new ColorSelection
                     (m_nodeColorMenu, nodeMenuMap, m_fixedColors);
 
             Map<String, JMenuItem> treeLinkMenuMap =
-                    new HashMap<String, JMenuItem>();
+                    new HashMap<>();
             m_treeLinkColorMenu = new JMenu("Tree Link Color");
             m_treeLinkColorMenu.setMnemonic(KeyEvent.VK_T);
             m_treeLinkColorSelection = new ColorSelection
                     (m_treeLinkColorMenu, treeLinkMenuMap, m_fixedColors);
 
             Map<String, JMenuItem> nontreeLinkMenuMap =
-                    new HashMap<String, JMenuItem>();
+                    new HashMap<>();
             m_nontreeLinkColorMenu = new JMenu("Nontree Link Color");
             m_nontreeLinkColorMenu.setMnemonic(KeyEvent.VK_E);
             m_nontreeLinkColorSelection = new ColorSelection
@@ -2968,7 +2968,7 @@ public class H3Main {
         //       since we're taking advantage of the ActionListener plumbing
         //       already set up for the menus.
         public void enableDefaultColorScheme() {
-            if (m_predefinedColorSchemes.size() > 0) {
+            if (!m_predefinedColorSchemes.isEmpty()) {
                 // XXX: We might want to preserve the default color scheme
                 //      in the system properties.
                 PredefinedColorScheme scheme =
@@ -3009,7 +3009,7 @@ public class H3Main {
                  Map<String, JMenuItem> nontreeLinkMenuMap) {
             ColorSchemeMaker maker = new ColorSchemeMaker
                     (nodeMenuMap, treeLinkMenuMap, nontreeLinkMenuMap);
-            m_predefinedColorSchemes = new ArrayList<PredefinedColorScheme>();
+            m_predefinedColorSchemes = new ArrayList<>();
             m_predefinedColorSchemes.add
                     (maker.make("Yellow-Green-[Grey]",
                             "Yellow", ColorSchemeMaker.DISABLE_TRANSPARENCY,
@@ -3037,7 +3037,7 @@ public class H3Main {
         }
 
         private void createFixedColors() {
-            m_fixedColors = new ArrayList<FixedColor>();
+            m_fixedColors = new ArrayList<>();
             m_fixedColors.add
                     (new FixedColor("Magenta", packRGB(199, 21, 133)));
             m_fixedColors.add
@@ -3192,21 +3192,21 @@ public class H3Main {
                         findColor(m_nontreeLinkMenuMap, nontreeLinkColor);
 
                 JMenuItem nodeTransparencyMenuItem =
-                        (nodeTransparencyType == IGNORE_TRANSPARENCY
-                                ? null : m_nodeTransparencyMenuItem);
+                        nodeTransparencyType == IGNORE_TRANSPARENCY
+                                ? null : m_nodeTransparencyMenuItem;
                 JMenuItem treeLinkTransparencyMenuItem =
-                        (treeLinkTransparencyType == IGNORE_TRANSPARENCY
-                                ? null : m_treeLinkTransparencyMenuItem);
+                        treeLinkTransparencyType == IGNORE_TRANSPARENCY
+                                ? null : m_treeLinkTransparencyMenuItem;
                 JMenuItem nontreeLinkTransparencyMenuItem =
-                        (nontreeLinkTransparencyType == IGNORE_TRANSPARENCY
-                                ? null : m_nontreeLinkTransparencyMenuItem);
+                        nontreeLinkTransparencyType == IGNORE_TRANSPARENCY
+                                ? null : m_nontreeLinkTransparencyMenuItem;
 
                 boolean nodeTransparency =
-                        (nodeTransparencyType == ENABLE_TRANSPARENCY);
+                        nodeTransparencyType == ENABLE_TRANSPARENCY;
                 boolean treeLinkTransparency =
-                        (treeLinkTransparencyType == ENABLE_TRANSPARENCY);
+                        treeLinkTransparencyType == ENABLE_TRANSPARENCY;
                 boolean nontreeLinkTransparency =
-                        (nontreeLinkTransparencyType == ENABLE_TRANSPARENCY);
+                        nontreeLinkTransparencyType == ENABLE_TRANSPARENCY;
 
                 return new PredefinedColorScheme
                         (name, nodeMenuItem, nodeTransparencyMenuItem,
@@ -3500,7 +3500,7 @@ public class H3Main {
 
         // List<String> attributes
         private void populateSelectionAttributeMenu(List attributes) {
-            if (attributes.size() > 0) {
+            if (!attributes.isEmpty()) {
                 m_selectionAttributeButtonGroup = new ButtonGroup();
 
                 JRadioButtonMenuItem noneMenuItem =
@@ -3781,24 +3781,24 @@ public class H3Main {
         public String selectionAttribute;
 
         public boolean equalColoring(ColorConfiguration rhs) {
-            boolean retval = (rhs.scheme == scheme);
+            boolean retval = rhs.scheme == scheme;
             if (retval) {
                 if (scheme == FIXED_COLOR) {
-                    retval = (rhs.fixedColor == fixedColor
-                            && rhs.isTransparent == isTransparent);
+                    retval = rhs.fixedColor == fixedColor
+                            && rhs.isTransparent == isTransparent;
                 } else if (scheme == HUE || scheme == RGB) {
-                    retval = (rhs.colorAttribute.equals(colorAttribute));
+                    retval = rhs.colorAttribute.equals(colorAttribute);
                 }
             }
 
             if (retval) {
-                boolean hasLHS = (selectionAttribute != null);
-                boolean hasRHS = (rhs.selectionAttribute != null);
+                boolean hasLHS = selectionAttribute != null;
+                boolean hasRHS = rhs.selectionAttribute != null;
                 if (hasLHS && hasRHS) {
                     retval =
-                            (rhs.selectionAttribute.equals(selectionAttribute));
+                            rhs.selectionAttribute.equals(selectionAttribute);
                 } else {
-                    retval = (!hasLHS && !hasRHS);
+                    retval = !hasLHS && !hasRHS;
                 }
             }
 
@@ -3942,33 +3942,33 @@ public class H3Main {
             long finalUsed = m_finalTotalMemory - m_finalFreeMemory;
 
             System.out.println("===========================================");
-            System.out.println("baseTotalMemory = " + M(m_baseTotalMemory));
-            System.out.println("baseFreeMemory = " + M(m_baseFreeMemory));
-            System.out.println("baseUsed = " + M(baseUsed));
-            System.out.println("bufferTotalMemory = " + M(m_bufferTotalMemory));
-            System.out.println("bufferFreeMemory = " + M(m_bufferFreeMemory));
-            System.out.println("bufferUsed = " + M(bufferUsed));
-            System.out.println("peakTotalMemory = " + M(m_peakTotalMemory));
-            System.out.println("peakFreeMemory = " + M(m_peakFreeMemory));
-            System.out.println("peakUsed = " + M(peakUsed));
-            System.out.println("finalTotalMemory = " + M(m_finalTotalMemory));
-            System.out.println("finalFreeMemory = " + M(m_finalFreeMemory));
-            System.out.println("finalUsed = " + M(finalUsed));
+            System.out.println("baseTotalMemory = " + m(m_baseTotalMemory));
+            System.out.println("baseFreeMemory = " + m(m_baseFreeMemory));
+            System.out.println("baseUsed = " + m(baseUsed));
+            System.out.println("bufferTotalMemory = " + m(m_bufferTotalMemory));
+            System.out.println("bufferFreeMemory = " + m(m_bufferFreeMemory));
+            System.out.println("bufferUsed = " + m(bufferUsed));
+            System.out.println("peakTotalMemory = " + m(m_peakTotalMemory));
+            System.out.println("peakFreeMemory = " + m(m_peakFreeMemory));
+            System.out.println("peakUsed = " + m(peakUsed));
+            System.out.println("finalTotalMemory = " + m(m_finalTotalMemory));
+            System.out.println("finalFreeMemory = " + m(m_finalFreeMemory));
+            System.out.println("finalUsed = " + m(finalUsed));
             System.out.println();
             System.out.println("bufferUsed - baseUsed = "
-                    + M(bufferUsed - baseUsed));
+                    + m(bufferUsed - baseUsed));
             System.out.println("peakUsed - baseUsed = "
-                    + M(peakUsed - baseUsed));
+                    + m(peakUsed - baseUsed));
             System.out.println("peakUsed - bufferUsed = "
-                    + M(peakUsed - bufferUsed));
+                    + m(peakUsed - bufferUsed));
             System.out.println("finalUsed - baseUsed = "
-                    + M(finalUsed - baseUsed));
+                    + m(finalUsed - baseUsed));
             System.out.println("finalUsed - peakUsed = "
-                    + M(finalUsed - peakUsed));
+                    + m(finalUsed - peakUsed));
             System.out.println("===========================================");
         }
 
-        private String M(long n) {
+        private String m(long n) {
             long x = n / 100000;
             long mega = x / 10;
             long kilo = Math.abs(x % 10);

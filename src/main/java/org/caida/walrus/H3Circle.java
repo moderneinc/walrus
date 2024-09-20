@@ -33,17 +33,17 @@ public class H3Circle {
 
     public void draw(GraphicsContext3D gc, double radius, double x, double y) {
         establishTransform(gc, radius, x, y);
-        gc.draw(m_circle);
+        gc.draw(mCircle);
     }
 
     public void drawGeometry(GraphicsContext3D gc, double radius,
                              double x, double y) {
         establishTransform(gc, radius, x, y);
-        gc.draw(m_lines);
+        gc.draw(mLines);
     }
 
     public void setImageToVworldTransform(Transform3D transform) {
-        m_imageToVworld.set(transform);
+        mImageToVworld.set(transform);
     }
 
     // ===================================================================
@@ -54,7 +54,7 @@ public class H3Circle {
         Transform3D translation = new Transform3D();
         translation.set(radius, t);  // (scale, translation)
 
-        Transform3D transform = new Transform3D(m_imageToVworld);
+        Transform3D transform = new Transform3D(mImageToVworld);
         transform.mul(translation);
 
         gc.setModelTransform(transform);
@@ -81,8 +81,8 @@ public class H3Circle {
                 GeometryArray.COORDINATES,
                 stripLengths);
         xyLines.setCoordinates(0, xyPoints);
-        m_lines = xyLines;
-        m_circle = new Shape3D(xyLines, appearance);
+        mLines = xyLines;
+        mCircle = new Shape3D(xyLines, appearance);
     }
 
     private Point3f[] createXYCircleCoordinates(float radius, int numSegments) {
@@ -105,9 +105,9 @@ public class H3Circle {
     private static final int NUM_SEGMENTS = 12; // 3, 6, 12, 18, 36, 72
     private static final boolean ANTIALIASING = false;
 
-    private final Transform3D m_objectTransform = new Transform3D();
-    private final Transform3D m_imageToVworld = new Transform3D();
+    private final Transform3D mObjectTransform = new Transform3D();
+    private final Transform3D mImageToVworld = new Transform3D();
 
-    private Geometry m_lines;
-    private Shape3D m_circle;
+    private Geometry mLines;
+    private Shape3D mCircle;
 }

@@ -46,7 +46,7 @@ public class H3PointRenderList
                              boolean includeTreeLinkColor,
                              boolean includeNontreeLinks,
                              boolean includeNontreeLinkColor) {
-        m_graph = graph;
+        mGraph = graph;
 
         USE_NODE_SIZES = useNodeSizes;
         INCLUDE_NODES = includeNodes;
@@ -68,35 +68,35 @@ public class H3PointRenderList
 
             int numNodes = graph.getNumNodes();
 
-            m_nearNodes = new PointArray(numNodes, nodeFormat);
-            m_nearNodeCoordinates = new double[numNodes * 3];
-            m_nearNodes.setCoordRefDouble(m_nearNodeCoordinates);
-            m_nearNodes.setValidVertexCount(0);
+            mNearNodes = new PointArray(numNodes, nodeFormat);
+            mNearNodeCoordinates = new double[numNodes * 3];
+            mNearNodes.setCoordRefDouble(mNearNodeCoordinates);
+            mNearNodes.setValidVertexCount(0);
 
             if (USE_NODE_SIZES) {
-                m_middleNodes = new PointArray(numNodes, nodeFormat);
-                m_middleNodeCoordinates = new double[numNodes * 3];
-                m_middleNodes.setCoordRefDouble(m_middleNodeCoordinates);
-                m_middleNodes.setValidVertexCount(0);
+                mMiddleNodes = new PointArray(numNodes, nodeFormat);
+                mMiddleNodeCoordinates = new double[numNodes * 3];
+                mMiddleNodes.setCoordRefDouble(mMiddleNodeCoordinates);
+                mMiddleNodes.setValidVertexCount(0);
 
                 // --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
 
-                m_farNodes = new PointArray(numNodes, nodeFormat);
-                m_farNodeCoordinates = new double[numNodes * 3];
-                m_farNodes.setCoordRefDouble(m_farNodeCoordinates);
-                m_farNodes.setValidVertexCount(0);
+                mFarNodes = new PointArray(numNodes, nodeFormat);
+                mFarNodeCoordinates = new double[numNodes * 3];
+                mFarNodes.setCoordRefDouble(mFarNodeCoordinates);
+                mFarNodes.setValidVertexCount(0);
             }
 
             if (INCLUDE_NODE_COLOR) {
-                m_nearNodeColors = new byte[numNodes * 3];
-                m_nearNodes.setColorRefByte(m_nearNodeColors);
+                mNearNodeColors = new byte[numNodes * 3];
+                mNearNodes.setColorRefByte(mNearNodeColors);
 
                 if (USE_NODE_SIZES) {
-                    m_middleNodeColors = new byte[numNodes * 3];
-                    m_middleNodes.setColorRefByte(m_middleNodeColors);
+                    mMiddleNodeColors = new byte[numNodes * 3];
+                    mMiddleNodes.setColorRefByte(mMiddleNodeColors);
 
-                    m_farNodeColors = new byte[numNodes * 3];
-                    m_farNodes.setColorRefByte(m_farNodeColors);
+                    mFarNodeColors = new byte[numNodes * 3];
+                    mFarNodes.setColorRefByte(mFarNodeColors);
                 }
             }
         }
@@ -110,14 +110,14 @@ public class H3PointRenderList
             }
 
             int numLinks = graph.getNumTreeLinks();
-            m_treeLinks = new LineArray(numLinks * 2, lineFormat);
-            m_treeLinkCoordinates = new double[numLinks * 3 * 2];
-            m_treeLinks.setCoordRefDouble(m_treeLinkCoordinates);
-            m_treeLinks.setValidVertexCount(0);
+            mTreeLinks = new LineArray(numLinks * 2, lineFormat);
+            mTreeLinkCoordinates = new double[numLinks * 3 * 2];
+            mTreeLinks.setCoordRefDouble(mTreeLinkCoordinates);
+            mTreeLinks.setValidVertexCount(0);
 
             if (INCLUDE_TREE_LINK_COLOR) {
-                m_treeLinkColors = new byte[numLinks * 3 * 2];
-                m_treeLinks.setColorRefByte(m_treeLinkColors);
+                mTreeLinkColors = new byte[numLinks * 3 * 2];
+                mTreeLinks.setColorRefByte(mTreeLinkColors);
             }
         }
 
@@ -128,14 +128,14 @@ public class H3PointRenderList
             }
 
             int numLinks = graph.getNumNontreeLinks();
-            m_nontreeLinks = new LineArray(numLinks * 2, lineFormat);
-            m_nontreeLinkCoordinates = new double[numLinks * 3 * 2];
-            m_nontreeLinks.setCoordRefDouble(m_nontreeLinkCoordinates);
-            m_nontreeLinks.setValidVertexCount(0);
+            mNontreeLinks = new LineArray(numLinks * 2, lineFormat);
+            mNontreeLinkCoordinates = new double[numLinks * 3 * 2];
+            mNontreeLinks.setCoordRefDouble(mNontreeLinkCoordinates);
+            mNontreeLinks.setValidVertexCount(0);
 
             if (INCLUDE_NONTREE_LINK_COLOR) {
-                m_nontreeLinkColors = new byte[numLinks * 3 * 2];
-                m_nontreeLinks.setColorRefByte(m_nontreeLinkColors);
+                mNontreeLinkColors = new byte[numLinks * 3 * 2];
+                mNontreeLinks.setColorRefByte(mNontreeLinkColors);
             }
         }
     }
@@ -145,177 +145,177 @@ public class H3PointRenderList
     ////////////////////////////////////////////////////////////////////////
 
     public void beginFrame() {
-        m_numNearNodesDisplayed = 0;
-        m_numMiddleNodesDisplayed = 0;
-        m_numFarNodesDisplayed = 0;
-        m_numTreeVerticesDisplayed = 0;
-        m_numNontreeVerticesDisplayed = 0;
+        mNumNearNodesDisplayed = 0;
+        mNumMiddleNodesDisplayed = 0;
+        mNumFarNodesDisplayed = 0;
+        mNumTreeVerticesDisplayed = 0;
+        mNumNontreeVerticesDisplayed = 0;
 
-        m_nearNodeIndex = 0;
-        m_middleNodeIndex = 0;
-        m_farNodeIndex = 0;
-        m_treeLinkIndex = 0;
-        m_nontreeLinkIndex = 0;
+        mNearNodeIndex = 0;
+        mMiddleNodeIndex = 0;
+        mFarNodeIndex = 0;
+        mTreeLinkIndex = 0;
+        mNontreeLinkIndex = 0;
 
-        m_nearNodeColorIndex = 0;
-        m_middleNodeColorIndex = 0;
-        m_farNodeColorIndex = 0;
-        m_treeLinkColorIndex = 0;
-        m_nontreeLinkColorIndex = 0;
+        mNearNodeColorIndex = 0;
+        mMiddleNodeColorIndex = 0;
+        mFarNodeColorIndex = 0;
+        mTreeLinkColorIndex = 0;
+        mNontreeLinkColorIndex = 0;
     }
 
     public void endFrame() {
-        if (m_numNearNodesDisplayed > 0) {
-            m_nearNodes.setValidVertexCount(m_numNearNodesDisplayed);
+        if (mNumNearNodesDisplayed > 0) {
+            mNearNodes.setValidVertexCount(mNumNearNodesDisplayed);
         }
 
-        if (m_numMiddleNodesDisplayed > 0) {
-            m_middleNodes.setValidVertexCount(m_numMiddleNodesDisplayed);
+        if (mNumMiddleNodesDisplayed > 0) {
+            mMiddleNodes.setValidVertexCount(mNumMiddleNodesDisplayed);
         }
 
-        if (m_numFarNodesDisplayed > 0) {
-            m_farNodes.setValidVertexCount(m_numFarNodesDisplayed);
+        if (mNumFarNodesDisplayed > 0) {
+            mFarNodes.setValidVertexCount(mNumFarNodesDisplayed);
         }
 
-        if (m_numTreeVerticesDisplayed > 0) {
-            m_treeLinks.setValidVertexCount(m_numTreeVerticesDisplayed);
+        if (mNumTreeVerticesDisplayed > 0) {
+            mTreeLinks.setValidVertexCount(mNumTreeVerticesDisplayed);
         }
 
-        if (m_numNontreeVerticesDisplayed > 0) {
-            m_nontreeLinks.setValidVertexCount(m_numNontreeVerticesDisplayed);
+        if (mNumNontreeVerticesDisplayed > 0) {
+            mNontreeLinks.setValidVertexCount(mNumNontreeVerticesDisplayed);
         }
     }
 
     public void addNode(int node) {
-        if (INCLUDE_NODES && m_graph.checkNodeVisible(node)) {
+        if (INCLUDE_NODES && mGraph.checkNodeVisible(node)) {
             double radius = 0.0;
-            m_graph.getNodeCoordinates(node, m_source);
+            mGraph.getNodeCoordinates(node, mSource);
 
             if (USE_NODE_SIZES) {
-                radius = m_graph.getNodeRadius(node);
+                radius = mGraph.getNodeRadius(node);
                 if (radius < FAR_NODES_THRESHOLD) {
-                    ++m_numFarNodesDisplayed;
-                    m_farNodeCoordinates[m_farNodeIndex++] = m_source.x;
-                    m_farNodeCoordinates[m_farNodeIndex++] = m_source.y;
-                    m_farNodeCoordinates[m_farNodeIndex++] = m_source.z;
+                    ++mNumFarNodesDisplayed;
+                    mFarNodeCoordinates[mFarNodeIndex++] = mSource.x;
+                    mFarNodeCoordinates[mFarNodeIndex++] = mSource.y;
+                    mFarNodeCoordinates[mFarNodeIndex++] = mSource.z;
                 } else if (radius < MIDDLE_NODES_THRESHOLD) {
-                    ++m_numMiddleNodesDisplayed;
-                    m_middleNodeCoordinates[m_middleNodeIndex++] = m_source.x;
-                    m_middleNodeCoordinates[m_middleNodeIndex++] = m_source.y;
-                    m_middleNodeCoordinates[m_middleNodeIndex++] = m_source.z;
+                    ++mNumMiddleNodesDisplayed;
+                    mMiddleNodeCoordinates[mMiddleNodeIndex++] = mSource.x;
+                    mMiddleNodeCoordinates[mMiddleNodeIndex++] = mSource.y;
+                    mMiddleNodeCoordinates[mMiddleNodeIndex++] = mSource.z;
                 } else {
-                    ++m_numNearNodesDisplayed;
-                    m_nearNodeCoordinates[m_nearNodeIndex++] = m_source.x;
-                    m_nearNodeCoordinates[m_nearNodeIndex++] = m_source.y;
-                    m_nearNodeCoordinates[m_nearNodeIndex++] = m_source.z;
+                    ++mNumNearNodesDisplayed;
+                    mNearNodeCoordinates[mNearNodeIndex++] = mSource.x;
+                    mNearNodeCoordinates[mNearNodeIndex++] = mSource.y;
+                    mNearNodeCoordinates[mNearNodeIndex++] = mSource.z;
                 }
             } else {
-                ++m_numNearNodesDisplayed;
-                m_nearNodeCoordinates[m_nearNodeIndex++] = m_source.x;
-                m_nearNodeCoordinates[m_nearNodeIndex++] = m_source.y;
-                m_nearNodeCoordinates[m_nearNodeIndex++] = m_source.z;
+                ++mNumNearNodesDisplayed;
+                mNearNodeCoordinates[mNearNodeIndex++] = mSource.x;
+                mNearNodeCoordinates[mNearNodeIndex++] = mSource.y;
+                mNearNodeCoordinates[mNearNodeIndex++] = mSource.z;
             }
 
             if (INCLUDE_NODE_COLOR) {
-                int color = m_graph.getNodeColor(node);
+                int color = mGraph.getNodeColor(node);
                 byte r = (byte) ((color >> 16) & 0xff);
                 byte g = (byte) ((color >> 8) & 0xff);
                 byte b = (byte) (color & 0xff);
 
                 if (USE_NODE_SIZES) {
                     if (radius < FAR_NODES_THRESHOLD) {
-                        m_farNodeColors[m_farNodeColorIndex++] = r;
-                        m_farNodeColors[m_farNodeColorIndex++] = g;
-                        m_farNodeColors[m_farNodeColorIndex++] = b;
+                        mFarNodeColors[mFarNodeColorIndex++] = r;
+                        mFarNodeColors[mFarNodeColorIndex++] = g;
+                        mFarNodeColors[mFarNodeColorIndex++] = b;
                     } else if (radius < MIDDLE_NODES_THRESHOLD) {
-                        m_middleNodeColors[m_middleNodeColorIndex++] = r;
-                        m_middleNodeColors[m_middleNodeColorIndex++] = g;
-                        m_middleNodeColors[m_middleNodeColorIndex++] = b;
+                        mMiddleNodeColors[mMiddleNodeColorIndex++] = r;
+                        mMiddleNodeColors[mMiddleNodeColorIndex++] = g;
+                        mMiddleNodeColors[mMiddleNodeColorIndex++] = b;
                     } else {
-                        m_nearNodeColors[m_nearNodeColorIndex++] = r;
-                        m_nearNodeColors[m_nearNodeColorIndex++] = g;
-                        m_nearNodeColors[m_nearNodeColorIndex++] = b;
+                        mNearNodeColors[mNearNodeColorIndex++] = r;
+                        mNearNodeColors[mNearNodeColorIndex++] = g;
+                        mNearNodeColors[mNearNodeColorIndex++] = b;
                     }
                 } else {
-                    m_nearNodeColors[m_nearNodeColorIndex++] = r;
-                    m_nearNodeColors[m_nearNodeColorIndex++] = g;
-                    m_nearNodeColors[m_nearNodeColorIndex++] = b;
+                    mNearNodeColors[mNearNodeColorIndex++] = r;
+                    mNearNodeColors[mNearNodeColorIndex++] = g;
+                    mNearNodeColors[mNearNodeColorIndex++] = b;
                 }
             }
         }
     }
 
     public void addTreeLink(int link) {
-        if (INCLUDE_TREE_LINKS && m_graph.checkLinkVisible(link)) {
-            int sourceNode = m_graph.getLinkSource(link);
-            int targetNode = m_graph.getLinkDestination(link);
+        if (INCLUDE_TREE_LINKS && mGraph.checkLinkVisible(link)) {
+            int sourceNode = mGraph.getLinkSource(link);
+            int targetNode = mGraph.getLinkDestination(link);
 
             if (SHOW_LINKS_OF_HIDDEN_NODES
-                    || (m_graph.checkNodeVisible(sourceNode)
-                    && m_graph.checkNodeVisible(targetNode))) {
-                m_numTreeVerticesDisplayed += 2;
+                    || (mGraph.checkNodeVisible(sourceNode)
+                    && mGraph.checkNodeVisible(targetNode))) {
+                mNumTreeVerticesDisplayed += 2;
 
-                m_graph.getNodeCoordinates(sourceNode, m_source);
-                m_treeLinkCoordinates[m_treeLinkIndex++] = m_source.x;
-                m_treeLinkCoordinates[m_treeLinkIndex++] = m_source.y;
-                m_treeLinkCoordinates[m_treeLinkIndex++] = m_source.z;
+                mGraph.getNodeCoordinates(sourceNode, mSource);
+                mTreeLinkCoordinates[mTreeLinkIndex++] = mSource.x;
+                mTreeLinkCoordinates[mTreeLinkIndex++] = mSource.y;
+                mTreeLinkCoordinates[mTreeLinkIndex++] = mSource.z;
 
-                m_graph.getNodeCoordinates(targetNode, m_target);
-                m_treeLinkCoordinates[m_treeLinkIndex++] = m_target.x;
-                m_treeLinkCoordinates[m_treeLinkIndex++] = m_target.y;
-                m_treeLinkCoordinates[m_treeLinkIndex++] = m_target.z;
+                mGraph.getNodeCoordinates(targetNode, mTarget);
+                mTreeLinkCoordinates[mTreeLinkIndex++] = mTarget.x;
+                mTreeLinkCoordinates[mTreeLinkIndex++] = mTarget.y;
+                mTreeLinkCoordinates[mTreeLinkIndex++] = mTarget.z;
 
                 if (INCLUDE_TREE_LINK_COLOR) {
-                    int color = m_graph.getLinkColor(link);
+                    int color = mGraph.getLinkColor(link);
                     byte r = (byte) ((color >> 16) & 0xff);
                     byte g = (byte) ((color >> 8) & 0xff);
                     byte b = (byte) (color & 0xff);
 
-                    m_treeLinkColors[m_treeLinkColorIndex++] = r;
-                    m_treeLinkColors[m_treeLinkColorIndex++] = g;
-                    m_treeLinkColors[m_treeLinkColorIndex++] = b;
+                    mTreeLinkColors[mTreeLinkColorIndex++] = r;
+                    mTreeLinkColors[mTreeLinkColorIndex++] = g;
+                    mTreeLinkColors[mTreeLinkColorIndex++] = b;
 
-                    m_treeLinkColors[m_treeLinkColorIndex++] = r;
-                    m_treeLinkColors[m_treeLinkColorIndex++] = g;
-                    m_treeLinkColors[m_treeLinkColorIndex++] = b;
+                    mTreeLinkColors[mTreeLinkColorIndex++] = r;
+                    mTreeLinkColors[mTreeLinkColorIndex++] = g;
+                    mTreeLinkColors[mTreeLinkColorIndex++] = b;
                 }
             }
         }
     }
 
     public void addNontreeLink(int link) {
-        if (INCLUDE_NONTREE_LINKS && m_graph.checkLinkVisible(link)) {
-            int sourceNode = m_graph.getLinkSource(link);
-            int targetNode = m_graph.getLinkDestination(link);
+        if (INCLUDE_NONTREE_LINKS && mGraph.checkLinkVisible(link)) {
+            int sourceNode = mGraph.getLinkSource(link);
+            int targetNode = mGraph.getLinkDestination(link);
 
             if (SHOW_LINKS_OF_HIDDEN_NODES
-                    || (m_graph.checkNodeVisible(sourceNode)
-                    && m_graph.checkNodeVisible(targetNode))) {
-                m_numNontreeVerticesDisplayed += 2;
+                    || (mGraph.checkNodeVisible(sourceNode)
+                    && mGraph.checkNodeVisible(targetNode))) {
+                mNumNontreeVerticesDisplayed += 2;
 
-                m_graph.getNodeCoordinates(sourceNode, m_source);
-                m_nontreeLinkCoordinates[m_nontreeLinkIndex++] = m_source.x;
-                m_nontreeLinkCoordinates[m_nontreeLinkIndex++] = m_source.y;
-                m_nontreeLinkCoordinates[m_nontreeLinkIndex++] = m_source.z;
+                mGraph.getNodeCoordinates(sourceNode, mSource);
+                mNontreeLinkCoordinates[mNontreeLinkIndex++] = mSource.x;
+                mNontreeLinkCoordinates[mNontreeLinkIndex++] = mSource.y;
+                mNontreeLinkCoordinates[mNontreeLinkIndex++] = mSource.z;
 
-                m_graph.getNodeCoordinates(targetNode, m_target);
-                m_nontreeLinkCoordinates[m_nontreeLinkIndex++] = m_target.x;
-                m_nontreeLinkCoordinates[m_nontreeLinkIndex++] = m_target.y;
-                m_nontreeLinkCoordinates[m_nontreeLinkIndex++] = m_target.z;
+                mGraph.getNodeCoordinates(targetNode, mTarget);
+                mNontreeLinkCoordinates[mNontreeLinkIndex++] = mTarget.x;
+                mNontreeLinkCoordinates[mNontreeLinkIndex++] = mTarget.y;
+                mNontreeLinkCoordinates[mNontreeLinkIndex++] = mTarget.z;
 
                 if (INCLUDE_NONTREE_LINK_COLOR) {
-                    int color = m_graph.getLinkColor(link);
+                    int color = mGraph.getLinkColor(link);
                     byte r = (byte) ((color >> 16) & 0xff);
                     byte g = (byte) ((color >> 8) & 0xff);
                     byte b = (byte) (color & 0xff);
 
-                    m_nontreeLinkColors[m_nontreeLinkColorIndex++] = r;
-                    m_nontreeLinkColors[m_nontreeLinkColorIndex++] = g;
-                    m_nontreeLinkColors[m_nontreeLinkColorIndex++] = b;
+                    mNontreeLinkColors[mNontreeLinkColorIndex++] = r;
+                    mNontreeLinkColors[mNontreeLinkColorIndex++] = g;
+                    mNontreeLinkColors[mNontreeLinkColorIndex++] = b;
 
-                    m_nontreeLinkColors[m_nontreeLinkColorIndex++] = r;
-                    m_nontreeLinkColors[m_nontreeLinkColorIndex++] = g;
-                    m_nontreeLinkColors[m_nontreeLinkColorIndex++] = b;
+                    mNontreeLinkColors[mNontreeLinkColorIndex++] = r;
+                    mNontreeLinkColors[mNontreeLinkColorIndex++] = g;
+                    mNontreeLinkColors[mNontreeLinkColorIndex++] = b;
                 }
             }
         }
@@ -328,24 +328,24 @@ public class H3PointRenderList
             System.out.println("render.begin[" + startTime + "]");
         }
 
-        if (m_numNearNodesDisplayed > 0) {
-            drawGeometry(gc, m_nearNodes, m_nearNodeAppearance);
+        if (mNumNearNodesDisplayed > 0) {
+            drawGeometry(gc, mNearNodes, mNearNodeAppearance);
         }
 
-        if (m_numMiddleNodesDisplayed > 0) {
-            drawGeometry(gc, m_middleNodes, m_middleNodeAppearance);
+        if (mNumMiddleNodesDisplayed > 0) {
+            drawGeometry(gc, mMiddleNodes, mMiddleNodeAppearance);
         }
 
-        if (m_numFarNodesDisplayed > 0) {
-            drawGeometry(gc, m_farNodes, m_farNodeAppearance);
+        if (mNumFarNodesDisplayed > 0) {
+            drawGeometry(gc, mFarNodes, mFarNodeAppearance);
         }
 
-        if (m_numTreeVerticesDisplayed > 0) {
-            drawGeometry(gc, m_treeLinks, m_treeLinkAppearance);
+        if (mNumTreeVerticesDisplayed > 0) {
+            drawGeometry(gc, mTreeLinks, mTreeLinkAppearance);
         }
 
-        if (m_numNontreeVerticesDisplayed > 0) {
-            drawGeometry(gc, m_nontreeLinks, m_nontreeLinkAppearance);
+        if (mNumNontreeVerticesDisplayed > 0) {
+            drawGeometry(gc, mNontreeLinks, mNontreeLinkAppearance);
         }
 
         if (DEBUG_PRINT) {
@@ -361,23 +361,23 @@ public class H3PointRenderList
     ////////////////////////////////////////////////////////////////////////
 
     public void setNearNodeAppearance(Appearance appearance) {
-        m_nearNodeAppearance = appearance;
+        mNearNodeAppearance = appearance;
     }
 
     public void setMiddleNodeAppearance(Appearance appearance) {
-        m_middleNodeAppearance = appearance;
+        mMiddleNodeAppearance = appearance;
     }
 
     public void setFarNodeAppearance(Appearance appearance) {
-        m_farNodeAppearance = appearance;
+        mFarNodeAppearance = appearance;
     }
 
     public void setTreeLinkAppearance(Appearance appearance) {
-        m_treeLinkAppearance = appearance;
+        mTreeLinkAppearance = appearance;
     }
 
     public void setNontreeLinkAppearance(Appearance appearance) {
-        m_nontreeLinkAppearance = appearance;
+        mNontreeLinkAppearance = appearance;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ public class H3PointRenderList
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private final H3Graph m_graph;
+    private final H3Graph mGraph;
 
     // These are set in the constructor.
     private final boolean USE_NODE_SIZES;
@@ -426,62 +426,62 @@ public class H3PointRenderList
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private Appearance m_nearNodeAppearance;
-    private Appearance m_middleNodeAppearance;
-    private Appearance m_farNodeAppearance;
-    private Appearance m_treeLinkAppearance;
-    private Appearance m_nontreeLinkAppearance;
+    private Appearance mNearNodeAppearance;
+    private Appearance mMiddleNodeAppearance;
+    private Appearance mFarNodeAppearance;
+    private Appearance mTreeLinkAppearance;
+    private Appearance mNontreeLinkAppearance;
 
-    private final Point3d m_source = new Point3d();  // scratch variable
-    private final Point3d m_target = new Point3d();  // scratch variable
+    private final Point3d mSource = new Point3d();  // scratch variable
+    private final Point3d mTarget = new Point3d();  // scratch variable
 
-    private int m_numNearNodesDisplayed;
-    private int m_numMiddleNodesDisplayed;
-    private int m_numFarNodesDisplayed;
-    private int m_numTreeVerticesDisplayed;
-    private int m_numNontreeVerticesDisplayed;
+    private int mNumNearNodesDisplayed;
+    private int mNumMiddleNodesDisplayed;
+    private int mNumFarNodesDisplayed;
+    private int mNumTreeVerticesDisplayed;
+    private int mNumNontreeVerticesDisplayed;
 
-    private int m_nearNodeIndex;
-    private int m_middleNodeIndex;
-    private int m_farNodeIndex;
-    private int m_treeLinkIndex;
-    private int m_nontreeLinkIndex;
+    private int mNearNodeIndex;
+    private int mMiddleNodeIndex;
+    private int mFarNodeIndex;
+    private int mTreeLinkIndex;
+    private int mNontreeLinkIndex;
 
-    private int m_nearNodeColorIndex;
-    private int m_middleNodeColorIndex;
-    private int m_farNodeColorIndex;
-    private int m_treeLinkColorIndex;
-    private int m_nontreeLinkColorIndex;
+    private int mNearNodeColorIndex;
+    private int mMiddleNodeColorIndex;
+    private int mFarNodeColorIndex;
+    private int mTreeLinkColorIndex;
+    private int mNontreeLinkColorIndex;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // This contains the colors of all nodes flattened into a single array.
     // The color of each node appears as consecutive r, g, and b values.
-    private byte[] m_nearNodeColors;
+    private byte[] mNearNodeColors;
 
     // This contains the coordinates of all nodes flattened into a single
     // array.  The coordinates of each node appear as consecutive x, y, and
     // z values.
-    private double[] m_nearNodeCoordinates;
+    private double[] mNearNodeCoordinates;
 
-    private PointArray m_nearNodes; // refs the above two arrays
+    private PointArray mNearNodes; // refs the above two arrays
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // See comments above for the set m_nearNodes, m_nearNodeColors, etc.
-    private byte[] m_middleNodeColors;
-    private double[] m_middleNodeCoordinates;
-    private PointArray m_middleNodes;
+    private byte[] mMiddleNodeColors;
+    private double[] mMiddleNodeCoordinates;
+    private PointArray mMiddleNodes;
 
-    private byte[] m_farNodeColors;
-    private double[] m_farNodeCoordinates;
-    private PointArray m_farNodes;
+    private byte[] mFarNodeColors;
+    private double[] mFarNodeCoordinates;
+    private PointArray mFarNodes;
 
-    private byte[] m_treeLinkColors;
-    private double[] m_treeLinkCoordinates;
-    private LineArray m_treeLinks;
+    private byte[] mTreeLinkColors;
+    private double[] mTreeLinkCoordinates;
+    private LineArray mTreeLinks;
 
-    private byte[] m_nontreeLinkColors;
-    private double[] m_nontreeLinkCoordinates;
-    private LineArray m_nontreeLinks;
+    private byte[] mNontreeLinkColors;
+    private double[] mNontreeLinkCoordinates;
+    private LineArray mNontreeLinks;
 }

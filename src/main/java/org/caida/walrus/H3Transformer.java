@@ -33,12 +33,12 @@ public class H3Transformer
 
     public H3Transformer(H3Graph graph, H3RenderQueue queue,
                          boolean transformNontreeLinks) {
-        m_visited = new int[graph.getNumNodes()];
-        m_startingNode = graph.getRootNode();
-        m_graph = graph;
-        m_renderQueue = queue;
-        m_transformQueue = new H3TransformQueue(graph.getNumNodes());
-        m_transformNontreeLinks = transformNontreeLinks;
+        mVisited = new int[graph.getNumNodes()];
+        mStartingNode = graph.getRootNode();
+        mGraph = graph;
+        mRenderQueue = queue;
+        mTransformQueue = new H3TransformQueue(graph.getNumNodes());
+        mTransformNontreeLinks = transformNontreeLinks;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -52,75 +52,75 @@ public class H3Transformer
                 System.out.println("Hyperbolic.transform()");
             }
 
-            if (m_graph.getNumNodes() > 0) {
-                ++m_iteration;
-                m_renderQueue.clear();
-                m_transformQueue.clear();
+            if (mGraph.getNumNodes() > 0) {
+                ++mIteration;
+                mRenderQueue.clear();
+                mTransformQueue.clear();
 
-                m_transformTemporary.mul(transform, m_transform);
-                m_transform.set(m_transformTemporary);
+                mTransformTemporary.mul(transform, mTransform);
+                mTransform.set(mTransformTemporary);
 
-                markNodeVisited(m_startingNode, m_iteration);
-                m_startingRadius = transformAndEnqueueNode(m_startingNode);
-                m_state = STATE_NODE;
+                markNodeVisited(mStartingNode, mIteration);
+                mStartingRadius = transformAndEnqueueNode(mStartingNode);
+                mState = STATE_NODE;
             } else {
-                m_renderQueue.clear();
-                m_renderQueue.end();
-                m_state = STATE_IDLE;
+                mRenderQueue.clear();
+                mRenderQueue.end();
+                mState = STATE_IDLE;
             }
         }
         endRequest();
     }
 
     public synchronized void transformNode(int node, Point4d p) {
-        m_graph.getNodeLayoutCoordinates(node, p);
-        m_transform.transform(p);
+        mGraph.getNodeLayoutCoordinates(node, p);
+        mTransform.transform(p);
     }
 
     // XXX: Why isn't this safeguarded with startRequest() .. endRequest()?
     public synchronized void pushPosition() {
         Position position = new Position();
-        position.startingNode = m_startingNode;
-        position.transform.set(m_transform);
+        position.startingNode = mStartingNode;
+        position.transform.set(mTransform);
 
-        m_savedPositions.add(position);
+        mSavedPositions.add(position);
     }
 
     public synchronized void popPosition() {
         startRequest();
         {
-            if (m_graph.getNumNodes() > 0) {
-                Position position = m_savedPositions.remove(m_savedPositions.size() - 1);
+            if (mGraph.getNumNodes() > 0) {
+                Position position = mSavedPositions.remove(mSavedPositions.size() - 1);
                 reinstatePosition(position);
             } else {
-                m_renderQueue.clear();
-                m_renderQueue.end();
-                m_state = STATE_IDLE;
+                mRenderQueue.clear();
+                mRenderQueue.end();
+                mState = STATE_IDLE;
             }
         }
         endRequest();
     }
 
     public synchronized void discardPosition() {
-        m_savedPositions.remove(m_savedPositions.size() - 1);
+        mSavedPositions.remove(mSavedPositions.size() - 1);
     }
 
     public synchronized Position getPosition() {
         Position retval = new Position();
-        retval.startingNode = m_startingNode;
-        retval.transform.set(m_transform);
+        retval.startingNode = mStartingNode;
+        retval.transform.set(mTransform);
         return retval;
     }
 
     public synchronized void setPosition(Position position) {
         startRequest();
         {
-            if (m_graph.getNumNodes() > 0) {
+            if (mGraph.getNumNodes() > 0) {
                 reinstatePosition(position);
             } else {
-                m_renderQueue.clear();
-                m_renderQueue.end();
-                m_state = STATE_IDLE;
+                mRenderQueue.clear();
+                mRenderQueue.end();
+                mState = STATE_IDLE;
             }
         }
         endRequest();
@@ -129,7 +129,7 @@ public class H3Transformer
     public synchronized void shutdown() {
         startRequest();
         {
-            m_state = STATE_SHUTDOWN;
+            mState = STATE_SHUTDOWN;
         }
         endRequest();
     }
@@ -143,15 +143,15 @@ public class H3Transformer
 
         while (true) {
             rendezvousWithRequests();
-            if (m_state == STATE_SHUTDOWN) {
+            if (mState == STATE_SHUTDOWN) {
                 System.out.println("H3Transformer exiting...");
                 return;
             }
 
-            m_numTransformed = 0;
-            while (m_state != STATE_IDLE
-                    && m_numTransformed < NUM_PER_ITERATION) {
-                switch (m_state) {
+            mNumTransformed = 0;
+            while (mState != STATE_IDLE
+                    && mNumTransformed < NUM_PER_ITERATION) {
+                switch (mState) {
                     case STATE_NODE:
                         if (DEBUG_PRINT) {
                             System.out.println("Hyperbolic.STATE_NODE");
@@ -178,16 +178,16 @@ public class H3Transformer
                     case STATE_IDLE:
                         //FALLTHROUGH
                     default:
-                        throw new RuntimeException("Invalid state: " + m_state);
+                        throw new RuntimeException("Invalid state: " + mState);
                 }
             }
 
-            if (m_numTransformed > 0) {
-                m_renderQueue.add(m_numTransformed, m_transformedData);
+            if (mNumTransformed > 0) {
+                mRenderQueue.add(mNumTransformed, mTransformedData);
             }
 
-            if (m_state == STATE_IDLE) {
-                m_renderQueue.end();
+            if (mState == STATE_IDLE) {
+                mRenderQueue.end();
             }
         }
     }
@@ -199,34 +199,34 @@ public class H3Transformer
     private void transformIdentity() {
         System.out.println("Hyperbolic.transformIdentity()");
 
-        if (m_graph.getNumNodes() > 0) {
-            ++m_iteration;
-            m_renderQueue.clear();
-            m_transformQueue.clear();
-            m_transform.setIdentity();
+        if (mGraph.getNumNodes() > 0) {
+            ++mIteration;
+            mRenderQueue.clear();
+            mTransformQueue.clear();
+            mTransform.setIdentity();
 
-            markNodeVisited(m_startingNode, m_iteration);
-            m_startingRadius = transformAndEnqueueNode(m_startingNode);
-            m_state = STATE_NODE;
+            markNodeVisited(mStartingNode, mIteration);
+            mStartingRadius = transformAndEnqueueNode(mStartingNode);
+            mState = STATE_NODE;
         } else {
-            m_renderQueue.clear();
-            m_renderQueue.end();
-            m_state = STATE_IDLE;
+            mRenderQueue.clear();
+            mRenderQueue.end();
+            mState = STATE_IDLE;
         }
     }
 
     // NOTE: This assumes that m_graph.getNumNodes() > 0.
     private synchronized void reinstatePosition(Position position) {
-        ++m_iteration;
-        m_renderQueue.clear();
-        m_transformQueue.clear();
+        ++mIteration;
+        mRenderQueue.clear();
+        mTransformQueue.clear();
 
-        m_startingNode = position.startingNode;
-        m_transform.set(position.transform);
+        mStartingNode = position.startingNode;
+        mTransform.set(position.transform);
 
-        markNodeVisited(m_startingNode, m_iteration);
-        m_startingRadius = transformAndEnqueueNode(m_startingNode);
-        m_state = STATE_NODE;
+        markNodeVisited(mStartingNode, mIteration);
+        mStartingRadius = transformAndEnqueueNode(mStartingNode);
+        mState = STATE_NODE;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -234,34 +234,34 @@ public class H3Transformer
     ////////////////////////////////////////////////////////////////////////
 
     private void beNodeState() {
-        if (m_transformQueue.isEmpty()) {
-            m_state = STATE_IDLE;
+        if (mTransformQueue.isEmpty()) {
+            mState = STATE_IDLE;
         } else {
-            m_currentNode = m_transformQueue.dequeue();
-            m_transformedData[m_numTransformed++] =
-                    ((long) H3RenderQueue.Element.TYPE_NODE << 32) | m_currentNode;
+            mCurrentNode = mTransformQueue.dequeue();
+            mTransformedData[mNumTransformed++] =
+                    ((long) H3RenderQueue.Element.TYPE_NODE << 32) | mCurrentNode;
 
-            checkCandidateForStarting(m_currentNode);
+            checkCandidateForStarting(mCurrentNode);
 
-            int parent = m_graph.getNodeParent(m_currentNode);
+            int parent = mGraph.getNodeParent(mCurrentNode);
             if (parent >= 0) {
                 transformAndEnqueueNodeIfNotVisited(parent);
             }
 
-            m_currentChildIndex = m_graph.getNodeChildIndex(m_currentNode);
-            m_currentNontreeIndex = m_graph.getNodeNontreeIndex(m_currentNode);
-            m_currentLinksEndIndex =
-                    m_graph.getNodeLinksEndIndex(m_currentNode);
+            mCurrentChildIndex = mGraph.getNodeChildIndex(mCurrentNode);
+            mCurrentNontreeIndex = mGraph.getNodeNontreeIndex(mCurrentNode);
+            mCurrentLinksEndIndex =
+                    mGraph.getNodeLinksEndIndex(mCurrentNode);
 
-            m_currentIndex = m_currentChildIndex;
+            mCurrentIndex = mCurrentChildIndex;
 
-            if (m_currentChildIndex < m_currentNontreeIndex) {
-                m_state = STATE_CHILD_LINK;
+            if (mCurrentChildIndex < mCurrentNontreeIndex) {
+                mState = STATE_CHILD_LINK;
             } else {
                 // Stay in STATE_NODE unless there are non-tree links.
-                if (m_transformNontreeLinks) {
-                    if (m_currentNontreeIndex < m_currentLinksEndIndex) {
-                        m_state = STATE_NONTREE_LINK;
+                if (mTransformNontreeLinks) {
+                    if (mCurrentNontreeIndex < mCurrentLinksEndIndex) {
+                        mState = STATE_NONTREE_LINK;
                     }
                 }
             }
@@ -269,18 +269,18 @@ public class H3Transformer
     }
 
     private void beChildLinkState() {
-        m_transformedData[m_numTransformed++] =
+        mTransformedData[mNumTransformed++] =
                 ((long) H3RenderQueue.Element.TYPE_TREE_LINK << 32)
-                        | m_currentIndex;
+                        | mCurrentIndex;
 
-        int child = m_graph.getLinkDestination(m_currentIndex);
+        int child = mGraph.getLinkDestination(mCurrentIndex);
         transformAndEnqueueNodeIfNotVisited(child);
 
-        if (++m_currentIndex == m_currentNontreeIndex) {
-            m_state = STATE_NODE;
-            if (m_transformNontreeLinks) {
-                if (m_currentNontreeIndex < m_currentLinksEndIndex) {
-                    m_state = STATE_NONTREE_LINK;
+        if (++mCurrentIndex == mCurrentNontreeIndex) {
+            mState = STATE_NODE;
+            if (mTransformNontreeLinks) {
+                if (mCurrentNontreeIndex < mCurrentLinksEndIndex) {
+                    mState = STATE_NONTREE_LINK;
                 }
             }
         }
@@ -288,28 +288,28 @@ public class H3Transformer
     }
 
     private void beNontreeLinkState() {
-        m_transformedData[m_numTransformed++] =
+        mTransformedData[mNumTransformed++] =
                 ((long) H3RenderQueue.Element.TYPE_NONTREE_LINK << 32)
-                        | m_currentIndex;
+                        | mCurrentIndex;
 
-        int target = m_graph.getLinkDestination(m_currentIndex);
+        int target = mGraph.getLinkDestination(mCurrentIndex);
         transformAndEnqueueNodeIfNotVisited(target);
 
-        if (++m_currentIndex == m_currentLinksEndIndex) {
-            m_state = STATE_NODE;
+        if (++mCurrentIndex == mCurrentLinksEndIndex) {
+            mState = STATE_NODE;
         }
         // else stay in STATE_NONTREE_LINK
     }
 
     private void transformAndEnqueueNodeIfNotVisited(int node) {
-        if (!markNodeVisited(node, m_iteration)) {
+        if (!markNodeVisited(node, mIteration)) {
             transformAndEnqueueNode(node);
         }
     }
 
     private double transformAndEnqueueNode(int node) {
         double radius = transformNode(node);
-        m_transformQueue.enqueue(node, radius);
+        mTransformQueue.enqueue(node, radius);
         return radius;
     }
 
@@ -318,32 +318,32 @@ public class H3Transformer
     // The two methods should be kept in sync to ensure a consistent display
     // when the user turns adaptive rendering on/off.
     private double transformNode(int node) {
-        m_graph.getNodeLayoutCoordinates(node, m_nodeCoordinates);
-        m_transform.transform(m_nodeCoordinates);
+        mGraph.getNodeLayoutCoordinates(node, mNodeCoordinates);
+        mTransform.transform(mNodeCoordinates);
 
-        double radius = H3Math.computeRadiusEuclidean(m_nodeCoordinates);
+        double radius = H3Math.computeRadiusEuclidean(mNodeCoordinates);
 
-        m_graph.setNodeRadius(node, radius);
-        m_graph.setNodeCoordinates(node, m_nodeCoordinates);
+        mGraph.setNodeRadius(node, radius);
+        mGraph.setNodeCoordinates(node, mNodeCoordinates);
         return radius;
     }
 
     private void checkCandidateForStarting(int node) {
-        double radius = m_graph.getNodeRadius(node);
-        if (radius > m_startingRadius) {
-            m_startingNode = node;
-            m_startingRadius = radius;
+        double radius = mGraph.getNodeRadius(node);
+        if (radius > mStartingRadius) {
+            mStartingNode = node;
+            mStartingRadius = radius;
         }
     }
 
     private boolean checkNodeVisited(int node, int iteration) {
-        return m_visited[node] == iteration;
+        return mVisited[node] == iteration;
     }
 
     private boolean markNodeVisited(int node, int iteration) {
-        boolean retval = (m_visited[node] == iteration);
+        boolean retval = mVisited[node] == iteration;
         if (!retval) {
-            m_visited[node] = iteration;
+            mVisited[node] = iteration;
         }
         return retval;
     }
@@ -353,26 +353,26 @@ public class H3Transformer
     ////////////////////////////////////////////////////////////////////////
 
     private synchronized void startRequest() {
-        ++m_numPendingRequests;
-        while (!m_isRequestTurn) {
+        ++mNumPendingRequests;
+        while (!mIsRequestTurn) {
             waitIgnore();
         }
-        --m_numPendingRequests;
+        --mNumPendingRequests;
     }
 
     private synchronized void endRequest() {
-        m_isRequestTurn = false;
+        mIsRequestTurn = false;
         notifyAll();
     }
 
     private synchronized void rendezvousWithRequests() {
-        if (m_state == STATE_IDLE || m_numPendingRequests > 0) {
+        if (mState == STATE_IDLE || mNumPendingRequests > 0) {
             do {
-                m_isRequestTurn = true;
+                mIsRequestTurn = true;
                 notifyAll();
                 waitIgnore();
             }
-            while (m_state == STATE_IDLE);
+            while (mState == STATE_IDLE);
         }
     }
 
@@ -395,41 +395,41 @@ public class H3Transformer
     private static final int STATE_CHILD_LINK = 3;
     private static final int STATE_NONTREE_LINK = 4;
 
-    private int m_state = STATE_IDLE;
+    private int mState = STATE_IDLE;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private int m_numPendingRequests = 0;
-    private boolean m_isRequestTurn = false;
+    private int mNumPendingRequests;
+    private boolean mIsRequestTurn;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private int m_iteration = 0;
+    private int mIteration;
     // Whether a node has been visited in "traversal iteration" t > 0.
-    private final int[] m_visited;
+    private final int[] mVisited;
 
-    private int m_startingNode; // Will be set to the root node in constructor.
-    private double m_startingRadius = 0.0;
+    private int mStartingNode; // Will be set to the root node in constructor.
+    private double mStartingRadius = 0.0;
 
-    private final boolean m_transformNontreeLinks;
+    private final boolean mTransformNontreeLinks;
 
-    private final H3Graph m_graph;
-    private final H3RenderQueue m_renderQueue;
-    private final H3TransformQueue m_transformQueue;
+    private final H3Graph mGraph;
+    private final H3RenderQueue mRenderQueue;
+    private final H3TransformQueue mTransformQueue;
 
-    private final Matrix4d m_transform = new Matrix4d();
+    private final Matrix4d mTransform = new Matrix4d();
 
-    private final List<Position> m_savedPositions =
-            new ArrayList<Position>(); // List<Position>
+    private final List<Position> mSavedPositions =
+            new ArrayList<>(); // List<Position>
 
-    private final Matrix4d m_transformTemporary = new Matrix4d(); // scratch
-    private final Point4d m_nodeCoordinates = new Point4d(); // scratch variable
+    private final Matrix4d mTransformTemporary = new Matrix4d(); // scratch
+    private final Point4d mNodeCoordinates = new Point4d(); // scratch variable
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private static final int NUM_PER_ITERATION = 100;
 
-    private int m_numTransformed = 0;
+    private int mNumTransformed;
 
     // A long in m_transformedData is a structure of two ints (a, b),
     // where ((a << 32) | b) equals the long, and has one of the following
@@ -442,15 +442,15 @@ public class H3Transformer
     // where TYPE_NODE, etc., are the constants defined in
     // H3RenderQueue.Element.
     //
-    private final long[] m_transformedData = new long[NUM_PER_ITERATION];
+    private final long[] mTransformedData = new long[NUM_PER_ITERATION];
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private int m_currentNode;
-    private int m_currentIndex;
-    private int m_currentChildIndex;
-    private int m_currentNontreeIndex;
-    private int m_currentLinksEndIndex;
+    private int mCurrentNode;
+    private int mCurrentIndex;
+    private int mCurrentChildIndex;
+    private int mCurrentNontreeIndex;
+    private int mCurrentLinksEndIndex;
 
     ////////////////////////////////////////////////////////////////////////
     // PUBLIC CLASSES

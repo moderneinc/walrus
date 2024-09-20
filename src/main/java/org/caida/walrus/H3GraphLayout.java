@@ -128,18 +128,18 @@ public class H3GraphLayout {
         int nontreeIndex = graph.getNodeNontreeIndex(node);
 
         if (childIndex < nontreeIndex) {
-            double HA_p = 0.0;
+            double hAP = 0.0;
 
             while (childIndex < nontreeIndex) {
                 int child = graph.getLinkDestination(childIndex);
                 computeRadiiSubtree(graph, layout, child);
-                HA_p += computeCircleArea(layout.radius[child]);
+                hAP += computeCircleArea(layout.radius[child]);
 
                 ++childIndex;
             }
 
-            HA_p *= HEMISPHERE_AREA_SCALE;
-            layout.radius[node] = computeRadius(HA_p);
+            hAP *= HEMISPHERE_AREA_SCALE;
+            layout.radius[node] = computeRadius(hAP);
         } else {
             layout.radius[node] = LEAF_RADIUS;
         }
@@ -249,12 +249,12 @@ public class H3GraphLayout {
                                     HyperbolicLayout layout,
                                     Children children,
                                     int node, int level) {
-        final boolean SUBTREE_3_AVG = false;
-        final boolean SUBTREE_3_CENTROID = true;
+        final boolean subtree3Avg = false;
+        final boolean subtree3Centroid = true;
 
-        final boolean SUBTREE_MORE_4 = true;
-        final boolean SUBTREE_MORE_4_AVG = false;
-        final boolean SUBTREE_MORE_4_CENTROID = true;
+        final boolean subtreeMore4 = true;
+        final boolean subtreeMore4Avg = false;
+        final boolean subtreeMore4Centroid = true;
 
         double rp = layout.radius[node];
 
@@ -277,10 +277,10 @@ public class H3GraphLayout {
             layout.phi[first.node] = totalPhi - firstPhi;
             layout.phi[second.node] = totalPhi - secondPhi;
 
-            double twist = ((level % 2) == 0 ? 0.0 : Math.PI / 2.0);
+            double twist = (level % 2) == 0 ? 0.0 : Math.PI / 2.0;
             layout.theta[first.node] = twist;
             layout.theta[second.node] = Math.PI + twist;
-        } else if (SUBTREE_3_AVG && numChildren == 3) {
+        } else if (subtree3Avg && numChildren == 3) {
             Children.Child second = children.getChild(1);
             Children.Child third = children.getChild(2);
 
@@ -289,10 +289,10 @@ public class H3GraphLayout {
             double dp3 = computeDeltaPhi(third.radius, rp);
 
             // FUDGE * ((dp1 + dp2) / 2 + (dp1 + dp3) / 2) / 2; etc. for rest
-            final double FUDGE = 1.0;
-            double firstPhi = FUDGE * 0.25 * (2.0 * dp1 + dp2 + dp3);
-            double secondPhi = FUDGE * 0.25 * (2.0 * dp2 + dp3 + dp1);
-            double thirdPhi = FUDGE * 0.25 * (2.0 * dp3 + dp1 + dp2);
+            final double fudge = 1.0;
+            double firstPhi = fudge * 0.25 * (2.0 * dp1 + dp2 + dp3);
+            double secondPhi = fudge * 0.25 * (2.0 * dp2 + dp3 + dp1);
+            double thirdPhi = fudge * 0.25 * (2.0 * dp3 + dp1 + dp2);
 
             double dt1 = computeDeltaTheta(first.radius, rp, dp1);
             double dt2 = computeDeltaTheta(second.radius, rp, dp2);
@@ -312,21 +312,21 @@ public class H3GraphLayout {
 
             layout.phi[third.node] = thirdPhi;
             layout.theta[third.node] = thirdTheta;
-        } else if (SUBTREE_3_CENTROID && numChildren == 3) {
+        } else if (subtree3Centroid && numChildren == 3) {
             Children.Child second = children.getChild(1);
             Children.Child third = children.getChild(2);
 
-            m_ternaryLayout.computeLayout(rp, first.radius, second.radius,
+            mTernaryLayout.computeLayout(rp, first.radius, second.radius,
                     third.radius);
 
-            layout.theta[first.node] = m_ternaryLayout.getThetaA();
-            layout.phi[first.node] = m_ternaryLayout.getPhiA();
+            layout.theta[first.node] = mTernaryLayout.getThetaA();
+            layout.phi[first.node] = mTernaryLayout.getPhiA();
 
-            layout.theta[second.node] = m_ternaryLayout.getThetaB();
-            layout.phi[second.node] = m_ternaryLayout.getPhiB();
+            layout.theta[second.node] = mTernaryLayout.getThetaB();
+            layout.phi[second.node] = mTernaryLayout.getPhiB();
 
-            layout.theta[third.node] = m_ternaryLayout.getThetaC();
-            layout.phi[third.node] = m_ternaryLayout.getPhiC();
+            layout.theta[third.node] = mTernaryLayout.getThetaC();
+            layout.phi[third.node] = mTernaryLayout.getPhiC();
         } else if (numChildren == 4) {
             Children.Child second = children.getChild(1);
             Children.Child third = children.getChild(2);
@@ -367,10 +367,10 @@ public class H3GraphLayout {
 
             layout.phi[fourth.node] = fourthPhi;
             layout.theta[fourth.node] = fourthTheta;
-        } else if (SUBTREE_MORE_4 && numChildren > 4) {
+        } else if (subtreeMore4 && numChildren > 4) {
             double capBottomPhi = 0.0;
 
-            if (SUBTREE_MORE_4_AVG) {
+            if (subtreeMore4Avg) {
                 Children.Child second = children.getChild(1);
                 Children.Child third = children.getChild(2);
 
@@ -406,21 +406,21 @@ public class H3GraphLayout {
                 capBottomPhi = Math.max(firstPhi + dp1,
                         Math.max(secondPhi + dp2,
                                 thirdPhi + dp3));
-            } else if (SUBTREE_MORE_4_CENTROID) {
+            } else if (subtreeMore4Centroid) {
                 Children.Child second = children.getChild(1);
                 Children.Child third = children.getChild(2);
 
-                m_ternaryLayout.computeLayout(rp, first.radius, second.radius,
+                mTernaryLayout.computeLayout(rp, first.radius, second.radius,
                         third.radius);
 
-                layout.theta[first.node] = m_ternaryLayout.getThetaA();
-                layout.phi[first.node] = m_ternaryLayout.getPhiA();
+                layout.theta[first.node] = mTernaryLayout.getThetaA();
+                layout.phi[first.node] = mTernaryLayout.getPhiA();
 
-                layout.theta[second.node] = m_ternaryLayout.getThetaB();
-                layout.phi[second.node] = m_ternaryLayout.getPhiB();
+                layout.theta[second.node] = mTernaryLayout.getThetaB();
+                layout.phi[second.node] = mTernaryLayout.getPhiB();
 
-                layout.theta[third.node] = m_ternaryLayout.getThetaC();
-                layout.phi[third.node] = m_ternaryLayout.getPhiC();
+                layout.theta[third.node] = mTernaryLayout.getThetaC();
+                layout.phi[third.node] = mTernaryLayout.getPhiC();
 
                 double dp1 = computeDeltaPhi(first.radius, rp);
                 double dp2 = computeDeltaPhi(second.radius, rp);
@@ -487,7 +487,7 @@ public class H3GraphLayout {
             spreadChildrenEvenly2(layout, children,
                     firstChildInBand, numChildren - 1, excess,
                     positiveTheta);
-        } else if (!SUBTREE_MORE_4 && numChildren > 4) {
+        } else if (!subtreeMore4 && numChildren > 4) {
             Children.Child second = children.getChild(1);
 
             // deltaPhi: half the phi angle subtended by the current band
@@ -553,7 +553,7 @@ public class H3GraphLayout {
             Children.Child child = children.getChild(first + i);
             layout.theta[child.node] += delta;
 
-            if (false && !positiveTheta) {
+            if (false) {
                 layout.theta[child.node] =
                         H3Math.TWO_PI - layout.theta[child.node];
             }
@@ -803,7 +803,7 @@ public class H3GraphLayout {
     private static final double LEAF_AREA = 0.005;
     private static final double LEAF_RADIUS = computeRadius(LEAF_AREA);
 
-    private final TernaryTreeLayout m_ternaryLayout = new TernaryTreeLayout();
+    private final TernaryTreeLayout mTernaryLayout = new TernaryTreeLayout();
 
     ////////////////////////////////////////////////////////////////////////
     // PRIVATE CLASSES (hyperbolic layout)
@@ -1020,7 +1020,7 @@ public class H3GraphLayout {
 
         private static final int INITIAL_CAPACITY = 50;
 
-        private int m_numChildren = 0;
+        private int m_numChildren;
         private Child[] m_children = new Child[INITIAL_CAPACITY];
 
         ////////////////////////////////////////////////////////////////////

@@ -35,10 +35,10 @@ public class H3AdaptivePicker
                             H3RenderQueue queue) {
         super(graph, canvas, parameters);
 
-        m_renderQueue = queue;
+        mRenderQueue = queue;
 
         int numNodes = graph.getNumNodes();
-        m_nodesInEye = new int[numNodes];
+        mNodesInEye = new int[numNodes];
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -46,8 +46,8 @@ public class H3AdaptivePicker
     ////////////////////////////////////////////////////////////////////////
 
     public void reset() {
-        m_numExaminedElements = 0;
-        m_numComputedPointsInEye = 0;
+        mNumExaminedElements = 0;
+        mNumComputedPointsInEye = 0;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -55,58 +55,58 @@ public class H3AdaptivePicker
     ////////////////////////////////////////////////////////////////////////
 
     protected void computePointsInEye() {
-        int currentNumElements = m_renderQueue.getCurrentNumElements();
-        if (m_numExaminedElements < currentNumElements) {
+        int currentNumElements = mRenderQueue.getCurrentNumElements();
+        if (mNumExaminedElements < currentNumElements) {
             if (DEBUG_PRINT) {
                 System.out.println("computing points in eye ...");
                 System.out.println("numExaminedElements = "
-                        + m_numExaminedElements);
+                        + mNumExaminedElements);
                 System.out.println("currentNumElements = "
                         + currentNumElements);
                 System.out.println("numComputedPointsInEye = "
-                        + m_numComputedPointsInEye);
+                        + mNumComputedPointsInEye);
             }
 
             Transform3D transform = m_parameters.getObjectToEyeTransform();
 
             Point3d p = new Point3d();
             H3RenderQueue.Element element = new H3RenderQueue.Element();
-            for (int i = m_numExaminedElements; i < currentNumElements; i++) {
-                m_renderQueue.get(i, element);
+            for (int i = mNumExaminedElements; i < currentNumElements; i++) {
+                mRenderQueue.get(i, element);
                 if (element.type == H3RenderQueue.Element.TYPE_NODE) {
-                    m_nodesInEye[m_numComputedPointsInEye] = element.data;
+                    mNodesInEye[mNumComputedPointsInEye] = element.data;
 
                     m_graph.getNodeCoordinates(element.data, p);
                     transform.transform(p);
 
-                    m_pointsInEyeX[m_numComputedPointsInEye] = p.x;
-                    m_pointsInEyeY[m_numComputedPointsInEye] = p.y;
-                    m_pointsInEyeZ[m_numComputedPointsInEye] = p.z;
+                    m_pointsInEyeX[mNumComputedPointsInEye] = p.x;
+                    m_pointsInEyeY[mNumComputedPointsInEye] = p.y;
+                    m_pointsInEyeZ[mNumComputedPointsInEye] = p.z;
 
-                    ++m_numComputedPointsInEye;
+                    ++mNumComputedPointsInEye;
                 }
             }
 
-            m_numExaminedElements = currentNumElements;
+            mNumExaminedElements = currentNumElements;
         }
     }
 
     protected int getNumComputedPointsInEye() {
-        return m_numComputedPointsInEye;
+        return mNumComputedPointsInEye;
     }
 
     protected int getNodeInEye(int index) {
-        return m_nodesInEye[index];
+        return mNodesInEye[index];
     }
 
     ////////////////////////////////////////////////////////////////////////
     // PRIVATE FIELDS
     ////////////////////////////////////////////////////////////////////////
 
-    private final H3RenderQueue m_renderQueue;
+    private final H3RenderQueue mRenderQueue;
 
-    private int m_numExaminedElements = 0;
-    private int m_numComputedPointsInEye = 0;
+    private int mNumExaminedElements;
+    private int mNumComputedPointsInEye;
 
-    private final int[] m_nodesInEye;
+    private final int[] mNodesInEye;
 }

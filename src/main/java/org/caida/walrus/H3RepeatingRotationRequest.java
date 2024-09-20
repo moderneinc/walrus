@@ -42,12 +42,12 @@ public class H3RepeatingRotationRequest
     }
 
     public synchronized void rotate(double h, double v) {
-        m_horizontal = h;
-        m_vertical = v;
+        mHorizontal = h;
+        mVertical = v;
     }
 
     public synchronized void end() {
-        m_isRotating = false;
+        mIsRotating = false;
         waitIgnore();
     }
 
@@ -56,10 +56,10 @@ public class H3RepeatingRotationRequest
     public synchronized boolean getRotation(Matrix4d rot) {
         boolean retval = false;
 
-        if (m_isRotating) {
-            m_rot.rotX(m_vertical);
-            rot.rotY(m_horizontal);
-            rot.mul(m_rot);
+        if (mIsRotating) {
+            mRot.rotX(mVertical);
+            rot.rotY(mHorizontal);
+            rot.mul(mRot);
             retval = true;
         } else {
             notifyAll(); // Wake up any thread waiting in end().
@@ -73,9 +73,9 @@ public class H3RepeatingRotationRequest
     ////////////////////////////////////////////////////////////////////////
 
     private void clear() {
-        m_isRotating = true;
-        m_horizontal = 0.0;
-        m_vertical = 0.0;
+        mIsRotating = true;
+        mHorizontal = 0.0;
+        mVertical = 0.0;
     }
 
     private synchronized void waitIgnore() {
@@ -89,9 +89,9 @@ public class H3RepeatingRotationRequest
     // PRIVATE FIELDS
     ////////////////////////////////////////////////////////////////////////
 
-    private boolean m_isRotating;
-    private double m_horizontal;
-    private double m_vertical;
+    private boolean mIsRotating;
+    private double mHorizontal;
+    private double mVertical;
 
-    private final Matrix4d m_rot = new Matrix4d();
+    private final Matrix4d mRot = new Matrix4d();
 }

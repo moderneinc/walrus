@@ -38,14 +38,14 @@ public class H3NonadaptiveRenderLoop
                                    boolean useNodeSizes) {
         USE_NODE_SIZES = useNodeSizes;
 
-        m_graph = graph;
-        m_canvas = canvas;
-        m_parameters = parameters;
-        m_renderList = renderList;
-        m_numNodes = graph.getNumNodes();
+        mGraph = graph;
+        mCanvas = canvas;
+        mParameters = parameters;
+        mRenderList = renderList;
+        mNumNodes = graph.getNumNodes();
 
-        m_picker = new H3NonadaptivePicker(graph, canvas, parameters);
-        m_translation.setIdentity();
+        mPicker = new H3NonadaptivePicker(graph, canvas, parameters);
+        mTranslation.setIdentity();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -60,14 +60,14 @@ public class H3NonadaptiveRenderLoop
     public synchronized void refreshDisplay() {
         startRequest();
         {
-            if (m_state == STATE_IDLE) {
+            if (mState == STATE_IDLE) {
                 if (DEBUG_PRINT) {
                     System.out.println("refreshing display ...");
                 }
 
-                m_parameters.refresh();
-                m_parameters.installDepthCueing();
-                m_state = STATE_REFRESH;
+                mParameters.refresh();
+                mParameters.installDepthCueing();
+                mState = STATE_REFRESH;
             }
         }
         endRequest();
@@ -78,9 +78,9 @@ public class H3NonadaptiveRenderLoop
         {
             if (DEBUG_PRINT) {
                 System.out.println("resizing display ("
-                        + STATE_NAMES[m_state] + ")");
+                        + STATE_NAMES[mState] + ")");
             }
-            m_picker.reset();
+            mPicker.reset();
         }
         endRequest();
     }
@@ -90,12 +90,12 @@ public class H3NonadaptiveRenderLoop
         {
             if (DEBUG_PRINT) {
                 System.out.println("rotating display ("
-                        + STATE_NAMES[m_state] + ")");
+                        + STATE_NAMES[mState] + ")");
             }
 
-            m_picker.reset();
-            m_rotationRequest = request;
-            m_state = STATE_ROTATE;
+            mPicker.reset();
+            mRotationRequest = request;
+            mState = STATE_ROTATE;
         }
         endRequest();
     }
@@ -105,9 +105,9 @@ public class H3NonadaptiveRenderLoop
 
         startRequest();
         {
-            if (m_state == STATE_IDLE) {
-                m_parameters.refresh(); // See comments for this elsewhere.
-                retval = m_picker.pickNode(x, y, center);
+            if (mState == STATE_IDLE) {
+                mParameters.refresh(); // See comments for this elsewhere.
+                retval = mPicker.pickNode(x, y, center);
             }
         }
         endRequest();
@@ -118,9 +118,9 @@ public class H3NonadaptiveRenderLoop
     public synchronized void highlightNode(int x, int y) {
         startRequest();
         {
-            if (m_state == STATE_IDLE) {
-                m_parameters.refresh(); // See comments for this elsewhere.
-                m_picker.highlightNode(x, y);
+            if (mState == STATE_IDLE) {
+                mParameters.refresh(); // See comments for this elsewhere.
+                mPicker.highlightNode(x, y);
             }
         }
         endRequest();
@@ -129,9 +129,9 @@ public class H3NonadaptiveRenderLoop
     public synchronized void highlightNode(int node) {
         startRequest();
         {
-            if (m_state == STATE_IDLE) {
-                m_parameters.refresh(); // See comments for this elsewhere.
-                m_picker.highlightNode(node);
+            if (mState == STATE_IDLE) {
+                mParameters.refresh(); // See comments for this elsewhere.
+                mPicker.highlightNode(node);
             }
         }
         endRequest();
@@ -144,9 +144,9 @@ public class H3NonadaptiveRenderLoop
                 System.out.println("translating to node " + node + " ...");
             }
 
-            m_picker.reset();
-            m_translationNode = node;
-            m_state = STATE_TRANSLATE;
+            mPicker.reset();
+            mTranslationNode = node;
+            mState = STATE_TRANSLATE;
         }
         endRequest();
     }
@@ -154,8 +154,8 @@ public class H3NonadaptiveRenderLoop
     public synchronized void saveDisplayPosition() {
         startRequest();
         {
-            m_parameters.saveObjectTransform();
-            m_savedTranslation.set(m_translation);
+            mParameters.saveObjectTransform();
+            mSavedTranslation.set(mTranslation);
         }
         endRequest();
     }
@@ -163,7 +163,7 @@ public class H3NonadaptiveRenderLoop
     public synchronized void discardDisplayPosition() {
         startRequest();
         {
-            m_parameters.discardObjectTransform();
+            mParameters.discardObjectTransform();
         }
         endRequest();
     }
@@ -171,13 +171,13 @@ public class H3NonadaptiveRenderLoop
     public synchronized void restoreDisplayPosition() {
         startRequest();
         {
-            m_picker.reset();
+            mPicker.reset();
 
-            m_parameters.restoreObjectTransform();
-            m_translation.set(m_savedTranslation);
-            m_graph.transformNodes(m_translation);
+            mParameters.restoreObjectTransform();
+            mTranslation.set(mSavedTranslation);
+            mGraph.transformNodes(mTranslation);
 
-            m_state = STATE_REFRESH;
+            mState = STATE_REFRESH;
         }
         endRequest();
     }
@@ -186,9 +186,9 @@ public class H3NonadaptiveRenderLoop
         H3DisplayPosition retval = null;
         startRequest();
         {
-            retval = new H3DisplayPosition(m_translationNode,
-                    m_parameters.getObjectTransform(),
-                    m_translation);
+            retval = new H3DisplayPosition(mTranslationNode,
+                    mParameters.getObjectTransform(),
+                    mTranslation);
         }
         endRequest();
         return retval;
@@ -197,13 +197,13 @@ public class H3NonadaptiveRenderLoop
     public synchronized void setDisplayPosition(H3DisplayPosition position) {
         startRequest();
         {
-            m_picker.reset();
+            mPicker.reset();
 
-            m_parameters.setObjectTransform(position.getRotation());
-            m_translation.set(position.getTranslation());
-            m_graph.transformNodes(m_translation);
+            mParameters.setObjectTransform(position.getRotation());
+            mTranslation.set(position.getTranslation());
+            mGraph.transformNodes(mTranslation);
 
-            m_state = STATE_REFRESH;
+            mState = STATE_REFRESH;
         }
         endRequest();
     }
@@ -211,7 +211,7 @@ public class H3NonadaptiveRenderLoop
     public synchronized void shutdown() {
         startRequest();
         {
-            m_state = STATE_SHUTDOWN;
+            mState = STATE_SHUTDOWN;
         }
         endRequest();
     }
@@ -220,7 +220,7 @@ public class H3NonadaptiveRenderLoop
     // running H3AdaptiveRenderLoop to enter the monitor as needed in order
     // to run to completion.
     public void waitForShutdown() {
-        while (!m_isShutdown) {
+        while (!mIsShutdown) {
             waitForShutdownEvent();
         }
     }
@@ -233,9 +233,9 @@ public class H3NonadaptiveRenderLoop
         while (true) {
             // This is necessary since Java3D isn't prompt in updating the
             // various view transformations after a window changes size.
-            m_parameters.refresh();
+            mParameters.refresh();
 
-            switch (m_state) {
+            switch (mState) {
                 case STATE_SHUTDOWN:
                     if (DEBUG_PRINT) {
                         System.out.println("STATE_SHUTDOWN");
@@ -273,7 +273,7 @@ public class H3NonadaptiveRenderLoop
                     break;
 
                 default:
-                    throw new RuntimeException("Invalid state: " + m_state);
+                    throw new RuntimeException("Invalid state: " + mState);
             }
         }
     }
@@ -287,12 +287,12 @@ public class H3NonadaptiveRenderLoop
     }
 
     private synchronized void synchShutdownState() {
-        m_isShutdown = true;
+        mIsShutdown = true;
 
-        m_isWaiting = false;
-        m_isRequestTurn = true;
+        mIsWaiting = false;
+        mIsRequestTurn = true;
 
-        if (m_numPendingRequests > 0) {
+        if (mNumPendingRequests > 0) {
             notifyAll();
         }
     }
@@ -304,15 +304,15 @@ public class H3NonadaptiveRenderLoop
     }
 
     private synchronized void synchIdleState() {
-        while (m_state == STATE_IDLE) {
+        while (mState == STATE_IDLE) {
             if (DEBUG_PRINT) {
                 System.out.println("synchIdleState() waiting ...");
             }
 
-            m_isWaiting = true;
-            m_isRequestTurn = true;
+            mIsWaiting = true;
+            mIsRequestTurn = true;
 
-            if (m_numPendingRequests > 0) {
+            if (mNumPendingRequests > 0) {
                 notifyAll();
             }
 
@@ -324,11 +324,11 @@ public class H3NonadaptiveRenderLoop
 
     private void beRotateState() {
         Matrix4d rot = new Matrix4d();
-        while (m_rotationRequest.getRotation(rot)) {
+        while (mRotationRequest.getRotation(rot)) {
             rotate(rot);
         }
 
-        m_state = STATE_IDLE;
+        mState = STATE_IDLE;
     }
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,7 +339,7 @@ public class H3NonadaptiveRenderLoop
 
         boolean more = true;
         while (more) {
-            m_graph.getNodeCoordinates(m_translationNode, source);
+            mGraph.getNodeCoordinates(mTranslationNode, source);
             double sourceLength = H3Math.vectorLength(source);
 
             if (sourceLength > TRANSLATION_THRESHOLD) {
@@ -371,19 +371,19 @@ public class H3NonadaptiveRenderLoop
         }
 
         if (DEBUG_PRINT) {
-            m_graph.getNodeCoordinates(m_translationNode, source);
+            mGraph.getNodeCoordinates(mTranslationNode, source);
             source.project(source);
             System.out.println("FINAL source = " + source);
         }
 
-        m_state = STATE_IDLE;
+        mState = STATE_IDLE;
     }
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private void beRefreshState() {
         refresh();
-        m_state = STATE_IDLE;
+        mState = STATE_IDLE;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -397,16 +397,16 @@ public class H3NonadaptiveRenderLoop
             System.out.println("rotate.begin[" + startTime + "]");
         }
 
-        m_parameters.extendObjectTransform(rot);
+        mParameters.extendObjectTransform(rot);
 
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
         gc.clear();
         {
-            m_parameters.drawAxes(gc);
-            m_parameters.putModelTransform(gc);
+            mParameters.drawAxes(gc);
+            mParameters.putModelTransform(gc);
             render(gc);
         }
-        m_canvas.swap();
+        mCanvas.swap();
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -428,19 +428,19 @@ public class H3NonadaptiveRenderLoop
         Matrix4d translation =
                 H3Transform.buildTranslation(source, destination);
 
-        translation.mul(m_translation);
-        m_translation.set(translation);
+        translation.mul(mTranslation);
+        mTranslation.set(translation);
 
-        m_graph.transformNodes(m_translation);
+        mGraph.transformNodes(mTranslation);
 
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
         gc.clear();
         {
-            m_parameters.drawAxes(gc);
-            m_parameters.putModelTransform(gc);
+            mParameters.drawAxes(gc);
+            mParameters.putModelTransform(gc);
             render(gc);
         }
-        m_canvas.swap();
+        mCanvas.swap();
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -459,14 +459,14 @@ public class H3NonadaptiveRenderLoop
             System.out.println("refresh.begin[" + startTime + "]");
         }
 
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
         gc.clear();
         {
-            m_parameters.drawAxes(gc);
-            m_parameters.putModelTransform(gc);
+            mParameters.drawAxes(gc);
+            mParameters.putModelTransform(gc);
             render(gc);
         }
-        m_canvas.swap();
+        mCanvas.swap();
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -479,30 +479,30 @@ public class H3NonadaptiveRenderLoop
     //======================================================================
 
     private void render(GraphicsContext3D gc) {
-        m_renderList.beginFrame();
+        mRenderList.beginFrame();
         {
-            for (int i = 0; i < m_numNodes; i++) {
+            for (int i = 0; i < mNumNodes; i++) {
                 if (USE_NODE_SIZES) {
                     computeNodeRadius(i);
                 }
 
-                m_renderList.addNode(i);
+                mRenderList.addNode(i);
 
-                int childIndex = m_graph.getNodeChildIndex(i);
-                int nontreeIndex = m_graph.getNodeNontreeIndex(i);
-                int endIndex = m_graph.getNodeLinksEndIndex(i);
+                int childIndex = mGraph.getNodeChildIndex(i);
+                int nontreeIndex = mGraph.getNodeNontreeIndex(i);
+                int endIndex = mGraph.getNodeLinksEndIndex(i);
 
                 for (int j = childIndex; j < nontreeIndex; j++) {
-                    m_renderList.addTreeLink(j);
+                    mRenderList.addTreeLink(j);
                 }
 
                 for (int j = nontreeIndex; j < endIndex; j++) {
-                    m_renderList.addNontreeLink(j);
+                    mRenderList.addNontreeLink(j);
                 }
             }
         }
-        m_renderList.endFrame();
-        m_renderList.render(gc);
+        mRenderList.endFrame();
+        mRenderList.render(gc);
     }
 
     // The same radius calculation is done in
@@ -510,10 +510,10 @@ public class H3NonadaptiveRenderLoop
     // The two methods should be kept in sync to ensure a consistent display
     // when the user turns adaptive rendering on/off.
     private void computeNodeRadius(int node) {
-        m_graph.getNodeCoordinates(node, m_nodeCoordinates);
+        mGraph.getNodeCoordinates(node, mNodeCoordinates);
 
-        double radius = H3Math.computeRadiusEuclidean(m_nodeCoordinates);
-        m_graph.setNodeRadius(node, radius);
+        double radius = H3Math.computeRadiusEuclidean(mNodeCoordinates);
+        mGraph.setNodeRadius(node, radius);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -521,7 +521,7 @@ public class H3NonadaptiveRenderLoop
     ////////////////////////////////////////////////////////////////////////
 
     private synchronized void waitForShutdownEvent() {
-        if (!m_isShutdown) {
+        if (!mIsShutdown) {
             // Block till the next rendezvous point.
             startRequest();
             endRequest();
@@ -529,17 +529,17 @@ public class H3NonadaptiveRenderLoop
     }
 
     private synchronized void startRequest() {
-        ++m_numPendingRequests;
-        while (!m_isRequestTurn) {
+        ++mNumPendingRequests;
+        while (!mIsRequestTurn) {
             waitIgnore();
         }
-        --m_numPendingRequests;
+        --mNumPendingRequests;
     }
 
     private synchronized void endRequest() {
-        m_isRequestTurn = false;
+        mIsRequestTurn = false;
 
-        if (m_numPendingRequests > 0 || m_isWaiting) {
+        if (mNumPendingRequests > 0 || mIsWaiting) {
             notifyAll();
         }
     }
@@ -578,24 +578,24 @@ public class H3NonadaptiveRenderLoop
     // as H3PointRenderList expects the radii in H3Graph to be up-to-date.
     private final boolean USE_NODE_SIZES;
 
-    private int m_state = STATE_IDLE;
-    private int m_numPendingRequests = 0;
-    private boolean m_isRequestTurn = false;
-    private boolean m_isWaiting = false;
+    private int mState = STATE_IDLE;
+    private int mNumPendingRequests;
+    private boolean mIsRequestTurn;
+    private boolean mIsWaiting;
 
-    private boolean m_isShutdown = false;
+    private boolean mIsShutdown;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private final H3Graph m_graph;
-    private final H3Canvas3D m_canvas;
-    private final H3ViewParameters m_parameters;
-    private final H3RenderList m_renderList;
-    private final H3NonadaptivePicker m_picker;
-    private final int m_numNodes;
-    private H3RotationRequest m_rotationRequest;
+    private final H3Graph mGraph;
+    private final H3Canvas3D mCanvas;
+    private final H3ViewParameters mParameters;
+    private final H3RenderList mRenderList;
+    private final H3NonadaptivePicker mPicker;
+    private final int mNumNodes;
+    private H3RotationRequest mRotationRequest;
 
-    private final Point4d m_nodeCoordinates = new Point4d(); // scratch variable
+    private final Point4d mNodeCoordinates = new Point4d(); // scratch variable
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -603,10 +603,10 @@ public class H3NonadaptiveRenderLoop
     private static final double TRANSLATION_THRESHOLD =
             1.0 - TRANSLATION_STEP_DISTANCE;
 
-    private int m_translationNode;
-    private final Matrix4d m_translation = new Matrix4d();
+    private int mTranslationNode;
+    private final Matrix4d mTranslation = new Matrix4d();
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private final Matrix4d m_savedTranslation = new Matrix4d();
+    private final Matrix4d mSavedTranslation = new Matrix4d();
 }

@@ -188,29 +188,29 @@ public class H3Transform {
     // dest point.  From p. 212 of Phillips and Gunn paper:
     //   translate(source,dest)  =  reflect(midpoint) . reflect(source)
     public static Matrix4d buildTranslation(Point4d source, Point4d dest) {
-        double aa_h = H3Math.minkowski(source, source);
-        double bb_h = H3Math.minkowski(dest, dest);
-        double ab_h = H3Math.minkowski(source, dest);
-        double sourceScale = Math.sqrt(bb_h * ab_h);
-        double destScale = Math.sqrt(aa_h * ab_h);
+        double aaH = H3Math.minkowski(source, source);
+        double bbH = H3Math.minkowski(dest, dest);
+        double abH = H3Math.minkowski(source, dest);
+        double sourceScale = Math.sqrt(bbH * abH);
+        double destScale = Math.sqrt(aaH * abH);
         Point4d midpoint = new Point4d();
         midpoint.x = sourceScale * source.x + destScale * dest.x;
         midpoint.y = sourceScale * source.y + destScale * dest.y;
         midpoint.z = sourceScale * source.z + destScale * dest.z;
         midpoint.w = sourceScale * source.w + destScale * dest.w;
 
-        Matrix4d r_a = buildReflection(source);
-        Matrix4d r_m = buildReflection(midpoint);
-        r_m.mul(r_a);
-        return r_m;
+        Matrix4d rA = buildReflection(source);
+        Matrix4d rM = buildReflection(midpoint);
+        rM.mul(rA);
+        return rM;
     }
 
     public static H3Matrix4d buildTranslation(H3Point4d source, H3Point4d dest) {
-        MPReal aa_h = source.minkowski(source);
-        MPReal bb_h = dest.minkowski(dest);
-        MPReal ab_h = source.minkowski(dest);
-        MPReal sourceScale = bb_h.multiply(ab_h).sqrt();
-        MPReal destScale = aa_h.multiply(ab_h).sqrt();
+        MPReal aaH = source.minkowski(source);
+        MPReal bbH = dest.minkowski(dest);
+        MPReal abH = source.minkowski(dest);
+        MPReal sourceScale = bbH.multiply(abH).sqrt();
+        MPReal destScale = aaH.multiply(abH).sqrt();
         H3Point4d midpoint = new H3Point4d();
         midpoint.x =
                 sourceScale.multiply(source.x).add(destScale.multiply(dest.x));
@@ -221,10 +221,10 @@ public class H3Transform {
         midpoint.w =
                 sourceScale.multiply(source.w).add(destScale.multiply(dest.w));
 
-        H3Matrix4d r_a = buildReflection(source);
-        H3Matrix4d r_m = buildReflection(midpoint);
-        r_m.mul(r_a);
-        return r_m;
+        H3Matrix4d rA = buildReflection(source);
+        H3Matrix4d rM = buildReflection(midpoint);
+        rM.mul(rA);
+        return rM;
     }
 
     // Build a 4x4 matrix for hyperbolic reflection across point p.  From
@@ -252,8 +252,8 @@ public class H3Transform {
                 xz, yz, zz, -zw,
                 xw, yw, zw, -ww);
 
-        double pp_h = xx + yy + zz - ww;
-        ppTI31.mul(-2.0 / pp_h);
+        double ppH = xx + yy + zz - ww;
+        ppTI31.mul(-2.0 / ppH);
 
         ppTI31.m00 += 1.0;
         ppTI31.m11 += 1.0;
@@ -283,8 +283,8 @@ public class H3Transform {
                 xz, yz, zz, zw.negate(),
                 xw, yw, zw, ww.negate());
 
-        MPReal pp_h = xx.add(yy).add(zz).subtract(ww);
-        ppTI31.mul(new MPReal(-2.0).divide(pp_h));
+        MPReal ppH = xx.add(yy).add(zz).subtract(ww);
+        ppTI31.mul(new MPReal(-2.0).divide(ppH));
 
         MPReal one = new MPReal(1.0);
         ppTI31.m00 = ppTI31.m00.add(one);
@@ -333,12 +333,12 @@ public class H3Transform {
         a.project(a4);
         b.project(b4);
 
-        Point3d a_minus_b = new Point3d();
-        a_minus_b.sub(a, b);
+        Point3d aMinusB = new Point3d();
+        aMinusB.sub(a, b);
 
-        double p = H3Math.dotProduct(a, a_minus_b);
-        double q = H3Math.dotProduct(b, a_minus_b);
-        double r = H3Math.dotProduct(a_minus_b, a_minus_b);
+        double p = H3Math.dotProduct(a, aMinusB);
+        double q = H3Math.dotProduct(b, aMinusB);
+        double r = H3Math.dotProduct(aMinusB, aMinusB);
 
         return new Point4d(p * b.x - q * a.x,
                 p * b.y - q * a.y,
@@ -353,12 +353,12 @@ public class H3Transform {
         a.project(a4);
         b.project(b4);
 
-        H3Point4d a_minus_b = new H3Point4d(a);
-        a_minus_b.sub(b);
+        H3Point4d aMinusB = new H3Point4d(a);
+        aMinusB.sub(b);
 
-        MPReal p = a.vectorDot3(a_minus_b);
-        MPReal q = b.vectorDot3(a_minus_b);
-        MPReal r = a_minus_b.vectorDot3(a_minus_b);
+        MPReal p = a.vectorDot3(aMinusB);
+        MPReal q = b.vectorDot3(aMinusB);
+        MPReal r = aMinusB.vectorDot3(aMinusB);
 
         MPReal pbx = p.multiply(b.x);
         MPReal qax = q.multiply(a.x);
