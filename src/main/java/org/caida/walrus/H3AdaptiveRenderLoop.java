@@ -35,13 +35,13 @@ public class H3AdaptiveRenderLoop
                                 H3Transformer transformer,
                                 H3RenderQueue queue,
                                 H3AdaptiveRenderer renderer) {
-        m_graph = graph;
-        m_canvas = canvas;
-        m_parameters = parameters;
-        m_transformer = transformer;
-        m_renderer = renderer;
+        mGraph = graph;
+        mCanvas = canvas;
+        mParameters = parameters;
+        mTransformer = transformer;
+        mRenderer = renderer;
 
-        m_picker = new H3AdaptivePicker(graph, canvas, parameters, queue);
+        mPicker = new H3AdaptivePicker(graph, canvas, parameters, queue);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -56,16 +56,16 @@ public class H3AdaptiveRenderLoop
     public synchronized void refreshDisplay() {
         startRequest();
         {
-            if (m_state == STATE_IDLE || m_state == STATE_COMPLETE) {
+            if (mState == STATE_IDLE || mState == STATE_COMPLETE) {
                 if (DEBUG_PRINT) {
                     System.out.print("[" + Thread.currentThread().getName()
                             + "]: ");
                     System.out.println("refreshing display ...");
                 }
 
-                m_parameters.refresh();
-                m_parameters.installDepthCueing();
-                m_state = STATE_REFRESH;
+                mParameters.refresh();
+                mParameters.installDepthCueing();
+                mState = STATE_REFRESH;
             }
         }
         endRequest();
@@ -76,9 +76,9 @@ public class H3AdaptiveRenderLoop
         {
             if (DEBUG_PRINT) {
                 System.out.println("resizing display ("
-                        + STATE_NAMES[m_state] + ")");
+                        + STATE_NAMES[mState] + ")");
             }
-            m_picker.reset();
+            mPicker.reset();
         }
         endRequest();
     }
@@ -88,12 +88,12 @@ public class H3AdaptiveRenderLoop
         {
             if (DEBUG_PRINT) {
                 System.out.println("rotating display ("
-                        + STATE_NAMES[m_state] + ")");
+                        + STATE_NAMES[mState] + ")");
             }
 
-            m_picker.reset();
-            m_rotationRequest = request;
-            m_state = STATE_ROTATE;
+            mPicker.reset();
+            mRotationRequest = request;
+            mState = STATE_ROTATE;
         }
         endRequest();
     }
@@ -103,9 +103,9 @@ public class H3AdaptiveRenderLoop
 
         startRequest();
         {
-            if (m_state == STATE_IDLE || m_state == STATE_COMPLETE) {
-                m_parameters.refresh(); // See comments for this elsewhere.
-                retval = m_picker.pickNode(x, y, center);
+            if (mState == STATE_IDLE || mState == STATE_COMPLETE) {
+                mParameters.refresh(); // See comments for this elsewhere.
+                retval = mPicker.pickNode(x, y, center);
             }
         }
         endRequest();
@@ -116,9 +116,9 @@ public class H3AdaptiveRenderLoop
     public synchronized void highlightNode(int x, int y) {
         startRequest();
         {
-            if (m_state == STATE_IDLE || m_state == STATE_COMPLETE) {
-                m_parameters.refresh(); // See comments for this elsewhere.
-                m_picker.highlightNode(x, y);
+            if (mState == STATE_IDLE || mState == STATE_COMPLETE) {
+                mParameters.refresh(); // See comments for this elsewhere.
+                mPicker.highlightNode(x, y);
             }
         }
         endRequest();
@@ -127,9 +127,9 @@ public class H3AdaptiveRenderLoop
     public synchronized void highlightNode(int node) {
         startRequest();
         {
-            if (m_state == STATE_IDLE || m_state == STATE_COMPLETE) {
-                m_parameters.refresh(); // See comments for this elsewhere.
-                m_picker.highlightNode(node);
+            if (mState == STATE_IDLE || mState == STATE_COMPLETE) {
+                mParameters.refresh(); // See comments for this elsewhere.
+                mPicker.highlightNode(node);
             }
         }
         endRequest();
@@ -142,9 +142,9 @@ public class H3AdaptiveRenderLoop
                 System.out.println("translating to node " + node + " ...");
             }
 
-            m_picker.reset();
-            m_translationNode = node;
-            m_state = STATE_TRANSLATE;
+            mPicker.reset();
+            mTranslationNode = node;
+            mState = STATE_TRANSLATE;
         }
         endRequest();
     }
@@ -152,8 +152,8 @@ public class H3AdaptiveRenderLoop
     public synchronized void saveDisplayPosition() {
         startRequest();
         {
-            m_parameters.saveObjectTransform();
-            m_transformer.pushPosition();
+            mParameters.saveObjectTransform();
+            mTransformer.pushPosition();
         }
         endRequest();
     }
@@ -161,9 +161,9 @@ public class H3AdaptiveRenderLoop
     public synchronized void discardDisplayPosition() {
         startRequest();
         {
-            if (!m_restoreDisplayRequested) {
-                m_parameters.discardObjectTransform();
-                m_transformer.discardPosition();
+            if (!mRestoreDisplayRequested) {
+                mParameters.discardObjectTransform();
+                mTransformer.discardPosition();
             }
         }
         endRequest();
@@ -172,7 +172,7 @@ public class H3AdaptiveRenderLoop
     public synchronized void restoreDisplayPosition() {
         startRequest();
         {
-            m_restoreDisplayRequested = true;
+            mRestoreDisplayRequested = true;
         }
         endRequest();
     }
@@ -181,9 +181,9 @@ public class H3AdaptiveRenderLoop
         H3DisplayPosition retval;
         startRequest();
         {
-            H3Transformer.Position position = m_transformer.getPosition();
+            H3Transformer.Position position = mTransformer.getPosition();
             retval = new H3DisplayPosition(position.startingNode,
-                    m_parameters.getObjectTransform(),
+                    mParameters.getObjectTransform(),
                     position.transform);
         }
         endRequest();
@@ -193,8 +193,8 @@ public class H3AdaptiveRenderLoop
     public synchronized void setDisplayPosition(H3DisplayPosition position) {
         startRequest();
         {
-            m_displayPosition = position;
-            m_restoreDisplayRequested = true;
+            mDisplayPosition = position;
+            mRestoreDisplayRequested = true;
         }
         endRequest();
     }
@@ -202,7 +202,7 @@ public class H3AdaptiveRenderLoop
     public synchronized void shutdown() {
         startRequest();
         {
-            m_state = STATE_SHUTDOWN;
+            mState = STATE_SHUTDOWN;
         }
         endRequest();
     }
@@ -211,7 +211,7 @@ public class H3AdaptiveRenderLoop
     // running H3AdaptiveRenderLoop to enter the monitor as needed in order
     // to run to completion.
     public void waitForShutdown() {
-        while (!m_isShutdown) {
+        while (!mIsShutdown) {
             waitForShutdownEvent();
         }
     }
@@ -219,7 +219,7 @@ public class H3AdaptiveRenderLoop
     public synchronized void setMaxRotationDuration(long max) {
         startRequest();
         {
-            m_maxRotationDuration = max;
+            mMaxRotationDuration = max;
         }
         endRequest();
     }
@@ -227,7 +227,7 @@ public class H3AdaptiveRenderLoop
     public synchronized void setMaxTranslationDuration(long max) {
         startRequest();
         {
-            m_maxTranslationDuration = max;
+            mMaxTranslationDuration = max;
         }
         endRequest();
     }
@@ -235,21 +235,21 @@ public class H3AdaptiveRenderLoop
     public synchronized void setMaxCompletionDuration(long max) {
         startRequest();
         {
-            m_maxCompletionDuration = max;
+            mMaxCompletionDuration = max;
         }
         endRequest();
     }
 
     public synchronized long getMaxRotationDuration() {
-        return m_maxRotationDuration;
+        return mMaxRotationDuration;
     }
 
     public synchronized long getMaxTranslationDuration() {
-        return m_maxTranslationDuration;
+        return mMaxTranslationDuration;
     }
 
     public synchronized long getMaxCompletionDuration() {
-        return m_maxCompletionDuration;
+        return mMaxCompletionDuration;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -260,14 +260,14 @@ public class H3AdaptiveRenderLoop
         while (true) {
             // This is necessary since Java3D isn't prompt in updating the
             // various view transformations after a window changes size.
-            m_parameters.refresh();
+            mParameters.refresh();
 
             if (DEBUG_PRINT) {
                 System.out.print("[" + Thread.currentThread().getName()
                         + "]: ");
             }
 
-            switch (m_state) {
+            switch (mState) {
                 case STATE_SHUTDOWN:
                     if (DEBUG_PRINT) {
                         System.out.println("STATE_SHUTDOWN");
@@ -319,7 +319,7 @@ public class H3AdaptiveRenderLoop
                     break;
 
                 default:
-                    throw new RuntimeException("Invalid state: " + m_state);
+                    throw new RuntimeException("Invalid state: " + mState);
             }
         }
     }
@@ -333,13 +333,13 @@ public class H3AdaptiveRenderLoop
     }
 
     private synchronized void synchShutdownState() {
-        m_transformer.shutdown();
-        m_isShutdown = true;
+        mTransformer.shutdown();
+        mIsShutdown = true;
 
-        m_isWaiting = false;
-        m_isRequestTurn = true;
+        mIsWaiting = false;
+        mIsRequestTurn = true;
 
-        if (m_numPendingRequests > 0) {
+        if (mNumPendingRequests > 0) {
             notifyAll();
         }
     }
@@ -351,52 +351,52 @@ public class H3AdaptiveRenderLoop
     }
 
     private synchronized void synchIdleState() {
-        while (m_state == STATE_IDLE) {
+        while (mState == STATE_IDLE) {
             if (DEBUG_PRINT) {
                 System.out.print("[" + Thread.currentThread().getName()
                         + "]: ");
                 System.out.println("synchIdleState() waiting ...");
             }
 
-            if (m_restoreDisplayRequested) {
+            if (mRestoreDisplayRequested) {
                 if (DEBUG_PRINT) {
                     System.out.print("[" + Thread.currentThread().getName()
                             + "]: ");
                     System.out.println("restoring display ...");
                 }
 
-                m_restoreDisplayRequested = false;
-                m_picker.reset();
-                m_renderer.reset();
+                mRestoreDisplayRequested = false;
+                mPicker.reset();
+                mRenderer.reset();
 
-                if (m_displayPosition == null) {
-                    m_parameters.restoreObjectTransform();
-                    m_transformer.popPosition();
+                if (mDisplayPosition == null) {
+                    mParameters.restoreObjectTransform();
+                    mTransformer.popPosition();
                 } else {
-                    m_parameters.setObjectTransform
-                            (m_displayPosition.getRotation());
+                    mParameters.setObjectTransform
+                            (mDisplayPosition.getRotation());
 
                     H3Transformer.Position position =
                             new H3Transformer.Position();
-                    position.startingNode = m_displayPosition.getCenterNode();
-                    position.transform.set(m_displayPosition.getTranslation());
-                    m_transformer.setPosition(position);
+                    position.startingNode = mDisplayPosition.getCenterNode();
+                    position.transform.set(mDisplayPosition.getTranslation());
+                    mTransformer.setPosition(position);
 
-                    m_displayPosition = null;
+                    mDisplayPosition = null;
                 }
 
-                GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+                GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
                 gc.clear();
-                m_parameters.drawAxes(gc);
-                m_parameters.putModelTransform(gc);
-                m_canvas.swap();
+                mParameters.drawAxes(gc);
+                mParameters.putModelTransform(gc);
+                mCanvas.swap();
 
-                m_state = STATE_COMPLETE_INIT;
+                mState = STATE_COMPLETE_INIT;
             } else {
-                m_isWaiting = true;
-                m_isRequestTurn = true;
+                mIsWaiting = true;
+                mIsRequestTurn = true;
 
-                if (m_numPendingRequests > 0) {
+                if (mNumPendingRequests > 0) {
                     notifyAll();
                 }
 
@@ -408,30 +408,30 @@ public class H3AdaptiveRenderLoop
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private void beRotateState() {
-        m_renderer.reset();
-        m_renderer.setMaxDuration(m_maxRotationDuration);
+        mRenderer.reset();
+        mRenderer.setMaxDuration(mMaxRotationDuration);
 
         Matrix4d rot = new Matrix4d();
-        while (m_rotationRequest.getRotation(rot)) {
+        while (mRotationRequest.getRotation(rot)) {
             rotate(rot);
         }
 
-        m_state = STATE_COMPLETE_INIT;
+        mState = STATE_COMPLETE_INIT;
     }
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private void beTranslateState() {
-        m_renderer.reset();
-        m_renderer.setMaxDuration(m_maxTranslationDuration);
+        mRenderer.reset();
+        mRenderer.setMaxDuration(mMaxTranslationDuration);
 
         Point4d source = new Point4d();
         Point4d destination = new Point4d();
 
-        m_graph.getNodeCoordinates(m_translationNode, source);
+        mGraph.getNodeCoordinates(mTranslationNode, source);
 
         Point4d initialSource = new Point4d(source);
-        m_transformer.pushPosition();
+        mTransformer.pushPosition();
 
         boolean more = true;
         while (more) {
@@ -467,72 +467,72 @@ public class H3AdaptiveRenderLoop
         }
 
         if (DEBUG_PRINT) {
-            m_graph.getNodeCoordinates(m_translationNode, source);
+            mGraph.getNodeCoordinates(mTranslationNode, source);
             source.project(source);
             System.out.println("FINAL source = " + source);
         }
 
-        m_transformer.popPosition();
+        mTransformer.popPosition();
         translate(initialSource, H3Transform.ORIGIN4);
 
-        m_state = STATE_COMPLETE_INIT;
+        mState = STATE_COMPLETE_INIT;
     }
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private void beRefreshState() {
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
-        m_parameters.putModelTransform(gc);
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
+        mParameters.putModelTransform(gc);
         gc.setBufferOverride(true);
         gc.setFrontBufferRendering(true);
         gc.clear();
 
-        m_parameters.drawAxes(gc);
-        m_parameters.putModelTransform(gc);
-        m_renderer.reset();
+        mParameters.drawAxes(gc);
+        mParameters.putModelTransform(gc);
+        mRenderer.reset();
 
-        m_state = STATE_COMPLETE;
+        mState = STATE_COMPLETE;
     }
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private void beCompleteInitState() {
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
-        m_parameters.putModelTransform(gc);
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
+        mParameters.putModelTransform(gc);
         gc.setBufferOverride(true);
         gc.setFrontBufferRendering(true);
-        m_state = STATE_COMPLETE;
+        mState = STATE_COMPLETE;
     }
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     private void beCompleteState() {
-        m_renderer.setMaxDuration(m_maxCompletionDuration);
+        mRenderer.setMaxDuration(mMaxCompletionDuration);
 
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
-        while (m_state == STATE_COMPLETE) {
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
+        while (mState == STATE_COMPLETE) {
             if (synchCompleteState()) {
-                m_renderer.refine(gc);
+                mRenderer.refine(gc);
             }
         }
     }
 
     private synchronized boolean synchCompleteState() {
-        if (m_numPendingRequests > 0) {
+        if (mNumPendingRequests > 0) {
             if (DEBUG_PRINT) {
                 System.out.print("[" + Thread.currentThread().getName()
                         + "]: ");
                 System.out.println("synchCompleteState() waiting ...");
-                System.out.println("(" + m_numPendingRequests +
+                System.out.println("(" + mNumPendingRequests +
                         " request(s) pending)");
             }
 
-            m_isRequestTurn = true;
+            mIsRequestTurn = true;
             notifyAll();
 
-            m_isWaiting = true;
+            mIsWaiting = true;
             waitIgnore();
-            m_isWaiting = false;
+            mIsWaiting = false;
         }
 
         if (DEBUG_PRINT) {
@@ -540,17 +540,17 @@ public class H3AdaptiveRenderLoop
             System.out.println("synchCompleteState() running ...");
         }
 
-        if (m_state == STATE_COMPLETE && m_renderer.isFinished()) {
-            m_state = STATE_IDLE;
+        if (mState == STATE_COMPLETE && mRenderer.isFinished()) {
+            mState = STATE_IDLE;
         }
 
-        if (m_state != STATE_COMPLETE) {
-            GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+        if (mState != STATE_COMPLETE) {
+            GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
             gc.setBufferOverride(true);
             gc.setFrontBufferRendering(false);
         }
 
-        return m_state == STATE_COMPLETE;
+        return mState == STATE_COMPLETE;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -564,16 +564,16 @@ public class H3AdaptiveRenderLoop
             System.out.println("rotate.begin[" + startTime + "]");
         }
 
-        m_parameters.extendObjectTransform(rot);
+        mParameters.extendObjectTransform(rot);
 
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
         gc.clear();
         {
-            m_parameters.drawAxes(gc);
-            m_parameters.putModelTransform(gc);
-            m_renderer.render(gc);
+            mParameters.drawAxes(gc);
+            mParameters.putModelTransform(gc);
+            mRenderer.render(gc);
         }
-        m_canvas.swap();
+        mCanvas.swap();
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -595,22 +595,22 @@ public class H3AdaptiveRenderLoop
         Matrix4d translation =
                 H3Transform.buildTranslation(source, destination);
 
-        m_transformer.transform(translation);
-        m_transformer.transformNode(m_translationNode, source);
+        mTransformer.transform(translation);
+        mTransformer.transformNode(mTranslationNode, source);
 
         if (DEBUG_PRINT) {
             source.project(source);
             System.out.println("source transformed = " + source);
         }
 
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
         gc.clear();
         {
-            m_parameters.drawAxes(gc);
-            m_parameters.putModelTransform(gc);
-            m_renderer.render(gc);
+            mParameters.drawAxes(gc);
+            mParameters.putModelTransform(gc);
+            mRenderer.render(gc);
         }
-        m_canvas.swap();
+        mCanvas.swap();
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -625,7 +625,7 @@ public class H3AdaptiveRenderLoop
     ////////////////////////////////////////////////////////////////////////
 
     private synchronized void waitForShutdownEvent() {
-        if (!m_isShutdown) {
+        if (!mIsShutdown) {
             // Block till the next rendezvous point.
             startRequest();
             endRequest();
@@ -633,17 +633,17 @@ public class H3AdaptiveRenderLoop
     }
 
     private synchronized void startRequest() {
-        ++m_numPendingRequests;
-        while (!m_isRequestTurn) {
+        ++mNumPendingRequests;
+        while (!mIsRequestTurn) {
             waitIgnore();
         }
-        --m_numPendingRequests;
+        --mNumPendingRequests;
     }
 
     private synchronized void endRequest() {
-        m_isRequestTurn = false;
+        mIsRequestTurn = false;
 
-        if (m_numPendingRequests > 0 || m_isWaiting) {
+        if (mNumPendingRequests > 0 || mIsWaiting) {
             notifyAll();
         }
     }
@@ -678,29 +678,29 @@ public class H3AdaptiveRenderLoop
             "STATE_REFRESH", "STATE_COMPLETE_INIT", "STATE_COMPLETE"
     };
 
-    private int m_state = STATE_IDLE;
-    private int m_numPendingRequests = 0;
-    private boolean m_isRequestTurn = false;
-    private boolean m_isWaiting = false;
+    private int mState = STATE_IDLE;
+    private int mNumPendingRequests;
+    private boolean mIsRequestTurn;
+    private boolean mIsWaiting;
 
-    private boolean m_isShutdown = false;
-
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    private final H3Graph m_graph;
-    private final H3Canvas3D m_canvas;
-    private final H3Transformer m_transformer;
-    private final H3AdaptiveRenderer m_renderer;
-    private final H3ViewParameters m_parameters;
-    private final H3AdaptivePicker m_picker;
+    private boolean mIsShutdown;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private long m_maxRotationDuration = Long.MAX_VALUE;
-    private long m_maxTranslationDuration = Long.MAX_VALUE;
-    private long m_maxCompletionDuration = Long.MAX_VALUE;
+    private final H3Graph mGraph;
+    private final H3Canvas3D mCanvas;
+    private final H3Transformer mTransformer;
+    private final H3AdaptiveRenderer mRenderer;
+    private final H3ViewParameters mParameters;
+    private final H3AdaptivePicker mPicker;
 
-    private H3RotationRequest m_rotationRequest;
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    private long mMaxRotationDuration = Long.MAX_VALUE;
+    private long mMaxTranslationDuration = Long.MAX_VALUE;
+    private long mMaxCompletionDuration = Long.MAX_VALUE;
+
+    private H3RotationRequest mRotationRequest;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -709,10 +709,10 @@ public class H3AdaptiveRenderLoop
     private static final double TRANSLATION_THRESHOLD =
             1.0 - TRANSLATION_STEP_DISTANCE;
 
-    private int m_translationNode;
+    private int mTranslationNode;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private boolean m_restoreDisplayRequested;
-    private H3DisplayPosition m_displayPosition;
+    private boolean mRestoreDisplayRequested;
+    private H3DisplayPosition mDisplayPosition;
 }

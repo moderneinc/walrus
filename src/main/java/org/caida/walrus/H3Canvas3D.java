@@ -39,21 +39,21 @@ public class H3Canvas3D
     }
 
     public void addPaintObserver(Observer o) {
-        m_observable.addObserver(o);
+        mObservable.addObserver(o);
     }
 
     public void removePaintObserver(Observer o) {
-        m_observable.deleteObserver(o);
+        mObservable.deleteObserver(o);
     }
 
     public void paint(Graphics g) {
         super.paint(g);
-        m_observable.notifyPaintObservers();
+        mObservable.notifyPaintObservers();
     }
 
     //=======================================================================
 
-    private final PaintObservable m_observable = new PaintObservable();
+    private final PaintObservable mObservable = new PaintObservable();
 
     private class PaintObservable extends Observable {
         public PaintObservable() {

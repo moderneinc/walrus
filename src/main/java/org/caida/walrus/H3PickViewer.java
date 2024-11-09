@@ -39,16 +39,16 @@ public class H3PickViewer {
         Transform3D translation = new Transform3D();
         translation.set(t);
 
-        Transform3D transform = new Transform3D(m_imageToVworld);
+        Transform3D transform = new Transform3D(mImageToVworld);
         transform.mul(translation);
 
         gc.setModelTransform(transform);
-        gc.draw(m_axes);
-        gc.draw(m_circle);
+        gc.draw(mAxes);
+        gc.draw(mCircle);
     }
 
     public void setImageToVworldTransform(Transform3D transform) {
-        m_imageToVworld.set(transform);
+        mImageToVworld.set(transform);
     }
 
     // ===================================================================
@@ -72,7 +72,7 @@ public class H3PickViewer {
         lines.setCoordinate(2, new Point3d(0.0, -radius, 0.0));
         lines.setCoordinate(3, new Point3d(0.0, radius, 0.0));
 
-        m_axes = new Shape3D(lines, appearance);
+        mAxes = new Shape3D(lines, appearance);
     }
 
     private void createCircle(double radius) {
@@ -97,7 +97,7 @@ public class H3PickViewer {
                 GeometryArray.COORDINATES,
                 stripLengths);
         xyLines.setCoordinates(0, xyPoints);
-        m_circle = new Shape3D(xyLines, appearance);
+        mCircle = new Shape3D(xyLines, appearance);
     }
 
     private Point3f[] createXYCircleCoordinates(float radius, int numSegments) {
@@ -119,8 +119,8 @@ public class H3PickViewer {
 
     private static final boolean ANTIALIASING = false;
 
-    private final Transform3D m_imageToVworld = new Transform3D();
+    private final Transform3D mImageToVworld = new Transform3D();
 
-    private Shape3D m_axes;
-    private Shape3D m_circle;
+    private Shape3D mAxes;
+    private Shape3D mCircle;
 }

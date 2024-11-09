@@ -37,37 +37,37 @@ public class H3Axes {
     public void draw(GraphicsContext3D gc, Transform3D transform) {
         gc.setModelTransform(transform);
 
-        gc.setAppearance(m_axisAppearance);
-        gc.draw(m_axes);
+        gc.setAppearance(mAxisAppearance);
+        gc.draw(mAxes);
 
-        gc.setAppearance(m_circleAppearance);
-        gc.draw(m_xyCircle);
-        gc.draw(m_yzCircle);
-        gc.draw(m_xzCircle);
+        gc.setAppearance(mCircleAppearance);
+        gc.draw(mXyCircle);
+        gc.draw(mYzCircle);
+        gc.draw(mXzCircle);
 
         drawAxisLabels(gc, transform);
     }
 
     public void setAxisAppearance(Appearance appearance) {
-        m_axisAppearance = appearance;
+        mAxisAppearance = appearance;
     }
 
     public void setCircleAppearance(Appearance appearance) {
-        m_circleAppearance = appearance;
+        mCircleAppearance = appearance;
     }
 
     public void setAxisColor(float r, float g, float b) {
         ColoringAttributes attributes =
                 new ColoringAttributes(r, g, b, ColoringAttributes.FASTEST);
 
-        m_axisAppearance.setColoringAttributes(attributes);
+        mAxisAppearance.setColoringAttributes(attributes);
     }
 
     public void setCircleColor(float r, float g, float b) {
         ColoringAttributes attributes =
                 new ColoringAttributes(r, g, b, ColoringAttributes.FASTEST);
 
-        m_circleAppearance.setColoringAttributes(attributes);
+        mCircleAppearance.setColoringAttributes(attributes);
     }
 
     // ===================================================================
@@ -85,32 +85,32 @@ public class H3Axes {
         coordinates[5] = new Point3d(0.0, 0.0, radius);
         axisGeometry.setCoordinates(0, coordinates);
 
-        m_axes = axisGeometry;
+        mAxes = axisGeometry;
     }
 
     private void createAxisLabels() {
         {
-            m_xT3D = new Transform3D();
-            m_xT3D.setScale(0.01);
-            m_xT3D.setTranslation(new Vector3d(1.0, 0.0, 0.0));
+            mXT3D = new Transform3D();
+            mXT3D.setScale(0.01);
+            mXT3D.setTranslation(new Vector3d(1.0, 0.0, 0.0));
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Text3D xLabel = createText3D("X");
             Appearance xAppearance =
                     createLabelAppearance(new Color3f(0.5f, 0.1f, 0.1f));
-            m_xLabel = new Shape3D(xLabel, xAppearance);
+            mXLabel = new Shape3D(xLabel, xAppearance);
         }
 
         {
-            m_yT3D = new Transform3D();
-            m_yT3D.setScale(0.01);
-            m_yT3D.setTranslation(new Vector3d(0.0, 1.0, 0.0));
+            mYT3D = new Transform3D();
+            mYT3D.setScale(0.01);
+            mYT3D.setTranslation(new Vector3d(0.0, 1.0, 0.0));
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Text3D yLabel = createText3D("Y");
             Appearance yAppearance =
                     createLabelAppearance(new Color3f(0.1f, 0.5f, 0.1f));
-            m_yLabel = new Shape3D(yLabel, yAppearance);
+            mYLabel = new Shape3D(yLabel, yAppearance);
         }
 
         {
@@ -122,7 +122,7 @@ public class H3Axes {
             m.set(0.01, new Vector3d(0.0, 0.0, 1.0));  // (scale, translation)
             m.mul(rot);
 
-            m_zT3D = new Transform3D(m);
+            mZT3D = new Transform3D(m);
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Text3D zLabel = createText3D("Z");
@@ -130,30 +130,30 @@ public class H3Axes {
 
             Appearance zAppearance =
                     createLabelAppearance(new Color3f(0.1f, 0.1f, 0.5f));
-            m_zLabel = new Shape3D(zLabel, zAppearance);
+            mZLabel = new Shape3D(zLabel, zAppearance);
         }
     }
 
     private void drawAxisLabels(GraphicsContext3D gc, Transform3D transform) {
         {
             Transform3D xT3D = new Transform3D(transform);
-            xT3D.mul(m_xT3D);
+            xT3D.mul(mXT3D);
             gc.setModelTransform(xT3D);
-            gc.draw(m_xLabel);
+            gc.draw(mXLabel);
         }
 
         {
             Transform3D yT3D = new Transform3D(transform);
-            yT3D.mul(m_yT3D);
+            yT3D.mul(mYT3D);
             gc.setModelTransform(yT3D);
-            gc.draw(m_yLabel);
+            gc.draw(mYLabel);
         }
 
         {
             Transform3D zT3D = new Transform3D(transform);
-            zT3D.mul(m_zT3D);
+            zT3D.mul(mZT3D);
             gc.setModelTransform(zT3D);
-            gc.draw(m_zLabel);
+            gc.draw(mZLabel);
         }
     }
 
@@ -167,7 +167,7 @@ public class H3Axes {
                     GeometryArray.COORDINATES,
                     stripLengths);
             xyLines.setCoordinates(0, xyPoints);
-            m_xyCircle = xyLines;
+            mXyCircle = xyLines;
         }
 
         {
@@ -183,7 +183,7 @@ public class H3Axes {
                     GeometryArray.COORDINATES,
                     stripLengths);
             yzLines.setCoordinates(0, yzPoints);
-            m_yzCircle = yzLines;
+            mYzCircle = yzLines;
         }
 
         {
@@ -199,7 +199,7 @@ public class H3Axes {
                     GeometryArray.COORDINATES,
                     stripLengths);
             xzLines.setCoordinates(0, xzPoints);
-            m_xzCircle = xzLines;
+            mXzCircle = xzLines;
         }
     }
 
@@ -243,9 +243,9 @@ public class H3Axes {
                     new ColoringAttributes(0.3f, 0.6f, 0.3f,
                             ColoringAttributes.FASTEST);
 
-            m_axisAppearance = new Appearance();
-            m_axisAppearance.setLineAttributes(lineAttributes);
-            m_axisAppearance.setColoringAttributes(coloringAttributes);
+            mAxisAppearance = new Appearance();
+            mAxisAppearance.setLineAttributes(lineAttributes);
+            mAxisAppearance.setColoringAttributes(coloringAttributes);
         }
 
         {
@@ -256,9 +256,9 @@ public class H3Axes {
                     new ColoringAttributes(0.3f, 0.6f, 0.3f,
                             ColoringAttributes.FASTEST);
 
-            m_circleAppearance = new Appearance();
-            m_circleAppearance.setLineAttributes(lineAttributes);
-            m_circleAppearance.setColoringAttributes(coloringAttributes);
+            mCircleAppearance = new Appearance();
+            mCircleAppearance.setLineAttributes(lineAttributes);
+            mCircleAppearance.setColoringAttributes(coloringAttributes);
         }
     }
 
@@ -266,16 +266,16 @@ public class H3Axes {
 
     private static final boolean ANTIALIASING = false;
 
-    private Geometry m_axes;
-    private Geometry m_xyCircle;
-    private Geometry m_yzCircle;
-    private Geometry m_xzCircle;
-    private Shape3D m_xLabel;
-    private Shape3D m_yLabel;
-    private Shape3D m_zLabel;
-    private Transform3D m_xT3D;
-    private Transform3D m_yT3D;
-    private Transform3D m_zT3D;
-    private Appearance m_axisAppearance;
-    private Appearance m_circleAppearance;
+    private Geometry mAxes;
+    private Geometry mXyCircle;
+    private Geometry mYzCircle;
+    private Geometry mXzCircle;
+    private Shape3D mXLabel;
+    private Shape3D mYLabel;
+    private Shape3D mZLabel;
+    private Transform3D mXT3D;
+    private Transform3D mYT3D;
+    private Transform3D mZT3D;
+    private Appearance mAxisAppearance;
+    private Appearance mCircleAppearance;
 }

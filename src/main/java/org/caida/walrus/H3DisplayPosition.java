@@ -30,9 +30,9 @@ public class H3DisplayPosition {
 
     public H3DisplayPosition
             (int centerNode, Transform3D rotation, Matrix4d translation) {
-        m_centerNode = centerNode;
-        m_rotation = new Transform3D(rotation);
-        m_translation = new Matrix4d(translation);
+        mCenterNode = centerNode;
+        mRotation = new Transform3D(rotation);
+        mTranslation = new Matrix4d(translation);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -40,22 +40,22 @@ public class H3DisplayPosition {
     ///////////////////////////////////////////////////////////////////////
 
     public int getCenterNode() {
-        return m_centerNode;
+        return mCenterNode;
     }
 
     public Transform3D getRotation() {
-        return m_rotation;
+        return mRotation;
     }
 
     public Matrix4d getTranslation() {
-        return m_translation;
+        return mTranslation;
     }
 
     ///////////////////////////////////////////////////////////////////////
     // PRIVATE FIELDS
     ///////////////////////////////////////////////////////////////////////
 
-    private final int m_centerNode;
-    private final Transform3D m_rotation;
-    private final Matrix4d m_translation;
+    private final int mCenterNode;
+    private final Transform3D mRotation;
+    private final Matrix4d mTranslation;
 }

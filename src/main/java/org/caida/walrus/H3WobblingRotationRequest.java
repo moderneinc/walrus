@@ -32,7 +32,7 @@ public class H3WobblingRotationRequest
     public H3WobblingRotationRequest() {
         Point4d[] coordinates =
                 createXYCircleCoordinates(RADIUS, NUM_SEGMENTS);
-        m_rotations = createRotations(coordinates);
+        mRotations = createRotations(coordinates);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -40,12 +40,12 @@ public class H3WobblingRotationRequest
     ////////////////////////////////////////////////////////////////////////
 
     public synchronized void start() {
-        m_isRotating = true;
-        m_position = 0;
+        mIsRotating = true;
+        mPosition = 0;
     }
 
     public synchronized void end() {
-        m_isRotating = false;
+        mIsRotating = false;
         waitIgnore();
     }
 
@@ -54,10 +54,10 @@ public class H3WobblingRotationRequest
     public synchronized boolean getRotation(Matrix4d rot) {
         boolean retval = false;
 
-        if (m_isRotating) {
-            rot.set(m_rotations[m_position]);
-            if (++m_position == NUM_SEGMENTS) {
-                m_position = 0;
+        if (mIsRotating) {
+            rot.set(mRotations[mPosition]);
+            if (++mPosition == NUM_SEGMENTS) {
+                mPosition = 0;
             }
 
             retval = true;
@@ -133,8 +133,8 @@ public class H3WobblingRotationRequest
     private static final double RADIUS = 2.5;
     private static final int NUM_SEGMENTS = 18;
 
-    private boolean m_isRotating;
+    private boolean mIsRotating;
 
-    private int m_position = 0;
-    private final Matrix4d[] m_rotations;
+    private int mPosition;
+    private final Matrix4d[] mRotations;
 }

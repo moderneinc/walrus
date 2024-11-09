@@ -33,25 +33,25 @@ public class H3ViewParameters {
     ////////////////////////////////////////////////////////////////////////
 
     public H3ViewParameters(H3Canvas3D canvas) {
-        m_canvas = canvas;
+        mCanvas = canvas;
 
         initializeBasicAppearances();
         initializeGraphAppearances();
         initializeGradedNodeAppearances();
         initializePickAppearances();
 
-        m_pixelToMeterScale = computePixelToMeterScale(canvas.getScreen3D());
-        m_pickRadius = PICK_RADIUS_PIXELS * m_pixelToMeterScale;
-        m_pickEquivalenceRadius =
-                PICK_EQUIVALENCE_RADIUS_PIXELS * m_pixelToMeterScale;
-        m_nodeRadius = NODE_RADIUS_PIXELS * m_pixelToMeterScale;
+        mPixelToMeterScale = computePixelToMeterScale(canvas.getScreen3D());
+        mPickRadius = PICK_RADIUS_PIXELS * mPixelToMeterScale;
+        mPickEquivalenceRadius =
+                PICK_EQUIVALENCE_RADIUS_PIXELS * mPixelToMeterScale;
+        mNodeRadius = NODE_RADIUS_PIXELS * mPixelToMeterScale;
 
-        m_pickViewer = new H3PickViewer(m_pickRadius);
+        mPickViewer = new H3PickViewer(mPickRadius);
 
-        m_depthCueing = new LinearFog(0.0f, 0.0f, 0.0f);
-        m_depthCueing.setFrontDistance(DEPTH_CUEING_ENABLED_FRONT);
-        m_depthCueing.setBackDistance(DEPTH_CUEING_ENABLED_BACK);
-        m_depthCueing.setInfluencingBounds
+        mDepthCueing = new LinearFog(0.0f, 0.0f, 0.0f);
+        mDepthCueing.setFrontDistance(DEPTH_CUEING_ENABLED_FRONT);
+        mDepthCueing.setBackDistance(DEPTH_CUEING_ENABLED_BACK);
+        mDepthCueing.setInfluencingBounds
                 (new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 100.0));
     }
 
@@ -60,10 +60,10 @@ public class H3ViewParameters {
     ////////////////////////////////////////////////////////////////////////
 
     public void refresh() {
-        m_canvas.getImagePlateToVworld(m_imageToVworld);
+        mCanvas.getImagePlateToVworld(mImageToVworld);
 
-        m_pickViewer.setImageToVworldTransform(m_imageToVworld);
-        m_nodeImage.setImageToVworldTransform(m_imageToVworld);
+        mPickViewer.setImageToVworldTransform(mImageToVworld);
+        mNodeImage.setImageToVworldTransform(mImageToVworld);
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -88,8 +88,8 @@ public class H3ViewParameters {
         double labelZ = zOffset * LABEL_Z_OFFSET_SCALE
                 + LABEL_Z_SCALE * eye.z + LABEL_Z_OFFSET;
 
-        double xOffset = LABEL_X_OFFSET * m_pixelToMeterScale;
-        double yOffset = LABEL_Y_OFFSET * m_pixelToMeterScale;
+        double xOffset = LABEL_X_OFFSET * mPixelToMeterScale;
+        double yOffset = LABEL_Y_OFFSET * mPixelToMeterScale;
         Point3d p = new Point3d(x + xOffset, y + yOffset, 0.0);
         {
             // Project given (x, y) coordinates to the plane z=labelZ.
@@ -115,7 +115,7 @@ public class H3ViewParameters {
         translation.set(t);
         translation.mul(scale);
 
-        Transform3D transform = new Transform3D(m_imageToVworld);
+        Transform3D transform = new Transform3D(mImageToVworld);
         transform.mul(translation);
 
         gc.setModelTransform(transform);
@@ -134,23 +134,23 @@ public class H3ViewParameters {
         //       makes sense, because most rendering code assumes that
         //       GraphicsContext3D has been set to some reasonable
         //       transform.
-        gc.setModelTransform(m_objectTransform);
+        gc.setModelTransform(mObjectTransform);
         gc.setFrontBufferRendering(frontBufferRenderingState);
     }
 
     // (x, y) in image-plate coordinates
     public void drawPickViewer(GraphicsContext3D gc, double x, double y) {
-        m_pickViewer.draw(gc, x, y);
+        mPickViewer.draw(gc, x, y);
     }
 
     public void drawAxes(GraphicsContext3D gc) {
-        if (m_axesEnabled) {
-            m_axes.draw(gc, m_objectTransform);
+        if (mAxesEnabled) {
+            mAxes.draw(gc, mObjectTransform);
         }
     }
 
     public void setAxesEnabled(boolean enable) {
-        m_axesEnabled = enable;
+        mAxesEnabled = enable;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -163,12 +163,12 @@ public class H3ViewParameters {
     //       which gets called at program startup and doesn't get called
     //       too often afterwards.
     public void installDepthCueing() {
-        GraphicsContext3D gc = m_canvas.getGraphicsContext3D();
-        gc.setFog(m_depthCueing);
+        GraphicsContext3D gc = mCanvas.getGraphicsContext3D();
+        gc.setFog(mDepthCueing);
     }
 
     public void setDepthCueingEnabled(boolean enable) {
-        m_depthCueingEnabled = enable;
+        mDepthCueingEnabled = enable;
         if (enable) {
             updateDepthCueing();
         } else {
@@ -177,13 +177,13 @@ public class H3ViewParameters {
             //      NullPointerException contrary to its specification.
             //      Therefore, we disable fog by simply using a very distant
             //      front and back distances.
-            m_depthCueing.setFrontDistance(DEPTH_CUEING_DISABLED_FRONT);
-            m_depthCueing.setBackDistance(DEPTH_CUEING_DISABLED_BACK);
+            mDepthCueing.setFrontDistance(DEPTH_CUEING_DISABLED_FRONT);
+            mDepthCueing.setBackDistance(DEPTH_CUEING_DISABLED_BACK);
         }
     }
 
     public void resetMagnification() {
-        m_magnification = 1.0;
+        mMagnification = 1.0;
         updateObjectTransformScaling();
         updateDepthCueing();
     }
@@ -193,13 +193,13 @@ public class H3ViewParameters {
     //       For example, 1.25 = 1/0.8.
 
     public void increaseMagnification() {
-        m_magnification *= 1.25;
+        mMagnification *= 1.25;
         updateObjectTransformScaling();
         updateDepthCueing();
     }
 
     public void decreaseMagnification() {
-        m_magnification *= 0.8;
+        mMagnification *= 0.8;
         updateObjectTransformScaling();
         updateDepthCueing();
     }
@@ -207,7 +207,7 @@ public class H3ViewParameters {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     public void putModelTransform(GraphicsContext3D gc) {
-        gc.setModelTransform(m_objectTransform);
+        gc.setModelTransform(mObjectTransform);
     }
 
     // NOTE: The target coordinate system of the returned transform isn't
@@ -217,34 +217,34 @@ public class H3ViewParameters {
     //       This slightly altered coordinate system is useful for picking,
     //       but it may not be suitable for other uses.
     public Transform3D getObjectToEyeTransform() {
-        m_canvas.getCenterEyeInImagePlate(m_eye);
-        m_imageToEye.set(new Vector3d(-m_eye.x, -m_eye.y, 0.0));
-        m_canvas.getVworldToImagePlate(m_vworldToImage);
+        mCanvas.getCenterEyeInImagePlate(mEye);
+        mImageToEye.set(new Vector3d(-mEye.x, -mEye.y, 0.0));
+        mCanvas.getVworldToImagePlate(mVworldToImage);
 
-        Transform3D transform = new Transform3D(m_imageToEye);
-        transform.mul(m_vworldToImage);
-        transform.mul(m_objectTransform);
+        Transform3D transform = new Transform3D(mImageToEye);
+        transform.mul(mVworldToImage);
+        transform.mul(mObjectTransform);
         return transform;
     }
 
     public Transform3D extendObjectTransform(Matrix4d t) {
         Transform3D transform = new Transform3D(t);
-        transform.mul(m_objectTransform);
-        m_objectTransform.set(transform);
+        transform.mul(mObjectTransform);
+        mObjectTransform.set(transform);
 
-        return m_objectTransform;
+        return mObjectTransform;
     }
 
     public Transform3D getObjectTransform() {
-        return m_objectTransform;
+        return mObjectTransform;
     }
 
     public void setObjectTransform(Transform3D transform) {
-        m_objectTransform.set(transform);
+        mObjectTransform.set(transform);
     }
 
     public void saveObjectTransform() {
-        m_savedObjectTransform.set(m_objectTransform);
+        mSavedObjectTransform.set(mObjectTransform);
     }
 
     public void discardObjectTransform() {
@@ -252,33 +252,33 @@ public class H3ViewParameters {
     }
 
     public void restoreObjectTransform() {
-        m_objectTransform.set(m_savedObjectTransform);
+        mObjectTransform.set(mSavedObjectTransform);
     }
 
     public void resetObjectTransform() {
-        m_magnification = 1.0;
-        m_objectTransform.setIdentity();
+        mMagnification = 1.0;
+        mObjectTransform.setIdentity();
     }
 
     public Point3d getEye() {
-        m_canvas.getCenterEyeInImagePlate(m_eye);
-        return m_eye;
+        mCanvas.getCenterEyeInImagePlate(mEye);
+        return mEye;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     public H3PickViewer getPickViewer() {
-        return m_pickViewer;
+        return mPickViewer;
     }
 
     public H3Circle getNodeImage() {
-        return m_nodeImage;
+        return mNodeImage;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     public TransparencyAttributes getTransparencyAttributes() {
-        return m_transparencyAttributes;
+        return mTransparencyAttributes;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -286,11 +286,11 @@ public class H3ViewParameters {
     // These two are used by the nonadaptive renderer.
 
     public Appearance getPointAppearance() {
-        return m_pointAppearance;
+        return mPointAppearance;
     }
 
     public Appearance getLineAppearance() {
-        return m_lineAppearance;
+        return mLineAppearance;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -298,15 +298,15 @@ public class H3ViewParameters {
     // These three are used by the adaptive renderer.
 
     public Appearance getNodeAppearance() {
-        return m_nodeAppearance;
+        return mNodeAppearance;
     }
 
     public Appearance getTreeLinkAppearance() {
-        return m_treeLinkAppearance;
+        return mTreeLinkAppearance;
     }
 
     public Appearance getNontreeLinkAppearance() {
-        return m_nontreeLinkAppearance;
+        return mNontreeLinkAppearance;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -314,37 +314,37 @@ public class H3ViewParameters {
     // These three are used by the adaptive renderer.
 
     public Appearance getNearNodeAppearance() {
-        return m_nearNodeAppearance;
+        return mNearNodeAppearance;
     }
 
     public Appearance getMiddleNodeAppearance() {
-        return m_middleNodeAppearance;
+        return mMiddleNodeAppearance;
     }
 
     public Appearance getFarNodeAppearance() {
-        return m_farNodeAppearance;
+        return mFarNodeAppearance;
     }
 
     public Appearance getPickAppearance() {
-        return m_pickAppearance;
+        return mPickAppearance;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     public double getNodeRadius() {
-        return m_nodeRadius;
+        return mNodeRadius;
     }
 
     public double getPickRadius() {
-        return m_pickRadius;
+        return mPickRadius;
     }
 
     public double getPickEquivalenceRadius() {
-        return m_pickEquivalenceRadius;
+        return mPickEquivalenceRadius;
     }
 
     public double getPixelToMeterScale() {
-        return m_pixelToMeterScale;
+        return mPixelToMeterScale;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -354,8 +354,8 @@ public class H3ViewParameters {
     private void updateObjectTransformScaling() {
         Vector3d translation = new Vector3d(0.0, 0.0, 0.0);
         Matrix3d rotation = new Matrix3d();
-        m_objectTransform.get(rotation);
-        m_objectTransform.set(rotation, translation, m_magnification);
+        mObjectTransform.get(rotation);
+        mObjectTransform.set(rotation, translation, mMagnification);
     }
 
     // The front and back fog distances are computed using empirically
@@ -388,14 +388,14 @@ public class H3ViewParameters {
     //         bug may have caused me to think that things were more
     //         complicated than they actually are.
     private void updateDepthCueing() {
-        if (m_depthCueingEnabled) {
+        if (mDepthCueingEnabled) {
             double front =
-                    DEPTH_CUEING_ENABLED_FRONT * Math.pow(m_magnification, -1.2);
+                    DEPTH_CUEING_ENABLED_FRONT * Math.pow(mMagnification, -1.2);
             double back =
-                    DEPTH_CUEING_ENABLED_BACK * Math.pow(m_magnification, -0.7);
+                    DEPTH_CUEING_ENABLED_BACK * Math.pow(mMagnification, -0.7);
 
             if (DEBUG_PRINT) {
-                System.out.println("magnification=" + m_magnification);
+                System.out.println("magnification=" + mMagnification);
                 System.out.println("front=" + front);
                 System.out.println("back=" + back);
             }
@@ -405,17 +405,17 @@ public class H3ViewParameters {
                 back = DEPTH_CUEING_DISABLED_BACK;
             }
 
-            m_depthCueing.setFrontDistance(front);
-            m_depthCueing.setBackDistance(back);
+            mDepthCueing.setFrontDistance(front);
+            mDepthCueing.setBackDistance(back);
         }
     }
 
     private void refreshAll() {
-        m_canvas.getCenterEyeInImagePlate(m_eye);
-        m_imageToEye.set(new Vector3d(-m_eye.x, -m_eye.y, 0.0));
-        m_eyeToImage.set(new Vector3d(m_eye.x, m_eye.y, 0.0));
-        m_canvas.getVworldToImagePlate(m_vworldToImage);
-        m_canvas.getImagePlateToVworld(m_imageToVworld);
+        mCanvas.getCenterEyeInImagePlate(mEye);
+        mImageToEye.set(new Vector3d(-mEye.x, -mEye.y, 0.0));
+        mEyeToImage.set(new Vector3d(mEye.x, mEye.y, 0.0));
+        mCanvas.getVworldToImagePlate(mVworldToImage);
+        mCanvas.getImagePlateToVworld(mImageToVworld);
     }
 
     private double computePixelToMeterScale(Screen3D screen) {
@@ -457,19 +457,19 @@ public class H3ViewParameters {
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        m_pointAppearance = new Appearance();
-        m_pointAppearance.setLineAttributes(lineAttributes);
-        m_pointAppearance.setPointAttributes(pointAttributes);
-        m_pointAppearance.setColoringAttributes(pointColoringAttributes);
+        mPointAppearance = new Appearance();
+        mPointAppearance.setLineAttributes(lineAttributes);
+        mPointAppearance.setPointAttributes(pointAttributes);
+        mPointAppearance.setColoringAttributes(pointColoringAttributes);
 
-        m_lineAppearance = new Appearance();
-        m_lineAppearance.setLineAttributes(lineAttributes);
-        m_lineAppearance.setPointAttributes(pointAttributes);
-        m_lineAppearance.setColoringAttributes(lineColoringAttributes);
+        mLineAppearance = new Appearance();
+        mLineAppearance.setLineAttributes(lineAttributes);
+        mLineAppearance.setPointAttributes(pointAttributes);
+        mLineAppearance.setColoringAttributes(lineColoringAttributes);
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        m_transparencyAttributes =
+        mTransparencyAttributes =
                 //new TransparencyAttributes(TransparencyAttributes.BLENDED, 0.95f);
                 new TransparencyAttributes(TransparencyAttributes.BLENDED, 0.8f);
     }
@@ -496,24 +496,24 @@ public class H3ViewParameters {
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        m_nodeAppearance = new Appearance();
-        m_nodeAppearance.setLineAttributes(lineAttributes);
-        m_nodeAppearance.setPointAttributes(pointAttributes);
-        m_nodeAppearance.setColoringAttributes(coloringAttributes);
+        mNodeAppearance = new Appearance();
+        mNodeAppearance.setLineAttributes(lineAttributes);
+        mNodeAppearance.setPointAttributes(pointAttributes);
+        mNodeAppearance.setColoringAttributes(coloringAttributes);
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        m_treeLinkAppearance = new Appearance();
-        m_treeLinkAppearance.setLineAttributes(lineAttributes);
-        m_treeLinkAppearance.setPointAttributes(pointAttributes);
-        m_treeLinkAppearance.setColoringAttributes(treeColoringAttributes);
+        mTreeLinkAppearance = new Appearance();
+        mTreeLinkAppearance.setLineAttributes(lineAttributes);
+        mTreeLinkAppearance.setPointAttributes(pointAttributes);
+        mTreeLinkAppearance.setColoringAttributes(treeColoringAttributes);
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        m_nontreeLinkAppearance = new Appearance();
-        m_nontreeLinkAppearance.setLineAttributes(lineAttributes);
-        m_nontreeLinkAppearance.setPointAttributes(pointAttributes);
-        m_nontreeLinkAppearance
+        mNontreeLinkAppearance = new Appearance();
+        mNontreeLinkAppearance.setLineAttributes(lineAttributes);
+        mNontreeLinkAppearance.setPointAttributes(pointAttributes);
+        mNontreeLinkAppearance
                 .setColoringAttributes(nontreeColoringAttributes);
     }
 
@@ -539,20 +539,20 @@ public class H3ViewParameters {
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        m_nearNodeAppearance = new Appearance();
-        m_nearNodeAppearance.setLineAttributes(lineAttributes);
-        m_nearNodeAppearance.setPointAttributes(nearPointAttributes);
-        m_nearNodeAppearance.setColoringAttributes(coloringAttributes);
+        mNearNodeAppearance = new Appearance();
+        mNearNodeAppearance.setLineAttributes(lineAttributes);
+        mNearNodeAppearance.setPointAttributes(nearPointAttributes);
+        mNearNodeAppearance.setColoringAttributes(coloringAttributes);
 
-        m_middleNodeAppearance = new Appearance();
-        m_middleNodeAppearance.setLineAttributes(lineAttributes);
-        m_middleNodeAppearance.setPointAttributes(middlePointAttributes);
-        m_middleNodeAppearance.setColoringAttributes(coloringAttributes);
+        mMiddleNodeAppearance = new Appearance();
+        mMiddleNodeAppearance.setLineAttributes(lineAttributes);
+        mMiddleNodeAppearance.setPointAttributes(middlePointAttributes);
+        mMiddleNodeAppearance.setColoringAttributes(coloringAttributes);
 
-        m_farNodeAppearance = new Appearance();
-        m_farNodeAppearance.setLineAttributes(lineAttributes);
-        m_farNodeAppearance.setPointAttributes(farPointAttributes);
-        m_farNodeAppearance.setColoringAttributes(coloringAttributes);
+        mFarNodeAppearance = new Appearance();
+        mFarNodeAppearance.setLineAttributes(lineAttributes);
+        mFarNodeAppearance.setPointAttributes(farPointAttributes);
+        mFarNodeAppearance.setColoringAttributes(coloringAttributes);
     }
 
     private void initializePickAppearances() {
@@ -564,9 +564,9 @@ public class H3ViewParameters {
                 new ColoringAttributes(0.9f, 0.1f, 0.1f,
                         ColoringAttributes.FASTEST);
 
-        m_pickAppearance = new Appearance();
-        m_pickAppearance.setPointAttributes(pointAttributes);
-        m_pickAppearance.setColoringAttributes(pointColoringAttributes);
+        mPickAppearance = new Appearance();
+        mPickAppearance.setPointAttributes(pointAttributes);
+        mPickAppearance.setColoringAttributes(pointColoringAttributes);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -578,35 +578,35 @@ public class H3ViewParameters {
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private final H3Canvas3D m_canvas;
-    private final H3Axes m_axes = new H3Axes();
-    private final H3PickViewer m_pickViewer;
-    private final H3Circle m_nodeImage = new H3Circle();
-    private boolean m_axesEnabled = true;
+    private final H3Canvas3D mCanvas;
+    private final H3Axes mAxes = new H3Axes();
+    private final H3PickViewer mPickViewer;
+    private final H3Circle mNodeImage = new H3Circle();
+    private boolean mAxesEnabled = true;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private final Transform3D m_objectTransform = new Transform3D();
-    private final Transform3D m_savedObjectTransform = new Transform3D();
+    private final Transform3D mObjectTransform = new Transform3D();
+    private final Transform3D mSavedObjectTransform = new Transform3D();
 
-    private final Point3d m_eye = new Point3d();
-    private final Transform3D m_imageToEye = new Transform3D();
-    private final Transform3D m_eyeToImage = new Transform3D();
-    private final Transform3D m_vworldToImage = new Transform3D();
-    private final Transform3D m_imageToVworld = new Transform3D();
+    private final Point3d mEye = new Point3d();
+    private final Transform3D mImageToEye = new Transform3D();
+    private final Transform3D mEyeToImage = new Transform3D();
+    private final Transform3D mVworldToImage = new Transform3D();
+    private final Transform3D mImageToVworld = new Transform3D();
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private final double m_pixelToMeterScale;
+    private final double mPixelToMeterScale;
 
-    private static final float GENERAL_POINT_SIZE = 4.0f;
-    private static final float NODE_POINT_SIZE = 4.0f;
-    private static final float NODE_NEAR_POINT_SIZE = 5.0f;
-    private static final float NODE_MIDDLE_POINT_SIZE = 3.0f;
-    private static final float NODE_FAR_POINT_SIZE = 1.0f;
+    private static final float GENERAL_POINT_SIZE = 4.0F;
+    private static final float NODE_POINT_SIZE = 4.0F;
+    private static final float NODE_NEAR_POINT_SIZE = 5.0F;
+    private static final float NODE_MIDDLE_POINT_SIZE = 3.0F;
+    private static final float NODE_FAR_POINT_SIZE = 1.0F;
 
     private static final int NODE_RADIUS_PIXELS = 10;
-    private final double m_nodeRadius;
+    private final double mNodeRadius;
 
     // PICK_EQUIVALENCE_RADIUS_PIXELS, which must be less than or equal
     // to PICK_RADIUS_PIXELS, is the radius within which nodes are
@@ -614,9 +614,9 @@ public class H3ViewParameters {
     // overlapping node that is closest to the eye along the line of sight.
     private static final int PICK_RADIUS_PIXELS = 10;
     private static final int PICK_EQUIVALENCE_RADIUS_PIXELS = 2;
-    private static final float PICK_POINT_SIZE = 10.0f;
-    private final double m_pickRadius;
-    private final double m_pickEquivalenceRadius;
+    private static final float PICK_POINT_SIZE = 10.0F;
+    private final double mPickRadius;
+    private final double mPickEquivalenceRadius;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -629,11 +629,11 @@ public class H3ViewParameters {
     private static final double DEPTH_CUEING_DISABLED_FRONT = 100.0;
     private static final double DEPTH_CUEING_DISABLED_BACK = 105.0;
 
-    private boolean m_depthCueingEnabled = true;
-    private final LinearFog m_depthCueing;
+    private boolean mDepthCueingEnabled = true;
+    private final LinearFog mDepthCueing;
 
     // The magnification level of the display.
-    private double m_magnification = 1.0;
+    private double mMagnification = 1.0;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -650,18 +650,18 @@ public class H3ViewParameters {
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private TransparencyAttributes m_transparencyAttributes;
+    private TransparencyAttributes mTransparencyAttributes;
 
-    private Appearance m_pointAppearance;
-    private Appearance m_lineAppearance;
+    private Appearance mPointAppearance;
+    private Appearance mLineAppearance;
 
-    private Appearance m_nodeAppearance;
-    private Appearance m_treeLinkAppearance;
-    private Appearance m_nontreeLinkAppearance;
+    private Appearance mNodeAppearance;
+    private Appearance mTreeLinkAppearance;
+    private Appearance mNontreeLinkAppearance;
 
-    private Appearance m_nearNodeAppearance;
-    private Appearance m_middleNodeAppearance;
-    private Appearance m_farNodeAppearance;
+    private Appearance mNearNodeAppearance;
+    private Appearance mMiddleNodeAppearance;
+    private Appearance mFarNodeAppearance;
 
-    private Appearance m_pickAppearance;
+    private Appearance mPickAppearance;
 }

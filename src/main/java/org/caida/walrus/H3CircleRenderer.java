@@ -32,10 +32,10 @@ public class H3CircleRenderer
 
     public H3CircleRenderer(H3Graph graph, H3ViewParameters parameters,
                             H3RenderQueue queue, H3RenderList list) {
-        m_graph = graph;
-        m_parameters = parameters;
-        m_renderQueue = queue;
-        m_renderList = list;
+        mGraph = graph;
+        mParameters = parameters;
+        mRenderQueue = queue;
+        mRenderList = list;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,8 @@ public class H3CircleRenderer
 
         computeRenderFrame(gc);
 
-        m_parameters.putModelTransform(gc);
-        m_renderList.render(gc);
+        mParameters.putModelTransform(gc);
+        mRenderList.render(gc);
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -71,8 +71,8 @@ public class H3CircleRenderer
 
         computeRefineFrame(gc);
 
-        m_parameters.putModelTransform(gc);
-        m_renderList.render(gc);
+        mParameters.putModelTransform(gc);
+        mRenderList.render(gc);
         gc.flush(true);
 
         if (DEBUG_PRINT) {
@@ -84,16 +84,16 @@ public class H3CircleRenderer
     }
 
     public void reset() {
-        m_numDisplayedElements = 0;
+        mNumDisplayedElements = 0;
     }
 
     public boolean isFinished() {
-        return m_numDisplayedElements == m_renderQueue.getCurrentNumElements()
-                && m_renderQueue.isComplete();
+        return mNumDisplayedElements == mRenderQueue.getCurrentNumElements()
+                && mRenderQueue.isComplete();
     }
 
     public void setMaxDuration(long max) {
-        m_maxDuration = max;
+        mMaxDuration = max;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -103,34 +103,34 @@ public class H3CircleRenderer
     private void computeRenderFrame(GraphicsContext3D gc) {
         long start = System.currentTimeMillis();
 
-        m_renderList.beginFrame();
+        mRenderList.beginFrame();
         {
-            Transform3D transform = m_parameters.getObjectToEyeTransform();
+            Transform3D transform = mParameters.getObjectToEyeTransform();
 
-            boolean more = computeDisplay(gc, 0, m_numDisplayedElements,
+            boolean more = computeDisplay(gc, 0, mNumDisplayedElements,
                     transform);
-            while (more && System.currentTimeMillis() - start < m_maxDuration) {
-                more = computeDisplay(gc, m_numDisplayedElements,
+            while (more && System.currentTimeMillis() - start < mMaxDuration) {
+                more = computeDisplay(gc, mNumDisplayedElements,
                         NUM_PER_ITERATION, transform);
             }
         }
-        m_renderList.endFrame();
+        mRenderList.endFrame();
     }
 
     private void computeRefineFrame(GraphicsContext3D gc) {
         long start = System.currentTimeMillis();
 
-        m_renderList.beginFrame();
+        mRenderList.beginFrame();
         {
-            Transform3D transform = m_parameters.getObjectToEyeTransform();
+            Transform3D transform = mParameters.getObjectToEyeTransform();
 
             boolean more = true;
-            while (more && System.currentTimeMillis() - start < m_maxDuration) {
-                more = computeDisplay(gc, m_numDisplayedElements,
+            while (more && System.currentTimeMillis() - start < mMaxDuration) {
+                more = computeDisplay(gc, mNumDisplayedElements,
                         NUM_PER_ITERATION, transform);
             }
         }
-        m_renderList.endFrame();
+        mRenderList.endFrame();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,11 +140,11 @@ public class H3CircleRenderer
                                    Transform3D transform) {
         boolean retval = true;
 
-        m_numDisplayedElements = index;
+        mNumDisplayedElements = index;
 
-        H3Circle nodeImage = m_parameters.getNodeImage();
-        Point3d eye = m_parameters.getEye();
-        double nodeRadius = m_parameters.getNodeRadius();
+        H3Circle nodeImage = mParameters.getNodeImage();
+        Point3d eye = mParameters.getEye();
+        double nodeRadius = mParameters.getNodeRadius();
 
         Point3d node = new Point3d();
 
@@ -152,18 +152,18 @@ public class H3CircleRenderer
 
         boolean more = true;
         while (more && count-- > 0) {
-            if (m_renderQueue.get(m_numDisplayedElements, element)) {
-                ++m_numDisplayedElements;
+            if (mRenderQueue.get(mNumDisplayedElements, element)) {
+                ++mNumDisplayedElements;
 
                 if (element.type == H3RenderQueue.Element.TYPE_NODE) {
-                    m_renderList.addNode(element.data);
+                    mRenderList.addNode(element.data);
 
                     // Render as a circle.
-                    m_graph.getNodeCoordinates(element.data, node);
+                    mGraph.getNodeCoordinates(element.data, node);
                     transform.transform(node);
 
                     double perspectiveScale = 1.0 / (1.0 - node.z / eye.z);
-                    double radius = m_graph.getNodeRadius(element.data)
+                    double radius = mGraph.getNodeRadius(element.data)
                             * nodeRadius * perspectiveScale;
 
                     double centerX = eye.x + node.x * perspectiveScale;
@@ -171,10 +171,10 @@ public class H3CircleRenderer
 
                     nodeImage.draw(gc, radius, centerX, centerY);
                 } else if (element.type == H3RenderQueue.Element.TYPE_TREE_LINK) {
-                    m_renderList.addTreeLink(element.data);
+                    mRenderList.addTreeLink(element.data);
                 } else //(type == H3RenderQueue.Element.TYPE_NONTREE_LINK)
                 {
-                    m_renderList.addNontreeLink(element.data);
+                    mRenderList.addNontreeLink(element.data);
                 }
             } else {
                 retval = false;
@@ -194,12 +194,12 @@ public class H3CircleRenderer
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private long m_maxDuration = Long.MAX_VALUE;
+    private long mMaxDuration = Long.MAX_VALUE;
 
-    private final H3Graph m_graph;
-    private final H3ViewParameters m_parameters;
-    private final H3RenderQueue m_renderQueue;
-    private final H3RenderList m_renderList;
+    private final H3Graph mGraph;
+    private final H3ViewParameters mParameters;
+    private final H3RenderQueue mRenderQueue;
+    private final H3RenderList mRenderList;
 
-    private int m_numDisplayedElements = 0;
+    private int mNumDisplayedElements;
 }

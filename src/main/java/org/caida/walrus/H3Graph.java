@@ -114,8 +114,8 @@ public class H3Graph {
         m_numNodes = numNodes;
         m_numLinks = numLinks;
 
-        m_nodes = new Nodes(numNodes);
-        m_links = new Links(numLinks);
+        mNodes = new Nodes(numNodes);
+        mLinks = new Links(numLinks);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -127,11 +127,11 @@ public class H3Graph {
     }
 
     public int getNumTreeLinks() {
-        return m_numTreeLinks;
+        return mNumTreeLinks;
     }
 
     public int getNumNontreeLinks() {
-        return m_numNontreeLinks;
+        return mNumNontreeLinks;
     }
 
     public int getTotalNumLinks() {
@@ -139,51 +139,51 @@ public class H3Graph {
     }
 
     public int getRootNode() {
-        return m_rootNode;
+        return mRootNode;
     }
 
     public int getNodeID(int node) {
-        return m_nodes.id[node];
+        return mNodes.id[node];
     }
 
     public double getNodeRadius(int node) {
-        return m_nodes.radius[node];
+        return mNodes.radius[node];
     }
 
     public void getNodeCoordinates(int node, Point3d point) {
-        point.x = m_nodes.x[node];
-        point.y = m_nodes.y[node];
-        point.z = m_nodes.z[node];
+        point.x = mNodes.x[node];
+        point.y = mNodes.y[node];
+        point.z = mNodes.z[node];
     }
 
     public void getNodeCoordinates(int node, Point4d point) {
-        point.x = m_nodes.x[node];
-        point.y = m_nodes.y[node];
-        point.z = m_nodes.z[node];
+        point.x = mNodes.x[node];
+        point.y = mNodes.y[node];
+        point.z = mNodes.z[node];
         point.w = 1.0;
     }
 
     public void getNodeLayoutCoordinates(int node, Point3d point) {
-        double w = m_nodes.layoutW[node];
-        point.x = m_nodes.layoutX[node] / w;
-        point.y = m_nodes.layoutY[node] / w;
-        point.z = m_nodes.layoutZ[node] / w;
+        double w = mNodes.layoutW[node];
+        point.x = mNodes.layoutX[node] / w;
+        point.y = mNodes.layoutY[node] / w;
+        point.z = mNodes.layoutZ[node] / w;
     }
 
     public void getNodeLayoutCoordinates(int node, Point4d point) {
-        point.x = m_nodes.layoutX[node];
-        point.y = m_nodes.layoutY[node];
-        point.z = m_nodes.layoutZ[node];
-        point.w = m_nodes.layoutW[node];
+        point.x = mNodes.layoutX[node];
+        point.y = mNodes.layoutY[node];
+        point.z = mNodes.layoutZ[node];
+        point.w = mNodes.layoutW[node];
     }
 
     public int getNodeParent(int node) {
-        int i = m_nodes.parent[node];
-        return (i == -1 ? -1 : m_links.source[i]);
+        int i = mNodes.parent[node];
+        return i == -1 ? -1 : mLinks.source[i];
     }
 
     public int getNodeParentLink(int node) {
-        return m_nodes.parent[node];
+        return mNodes.parent[node];
     }
 
     public int getNodeNumChildren(int node) {
@@ -213,75 +213,75 @@ public class H3Graph {
     //     }
 
     public int getNodeChildIndex(int node) {
-        return m_nodes.treeLinks[node];
+        return mNodes.treeLinks[node];
     }
 
     public int getNodeNontreeIndex(int node) {
-        return m_nodes.nontreeLinks[node];
+        return mNodes.nontreeLinks[node];
     }
 
     public int getNodeLinksEndIndex(int node) {
-        return m_nodes.linksEnd[node];
+        return mNodes.linksEnd[node];
     }
 
     public int getNodeColor(int node) {
-        return m_nodes.color[node];
+        return mNodes.color[node];
     }
 
     // Returns true iff all nodes are visible.
     public boolean checkNodesVisible() {
-        return m_nodes.isVisible.check();
+        return mNodes.isVisible.check();
     }
 
     public boolean checkNodeVisible(int node) {
-        return m_nodes.isVisible.check(node);
+        return mNodes.isVisible.check(node);
     }
 
     public boolean checkNodeDisplayable(int node) {
-        return m_nodes.isDisplayable.check(node);
+        return mNodes.isDisplayable.check(node);
     }
 
     public boolean checkNodeSelected(int node) {
-        return m_nodes.isSelected.check(node);
+        return mNodes.isSelected.check(node);
     }
 
     //======================================================================
 
     public int getLinkID(int link) {
-        return m_links.id[link];
+        return mLinks.id[link];
     }
 
     public int getLinkSource(int link) {
-        return m_links.source[link];
+        return mLinks.source[link];
     }
 
     public int getLinkDestination(int link) {
-        return m_links.destination[link];
+        return mLinks.destination[link];
     }
 
     public int getLinkColor(int link) {
-        return m_links.color[link];
+        return mLinks.color[link];
     }
 
     public boolean checkTreeLink(int link) {
-        return m_links.isTreeLink.get(link);
+        return mLinks.isTreeLink.get(link);
     }
 
     // Returns true iff all links are visible.
     public boolean checkLinksVisible() {
-        return m_links.isVisible.check();
+        return mLinks.isVisible.check();
     }
 
     public boolean checkLinkVisible(int link) {
-        return m_links.isVisible.check(link);
+        return mLinks.isVisible.check(link);
     }
 
     public boolean checkLinkDisplayable(int link) {
-        return m_links.isDisplayable.check(link);
+        return mLinks.isDisplayable.check(link);
     }
 
     public boolean checkLinkSelected(int link) {
-        return m_links.isSelected.check(link);
+        return mLinks.isSelected.check(link);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -293,70 +293,70 @@ public class H3Graph {
     public void transformNodes(Matrix4d t) {
         Point4d p = new Point4d();
         for (int i = 0; i < m_numNodes; i++) {
-            p.x = m_nodes.layoutX[i];
-            p.y = m_nodes.layoutY[i];
-            p.z = m_nodes.layoutZ[i];
-            p.w = m_nodes.layoutW[i];
+            p.x = mNodes.layoutX[i];
+            p.y = mNodes.layoutY[i];
+            p.z = mNodes.layoutZ[i];
+            p.w = mNodes.layoutW[i];
 
             t.transform(p);
 
-            m_nodes.x[i] = p.x / p.w;
-            m_nodes.y[i] = p.y / p.w;
-            m_nodes.z[i] = p.z / p.w;
+            mNodes.x[i] = p.x / p.w;
+            mNodes.y[i] = p.y / p.w;
+            mNodes.z[i] = p.z / p.w;
         }
     }
 
     public void setRootNode(int node) {
-        m_nodes.parent[node] = -1;
-        m_rootNode = node;
+        mNodes.parent[node] = -1;
+        mRootNode = node;
     }
 
     public void setNodeID(int node, int id) {
-        m_nodes.id[node] = id;
+        mNodes.id[node] = id;
     }
 
     public void setNodeRadius(int node, double radius) {
-        m_nodes.radius[node] = radius;
+        mNodes.radius[node] = radius;
     }
 
     public void setNodeCoordinates(int node, double x, double y, double z) {
-        m_nodes.x[node] = x;
-        m_nodes.y[node] = y;
-        m_nodes.z[node] = z;
+        mNodes.x[node] = x;
+        mNodes.y[node] = y;
+        mNodes.z[node] = z;
     }
 
     public void setNodeCoordinates(int node, Point3d p) {
-        m_nodes.x[node] = p.x;
-        m_nodes.y[node] = p.y;
-        m_nodes.z[node] = p.z;
+        mNodes.x[node] = p.x;
+        mNodes.y[node] = p.y;
+        mNodes.z[node] = p.z;
     }
 
     public void setNodeCoordinates(int node, Point4d p) {
-        m_nodes.x[node] = p.x / p.w;
-        m_nodes.y[node] = p.y / p.w;
-        m_nodes.z[node] = p.z / p.w;
+        mNodes.x[node] = p.x / p.w;
+        mNodes.y[node] = p.y / p.w;
+        mNodes.z[node] = p.z / p.w;
     }
 
     public void setNodeLayoutCoordinates(int node, double x, double y,
                                          double z, double w) {
-        m_nodes.layoutX[node] = x;
-        m_nodes.layoutY[node] = y;
-        m_nodes.layoutZ[node] = z;
-        m_nodes.layoutW[node] = w;
+        mNodes.layoutX[node] = x;
+        mNodes.layoutY[node] = y;
+        mNodes.layoutZ[node] = z;
+        mNodes.layoutW[node] = w;
     }
 
     public void setNodeLayoutCoordinates(int node, Point3d p) {
-        m_nodes.layoutX[node] = p.x;
-        m_nodes.layoutY[node] = p.y;
-        m_nodes.layoutZ[node] = p.z;
-        m_nodes.layoutW[node] = 1.0;
+        mNodes.layoutX[node] = p.x;
+        mNodes.layoutY[node] = p.y;
+        mNodes.layoutZ[node] = p.z;
+        mNodes.layoutW[node] = 1.0;
     }
 
     public void setNodeLayoutCoordinates(int node, Point4d p) {
-        m_nodes.layoutX[node] = p.x;
-        m_nodes.layoutY[node] = p.y;
-        m_nodes.layoutZ[node] = p.z;
-        m_nodes.layoutW[node] = p.w;
+        mNodes.layoutX[node] = p.x;
+        mNodes.layoutY[node] = p.y;
+        mNodes.layoutZ[node] = p.z;
+        mNodes.layoutW[node] = p.w;
     }
 
     // The following two methods, addChildLink() and addNodeNontreeLink(),
@@ -376,53 +376,53 @@ public class H3Graph {
     // There need not be a sequence of these calls for nodes without any links.
 
     public void startChildLinks(int node) {
-        m_nodes.treeLinks[node] = m_links.nextIndex;
+        mNodes.treeLinks[node] = mLinks.nextIndex;
     }
 
     // linkID is the ID of the corresponding link in the backing libsea graph
     // (or whatever backing data store you're using).
     public void addChildLink(int node, int child, int linkID) {
-        ++m_numTreeLinks;
+        ++mNumTreeLinks;
 
-        int link = m_links.nextIndex++;
-        m_nodes.parent[child] = link;
-        m_links.id[link] = linkID;
-        m_links.source[link] = node;
-        m_links.destination[link] = child;
-        m_links.isTreeLink.set(link);
+        int link = mLinks.nextIndex++;
+        mNodes.parent[child] = link;
+        mLinks.id[link] = linkID;
+        mLinks.source[link] = node;
+        mLinks.destination[link] = child;
+        mLinks.isTreeLink.set(link);
     }
 
     public void startNontreeLinks(int node) {
-        m_nodes.nontreeLinks[node] = m_links.nextIndex;
+        mNodes.nontreeLinks[node] = mLinks.nextIndex;
     }
 
     // linkID is the ID of the corresponding link in the backing libsea graph
     // (or whatever backing data store you're using).
     public void addNontreeLink(int node, int target, int linkID) {
-        ++m_numNontreeLinks;
+        ++mNumNontreeLinks;
 
-        int link = m_links.nextIndex++;
-        m_links.id[link] = linkID;
-        m_links.source[link] = node;
-        m_links.destination[link] = target;
+        int link = mLinks.nextIndex++;
+        mLinks.id[link] = linkID;
+        mLinks.source[link] = node;
+        mLinks.destination[link] = target;
     }
 
     public void endNodeLinks(int node) {
-        m_nodes.linksEnd[node] = m_links.nextIndex;
+        mNodes.linksEnd[node] = mLinks.nextIndex;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public void setNodeColor(int node, int color) {
-        m_nodes.color[node] = color;
+        mNodes.color[node] = color;
     }
 
     public void setNodeColor(int node, byte r, byte g, byte b) {
-        m_nodes.color[node] = (r << 16) | (g << 8) | b;
+        mNodes.color[node] = (r << 16) | (g << 8) | b;
     }
 
     public void setNodeDefaultColor(int color) {
-        Arrays.fill(m_nodes.color, color);
+        Arrays.fill(mNodes.color, color);
     }
 
     public void setNodeDefaultColor(byte r, byte g, byte b) {
@@ -431,45 +431,45 @@ public class H3Graph {
     }
 
     public void setNodeVisibility(int node, boolean isVisible) {
-        m_nodes.isVisible.set(node, isVisible);
+        mNodes.isVisible.set(node, isVisible);
     }
 
     public void setNodeDisplayability(int node, boolean isDisplayable) {
-        m_nodes.isDisplayable.set(node, isDisplayable);
+        mNodes.isDisplayable.set(node, isDisplayable);
     }
 
     public void setNodeSelectivity(int node, boolean isSelected) {
-        m_nodes.isSelected.set(node, isSelected);
+        mNodes.isSelected.set(node, isSelected);
     }
 
     public void setNodeVisibility(boolean isVisible) {
-        m_nodes.isVisible.set(isVisible);
+        mNodes.isVisible.set(isVisible);
     }
 
     public void setNodeDisplayability(boolean isDisplayable) {
-        m_nodes.isDisplayable.set(isDisplayable);
+        mNodes.isDisplayable.set(isDisplayable);
     }
 
     public void setNodeSelectivity(boolean isSelected) {
-        m_nodes.isSelected.set(isSelected);
+        mNodes.isSelected.set(isSelected);
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public void setLinkID(int link, int id) {
-        m_links.id[link] = id;
+        mLinks.id[link] = id;
     }
 
     public void setLinkColor(int link, int color) {
-        m_links.color[link] = color;
+        mLinks.color[link] = color;
     }
 
     public void setLinkColor(int link, byte r, byte g, byte b) {
-        m_links.color[link] = (r << 16) | (g << 8) | b;
+        mLinks.color[link] = (r << 16) | (g << 8) | b;
     }
 
     public void setLinkDefaultColor(int color) {
-        Arrays.fill(m_links.color, color);
+        Arrays.fill(mLinks.color, color);
     }
 
     public void setLinkDefaultColor(byte r, byte g, byte b) {
@@ -478,39 +478,39 @@ public class H3Graph {
     }
 
     public void setLinkVisibility(int link, boolean isVisible) {
-        m_links.isVisible.set(link, isVisible);
+        mLinks.isVisible.set(link, isVisible);
     }
 
     public void setLinkDisplayability(int link, boolean isDisplayable) {
-        m_links.isDisplayable.set(link, isDisplayable);
+        mLinks.isDisplayable.set(link, isDisplayable);
     }
 
     public void setLinkSelectivity(int link, boolean isSelected) {
-        m_links.isSelected.set(link, isSelected);
+        mLinks.isSelected.set(link, isSelected);
     }
 
     public void setLinkVisibility(boolean isVisible) {
-        m_links.isVisible.set(isVisible);
+        mLinks.isVisible.set(isVisible);
     }
 
     public void setLinkVisibility(boolean treeLink, boolean isVisible) {
-        m_links.isVisible.set(treeLink, isVisible);
+        mLinks.isVisible.set(treeLink, isVisible);
     }
 
     public void setLinkDisplayability(boolean isDisplayable) {
-        m_links.isDisplayable.set(isDisplayable);
+        mLinks.isDisplayable.set(isDisplayable);
     }
 
     public void setLinkDisplayability(boolean treeLink, boolean isDisplayable) {
-        m_links.isDisplayable.set(treeLink, isDisplayable);
+        mLinks.isDisplayable.set(treeLink, isDisplayable);
     }
 
     public void setLinkSelectivity(boolean isSelected) {
-        m_links.isSelected.set(isSelected);
+        mLinks.isSelected.set(isSelected);
     }
 
     public void setLinkSelectivity(boolean treeLink, boolean isSelected) {
-        m_links.isVisible.set(treeLink, isSelected);
+        mLinks.isVisible.set(treeLink, isSelected);
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -590,13 +590,13 @@ public class H3Graph {
     }
 
     public void computeVisibility() {
-        m_nodes.isVisible.conjunction
-                (m_nodes.isDisplayable, m_nodes.isSelected);
+        mNodes.isVisible.conjunction
+                (mNodes.isDisplayable, mNodes.isSelected);
 
         computeNontreeLinkDisplayability();
 
-        m_links.isVisible.conjunction
-                (m_links.isDisplayable, m_links.isSelected);
+        mLinks.isVisible.conjunction
+                (mLinks.isDisplayable, mLinks.isSelected);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -610,7 +610,7 @@ public class H3Graph {
     private void computeNontreeLinkDisplayability() {
         int node = 0;
         int numNontreeLinksSeen = 0;
-        while (numNontreeLinksSeen < m_numNontreeLinks) {
+        while (numNontreeLinksSeen < mNumNontreeLinks) {
             int nontreeStart = getNodeNontreeIndex(node);
             int end = getNodeLinksEndIndex(node);
 
@@ -650,7 +650,7 @@ public class H3Graph {
     // The input node itself is assumed to have been taken care of.
     private void setNeighborhoodDisplayability
     (int node, int distance, int maxDistance) {
-        boolean isDisplayable = (distance < maxDistance);
+        boolean isDisplayable = distance < maxDistance;
 
         int start = getNodeChildIndex(node);
         int end = getNodeLinksEndIndex(node);
@@ -671,12 +671,12 @@ public class H3Graph {
     private final int m_numNodes;
     private final int m_numLinks;
 
-    private int m_numTreeLinks = 0;
-    private int m_numNontreeLinks = 0;
+    private int mNumTreeLinks;
+    private int mNumNontreeLinks;
 
-    private int m_rootNode = 0;
-    private final Nodes m_nodes;
-    private final Links m_links;
+    private int mRootNode;
+    private final Nodes mNodes;
+    private final Links mLinks;
 
     ////////////////////////////////////////////////////////////////////////
     // PRIVATE CLASSES
@@ -793,7 +793,7 @@ public class H3Graph {
             isSelected = new LinkProperty(numLinks, isTreeLink);
         }
 
-        public int nextIndex = 0;
+        public int nextIndex;
 
         ////////////////////////////////////////////////////////////////////
         // ESSENTIAL LINK ATTRIBUTES
@@ -854,11 +854,11 @@ public class H3Graph {
 
         // Returns true iff all nodes are visible.
         public boolean check() {
-            return (m_property == null || m_property.length() == 0);
+            return m_property == null || m_property.length() == 0;
         }
 
         public boolean check(int node) {
-            return (m_property == null || !m_property.get(node));
+            return m_property == null || !m_property.get(node);
         }
 
         public void set(int node, boolean value) {
@@ -936,11 +936,11 @@ public class H3Graph {
 
         // Returns true iff all links are visible.
         public boolean check() {
-            return (m_property == null || m_property.length() == 0);
+            return m_property == null || m_property.length() == 0;
         }
 
         public boolean check(int link) {
-            return (m_property == null || !m_property.get(link));
+            return m_property == null || !m_property.get(link);
         }
 
         public void set(int link, boolean value) {
@@ -1062,7 +1062,7 @@ public class H3Graph {
     // is assumed to define a spanning tree.
     public int checkSpanningTree() {
         BitSet visited = new BitSet();
-        return checkSpanningTree(visited, m_rootNode);
+        return checkSpanningTree(visited, mRootNode);
     }
 
     private int checkSpanningTree(BitSet visited, int node) {
@@ -1088,7 +1088,7 @@ public class H3Graph {
     }
 
     public int checkTreeReachability() {
-        return checkTreeReachability(m_rootNode);
+        return checkTreeReachability(mRootNode);
     }
 
     public int checkTreeReachability(int node) {
@@ -1127,11 +1127,11 @@ public class H3Graph {
         }
         visited.set(node);
 
-        int treeLinks = m_nodes.treeLinks[node];
-        int nontreeLinks = m_nodes.nontreeLinks[node];
+        int treeLinks = mNodes.treeLinks[node];
+        int nontreeLinks = mNodes.nontreeLinks[node];
 
         while (treeLinks < nontreeLinks) {
-            int child = m_links.destination[treeLinks++];
+            int child = mLinks.destination[treeLinks++];
             retval += checkReachability(visited, child);
         }
 
@@ -1143,40 +1143,40 @@ public class H3Graph {
         System.out.println(this + ":");
         System.out.println("\tnumNodes: " + m_numNodes);
         System.out.println("\tnumLinks: " + m_numLinks);
-        System.out.println("\tnumTreeLinks: " + m_numTreeLinks);
-        System.out.println("\tnumNontreeLinks: " + m_numNontreeLinks);
-        System.out.println("\tnextIndex: " + m_links.nextIndex);
+        System.out.println("\tnumTreeLinks: " + mNumTreeLinks);
+        System.out.println("\tnumNontreeLinks: " + mNumNontreeLinks);
+        System.out.println("\tnextIndex: " + mLinks.nextIndex);
 
         System.out.println("\nParent:\n");
-        for (int i = 0; i < m_nodes.parent.length; i++) {
+        for (int i = 0; i < mNodes.parent.length; i++) {
             if (i == m_numNodes) {
                 System.out.println("- - - - - - - - - - - - - - - - - - - -");
             }
-            System.out.println(i + " => " + m_nodes.parent[i]);
+            System.out.println(i + " => " + mNodes.parent[i]);
         }
 
         System.out.println("\nLinksStart:\n");
-        for (int i = 0; i < m_nodes.treeLinks.length; i++) {
+        for (int i = 0; i < mNodes.treeLinks.length; i++) {
             if (i == m_numNodes) {
                 System.out.println("- - - - - - - - - - - - - - - - - - - -");
             }
-            System.out.println(i + " => " + m_nodes.treeLinks[i]);
+            System.out.println(i + " => " + mNodes.treeLinks[i]);
         }
 
         System.out.println("\nNontreeLinksStart:\n");
-        for (int i = 0; i < m_nodes.nontreeLinks.length; i++) {
+        for (int i = 0; i < mNodes.nontreeLinks.length; i++) {
             if (i == m_numNodes) {
                 System.out.println("- - - - - - - - - - - - - - - - - - - -");
             }
-            System.out.println(i + " => " + m_nodes.nontreeLinks[i]);
+            System.out.println(i + " => " + mNodes.nontreeLinks[i]);
         }
 
         System.out.println("\nLinksEnd:\n");
-        for (int i = 0; i < m_nodes.linksEnd.length; i++) {
+        for (int i = 0; i < mNodes.linksEnd.length; i++) {
             if (i == m_numNodes) {
                 System.out.println("- - - - - - - - - - - - - - - - - - - -");
             }
-            System.out.println(i + " => " + m_nodes.linksEnd[i]);
+            System.out.println(i + " => " + mNodes.linksEnd[i]);
         }
     }
 
@@ -1185,20 +1185,20 @@ public class H3Graph {
         System.out.println(this + ":");
         System.out.println("\tnumNodes: " + m_numNodes);
         System.out.println("\tnumLinks: " + m_numLinks);
-        System.out.println("\tnumTreeLinks: " + m_numTreeLinks);
-        System.out.println("\tnumNontreeLinks: " + m_numNontreeLinks);
-        System.out.println("\tnextIndex: " + m_links.nextIndex);
+        System.out.println("\tnumTreeLinks: " + mNumTreeLinks);
+        System.out.println("\tnumNontreeLinks: " + mNumNontreeLinks);
+        System.out.println("\tnextIndex: " + mLinks.nextIndex);
 
         for (int i = 0; i < m_numNodes; i++) {
             System.out.println("Node " + i + ":");
-            System.out.println("\tparent link: " + m_nodes.parent[i]);
+            System.out.println("\tparent link: " + mNodes.parent[i]);
             System.out.println("\tparent node: "
-                    + (m_nodes.parent[i] >= 0
-                    ? m_links.source[m_nodes.parent[i]] : -1));
+                    + (mNodes.parent[i] >= 0
+                    ? mLinks.source[mNodes.parent[i]] : -1));
 
-            int treeLinks = m_nodes.treeLinks[i];
-            int nontreeLinks = m_nodes.nontreeLinks[i];
-            int linksEnd = m_nodes.linksEnd[i];
+            int treeLinks = mNodes.treeLinks[i];
+            int nontreeLinks = mNodes.nontreeLinks[i];
+            int linksEnd = mNodes.linksEnd[i];
 
             System.out.println("\ttreeLinks: " + treeLinks);
             System.out.println("\tnontreeLinks: " + nontreeLinks);
@@ -1210,8 +1210,8 @@ public class H3Graph {
                 }
 
                 System.out.println("\t\t" + j + ": "
-                        + m_links.source[j] + " => "
-                        + m_links.destination[j]);
+                        + mLinks.source[j] + " => "
+                        + mLinks.destination[j]);
             }
         }
     }

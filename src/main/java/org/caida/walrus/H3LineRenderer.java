@@ -31,9 +31,9 @@ public class H3LineRenderer
 
     public H3LineRenderer(H3Graph graph, H3RenderQueue queue,
                           H3RenderList list) {
-        m_graph = graph;
-        m_renderQueue = queue;
-        m_renderList = list;
+        mGraph = graph;
+        mRenderQueue = queue;
+        mRenderList = list;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ public class H3LineRenderer
         }
 
         computeRenderFrame();
-        m_renderList.render(gc);
+        mRenderList.render(gc);
 
         if (DEBUG_PRINT) {
             long stopTime = System.currentTimeMillis();
@@ -66,7 +66,7 @@ public class H3LineRenderer
         }
 
         computeRefineFrame();
-        m_renderList.render(gc);
+        mRenderList.render(gc);
         gc.flush(true);
 
         if (DEBUG_PRINT) {
@@ -78,16 +78,16 @@ public class H3LineRenderer
     }
 
     public void reset() {
-        m_numDisplayedElements = 0;
+        mNumDisplayedElements = 0;
     }
 
     public boolean isFinished() {
-        return m_numDisplayedElements == m_renderQueue.getCurrentNumElements()
-                && m_renderQueue.isComplete();
+        return mNumDisplayedElements == mRenderQueue.getCurrentNumElements()
+                && mRenderQueue.isComplete();
     }
 
     public void setMaxDuration(long max) {
-        m_maxDuration = max;
+        mMaxDuration = max;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -97,27 +97,27 @@ public class H3LineRenderer
     private void computeRenderFrame() {
         long start = System.currentTimeMillis();
 
-        m_renderList.beginFrame();
+        mRenderList.beginFrame();
 
-        boolean more = computeDisplay(0, m_numDisplayedElements);
-        while (more && System.currentTimeMillis() - start < m_maxDuration) {
-            more = computeDisplay(m_numDisplayedElements, NUM_PER_ITERATION);
+        boolean more = computeDisplay(0, mNumDisplayedElements);
+        while (more && System.currentTimeMillis() - start < mMaxDuration) {
+            more = computeDisplay(mNumDisplayedElements, NUM_PER_ITERATION);
         }
 
-        m_renderList.endFrame();
+        mRenderList.endFrame();
     }
 
     private void computeRefineFrame() {
         long start = System.currentTimeMillis();
 
-        m_renderList.beginFrame();
+        mRenderList.beginFrame();
 
         boolean more = true;
-        while (more && System.currentTimeMillis() - start < m_maxDuration) {
-            more = computeDisplay(m_numDisplayedElements, NUM_PER_ITERATION);
+        while (more && System.currentTimeMillis() - start < mMaxDuration) {
+            more = computeDisplay(mNumDisplayedElements, NUM_PER_ITERATION);
         }
 
-        m_renderList.endFrame();
+        mRenderList.endFrame();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,22 +125,22 @@ public class H3LineRenderer
     private boolean computeDisplay(int index, int count) {
         boolean retval = true;
 
-        m_numDisplayedElements = index;
+        mNumDisplayedElements = index;
 
         H3RenderQueue.Element element = new H3RenderQueue.Element();
 
         boolean more = true;
         while (more && count-- > 0) {
-            if (m_renderQueue.get(m_numDisplayedElements, element)) {
-                ++m_numDisplayedElements;
+            if (mRenderQueue.get(mNumDisplayedElements, element)) {
+                ++mNumDisplayedElements;
 
                 if (element.type == H3RenderQueue.Element.TYPE_NODE) {
-                    m_renderList.addNode(element.data);
+                    mRenderList.addNode(element.data);
                 } else if (element.type == H3RenderQueue.Element.TYPE_TREE_LINK) {
-                    m_renderList.addTreeLink(element.data);
+                    mRenderList.addTreeLink(element.data);
                 } else //(type == H3RenderQueue.Element.TYPE_NONTREE_LINK)
                 {
-                    m_renderList.addNontreeLink(element.data);
+                    mRenderList.addNontreeLink(element.data);
                 }
             } else {
                 retval = false;
@@ -160,11 +160,11 @@ public class H3LineRenderer
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private long m_maxDuration = Long.MAX_VALUE;
+    private long mMaxDuration = Long.MAX_VALUE;
 
-    private final H3Graph m_graph;
-    private final H3RenderQueue m_renderQueue;
-    private final H3RenderList m_renderList;
+    private final H3Graph mGraph;
+    private final H3RenderQueue mRenderQueue;
+    private final H3RenderList mRenderList;
 
-    private int m_numDisplayedElements = 0;
+    private int mNumDisplayedElements;
 }
