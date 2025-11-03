@@ -380,7 +380,7 @@ public class H3Main {
 
     private void setNodeTransparencyEnabled(boolean state) {
         TransparencyAttributes attributes =
-                (state ? m_viewParameters.getTransparencyAttributes() : null);
+                state ? m_viewParameters.getTransparencyAttributes() : null;
 
         m_viewParameters.getNodeAppearance()
                 .setTransparencyAttributes(attributes);
@@ -433,7 +433,7 @@ public class H3Main {
 
     private void setTreeLinkTransparencyEnabled(boolean state) {
         TransparencyAttributes attributes =
-                (state ? m_viewParameters.getTransparencyAttributes() : null);
+                state ? m_viewParameters.getTransparencyAttributes() : null;
 
         m_viewParameters.getTreeLinkAppearance()
                 .setTransparencyAttributes(attributes);
@@ -480,7 +480,7 @@ public class H3Main {
 
     private void setNontreeLinkTransparencyEnabled(boolean state) {
         TransparencyAttributes attributes =
-                (state ? m_viewParameters.getTransparencyAttributes() : null);
+                state ? m_viewParameters.getTransparencyAttributes() : null;
 
         m_viewParameters.getNontreeLinkAppearance()
                 .setTransparencyAttributes(attributes);
@@ -729,7 +729,7 @@ public class H3Main {
     ///////////////////////////////////////////////////////////////////////
 
     private void handleResetRenderingRequest() {
-        boolean isRendering = (m_renderLoop != null);
+        boolean isRendering = m_renderLoop != null;
         if (isRendering) {
             stopRendering();
         }
@@ -964,7 +964,7 @@ public class H3Main {
         int numNodes = m_graph.getNumNodes();
         int numGoodNodes = m_graph.checkLayoutCoordinates();
 
-        boolean retval = (numGoodNodes == numNodes);
+        boolean retval = numGoodNodes == numNodes;
         if (!retval) {
             int numBadNodes = numNodes - numGoodNodes;
 
@@ -979,7 +979,7 @@ public class H3Main {
                 int response = JOptionPane.showConfirmDialog
                         (null, msg, "Graph Layout Failed",
                                 JOptionPane.YES_NO_OPTION);
-                retval = (response == JOptionPane.YES_OPTION);
+                retval = response == JOptionPane.YES_OPTION;
                 if (retval) {
                     m_graph.sanitizeLayoutCoordinates();
                 }
@@ -1108,8 +1108,8 @@ public class H3Main {
             H3RenderQueue queue = new H3RenderQueue(queueSize);
 
             boolean processNontreeLinks =
-                    (renderingConfiguration.nontreeLinkColor.scheme
-                            != ColorConfiguration.INVISIBLE);
+                    renderingConfiguration.nontreeLinkColor.scheme
+                            != ColorConfiguration.INVISIBLE;
 
             H3Transformer transformer =
                     new H3Transformer(m_graph, queue, processNontreeLinks);
@@ -1228,13 +1228,13 @@ public class H3Main {
 
     private boolean determineWhetherToIncludeColor
             (ColorConfiguration configuration) {
-        return (configuration.scheme != ColorConfiguration.INVISIBLE
-                && configuration.scheme != ColorConfiguration.FIXED_COLOR);
+        return configuration.scheme != ColorConfiguration.INVISIBLE
+                && configuration.scheme != ColorConfiguration.FIXED_COLOR;
     }
 
     private boolean determineWhetherToIncludeObject
             (ColorConfiguration configuration) {
-        return (configuration.scheme != ColorConfiguration.INVISIBLE);
+        return configuration.scheme != ColorConfiguration.INVISIBLE;
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -2606,7 +2606,7 @@ public class H3Main {
             double t = Math.atan(10.0 * (Math.abs(x) - 0.3))
                     / ROTATION_SCALE + 0.1987918;
 
-            return (x >= 0.0 ? t : -t);
+            return x >= 0.0 ? t : -t;
         }
 
         //---------------------------------------------------------------
@@ -2711,7 +2711,7 @@ public class H3Main {
         // each 'labelling session'.  Getting the timing perfect isn't
         // important; ensuring that it never grows too large (say > 200)
         // is all that matters.
-        private int m_labelZOffsetCounter = 0;
+        private int m_labelZOffsetCounter;
 
         private final Point2d m_center = new Point2d();
 
@@ -2895,21 +2895,21 @@ public class H3Main {
             createFixedColors();
 
             Map<String, JMenuItem> nodeMenuMap =
-                    new HashMap<String, JMenuItem>();
+                    new HashMap<>();
             m_nodeColorMenu = new JMenu("Node Color");
             m_nodeColorMenu.setMnemonic(KeyEvent.VK_N);
             m_nodeColorSelection = new ColorSelection
                     (m_nodeColorMenu, nodeMenuMap, m_fixedColors);
 
             Map<String, JMenuItem> treeLinkMenuMap =
-                    new HashMap<String, JMenuItem>();
+                    new HashMap<>();
             m_treeLinkColorMenu = new JMenu("Tree Link Color");
             m_treeLinkColorMenu.setMnemonic(KeyEvent.VK_T);
             m_treeLinkColorSelection = new ColorSelection
                     (m_treeLinkColorMenu, treeLinkMenuMap, m_fixedColors);
 
             Map<String, JMenuItem> nontreeLinkMenuMap =
-                    new HashMap<String, JMenuItem>();
+                    new HashMap<>();
             m_nontreeLinkColorMenu = new JMenu("Nontree Link Color");
             m_nontreeLinkColorMenu.setMnemonic(KeyEvent.VK_E);
             m_nontreeLinkColorSelection = new ColorSelection
@@ -2968,7 +2968,7 @@ public class H3Main {
         //       since we're taking advantage of the ActionListener plumbing
         //       already set up for the menus.
         public void enableDefaultColorScheme() {
-            if (m_predefinedColorSchemes.size() > 0) {
+            if (!m_predefinedColorSchemes.isEmpty()) {
                 // XXX: We might want to preserve the default color scheme
                 //      in the system properties.
                 PredefinedColorScheme scheme =
@@ -3009,7 +3009,7 @@ public class H3Main {
                  Map<String, JMenuItem> nontreeLinkMenuMap) {
             ColorSchemeMaker maker = new ColorSchemeMaker
                     (nodeMenuMap, treeLinkMenuMap, nontreeLinkMenuMap);
-            m_predefinedColorSchemes = new ArrayList<PredefinedColorScheme>();
+            m_predefinedColorSchemes = new ArrayList<>();
             m_predefinedColorSchemes.add
                     (maker.make("Yellow-Green-[Grey]",
                             "Yellow", ColorSchemeMaker.DISABLE_TRANSPARENCY,
@@ -3037,7 +3037,7 @@ public class H3Main {
         }
 
         private void createFixedColors() {
-            m_fixedColors = new ArrayList<FixedColor>();
+            m_fixedColors = new ArrayList<>();
             m_fixedColors.add
                     (new FixedColor("Magenta", packRGB(199, 21, 133)));
             m_fixedColors.add
@@ -3192,21 +3192,21 @@ public class H3Main {
                         findColor(m_nontreeLinkMenuMap, nontreeLinkColor);
 
                 JMenuItem nodeTransparencyMenuItem =
-                        (nodeTransparencyType == IGNORE_TRANSPARENCY
-                                ? null : m_nodeTransparencyMenuItem);
+                        nodeTransparencyType == IGNORE_TRANSPARENCY
+                                ? null : m_nodeTransparencyMenuItem;
                 JMenuItem treeLinkTransparencyMenuItem =
-                        (treeLinkTransparencyType == IGNORE_TRANSPARENCY
-                                ? null : m_treeLinkTransparencyMenuItem);
+                        treeLinkTransparencyType == IGNORE_TRANSPARENCY
+                                ? null : m_treeLinkTransparencyMenuItem;
                 JMenuItem nontreeLinkTransparencyMenuItem =
-                        (nontreeLinkTransparencyType == IGNORE_TRANSPARENCY
-                                ? null : m_nontreeLinkTransparencyMenuItem);
+                        nontreeLinkTransparencyType == IGNORE_TRANSPARENCY
+                                ? null : m_nontreeLinkTransparencyMenuItem;
 
                 boolean nodeTransparency =
-                        (nodeTransparencyType == ENABLE_TRANSPARENCY);
+                        nodeTransparencyType == ENABLE_TRANSPARENCY;
                 boolean treeLinkTransparency =
-                        (treeLinkTransparencyType == ENABLE_TRANSPARENCY);
+                        treeLinkTransparencyType == ENABLE_TRANSPARENCY;
                 boolean nontreeLinkTransparency =
-                        (nontreeLinkTransparencyType == ENABLE_TRANSPARENCY);
+                        nontreeLinkTransparencyType == ENABLE_TRANSPARENCY;
 
                 return new PredefinedColorScheme
                         (name, nodeMenuItem, nodeTransparencyMenuItem,
@@ -3500,7 +3500,7 @@ public class H3Main {
 
         // List<String> attributes
         private void populateSelectionAttributeMenu(List attributes) {
-            if (attributes.size() > 0) {
+            if (!attributes.isEmpty()) {
                 m_selectionAttributeButtonGroup = new ButtonGroup();
 
                 JRadioButtonMenuItem noneMenuItem =
@@ -3781,24 +3781,24 @@ public class H3Main {
         public String selectionAttribute;
 
         public boolean equalColoring(ColorConfiguration rhs) {
-            boolean retval = (rhs.scheme == scheme);
+            boolean retval = rhs.scheme == scheme;
             if (retval) {
                 if (scheme == FIXED_COLOR) {
-                    retval = (rhs.fixedColor == fixedColor
-                            && rhs.isTransparent == isTransparent);
+                    retval = rhs.fixedColor == fixedColor
+                            && rhs.isTransparent == isTransparent;
                 } else if (scheme == HUE || scheme == RGB) {
-                    retval = (rhs.colorAttribute.equals(colorAttribute));
+                    retval = rhs.colorAttribute.equals(colorAttribute);
                 }
             }
 
             if (retval) {
-                boolean hasLHS = (selectionAttribute != null);
-                boolean hasRHS = (rhs.selectionAttribute != null);
+                boolean hasLHS = selectionAttribute != null;
+                boolean hasRHS = rhs.selectionAttribute != null;
                 if (hasLHS && hasRHS) {
                     retval =
-                            (rhs.selectionAttribute.equals(selectionAttribute));
+                            rhs.selectionAttribute.equals(selectionAttribute);
                 } else {
-                    retval = (!hasLHS && !hasRHS);
+                    retval = !hasLHS && !hasRHS;
                 }
             }
 
@@ -3942,33 +3942,33 @@ public class H3Main {
             long finalUsed = m_finalTotalMemory - m_finalFreeMemory;
 
             System.out.println("===========================================");
-            System.out.println("baseTotalMemory = " + M(m_baseTotalMemory));
-            System.out.println("baseFreeMemory = " + M(m_baseFreeMemory));
-            System.out.println("baseUsed = " + M(baseUsed));
-            System.out.println("bufferTotalMemory = " + M(m_bufferTotalMemory));
-            System.out.println("bufferFreeMemory = " + M(m_bufferFreeMemory));
-            System.out.println("bufferUsed = " + M(bufferUsed));
-            System.out.println("peakTotalMemory = " + M(m_peakTotalMemory));
-            System.out.println("peakFreeMemory = " + M(m_peakFreeMemory));
-            System.out.println("peakUsed = " + M(peakUsed));
-            System.out.println("finalTotalMemory = " + M(m_finalTotalMemory));
-            System.out.println("finalFreeMemory = " + M(m_finalFreeMemory));
-            System.out.println("finalUsed = " + M(finalUsed));
+            System.out.println("baseTotalMemory = " + m(m_baseTotalMemory));
+            System.out.println("baseFreeMemory = " + m(m_baseFreeMemory));
+            System.out.println("baseUsed = " + m(baseUsed));
+            System.out.println("bufferTotalMemory = " + m(m_bufferTotalMemory));
+            System.out.println("bufferFreeMemory = " + m(m_bufferFreeMemory));
+            System.out.println("bufferUsed = " + m(bufferUsed));
+            System.out.println("peakTotalMemory = " + m(m_peakTotalMemory));
+            System.out.println("peakFreeMemory = " + m(m_peakFreeMemory));
+            System.out.println("peakUsed = " + m(peakUsed));
+            System.out.println("finalTotalMemory = " + m(m_finalTotalMemory));
+            System.out.println("finalFreeMemory = " + m(m_finalFreeMemory));
+            System.out.println("finalUsed = " + m(finalUsed));
             System.out.println();
             System.out.println("bufferUsed - baseUsed = "
-                    + M(bufferUsed - baseUsed));
+                    + m(bufferUsed - baseUsed));
             System.out.println("peakUsed - baseUsed = "
-                    + M(peakUsed - baseUsed));
+                    + m(peakUsed - baseUsed));
             System.out.println("peakUsed - bufferUsed = "
-                    + M(peakUsed - bufferUsed));
+                    + m(peakUsed - bufferUsed));
             System.out.println("finalUsed - baseUsed = "
-                    + M(finalUsed - baseUsed));
+                    + m(finalUsed - baseUsed));
             System.out.println("finalUsed - peakUsed = "
-                    + M(finalUsed - peakUsed));
+                    + m(finalUsed - peakUsed));
             System.out.println("===========================================");
         }
 
-        private String M(long n) {
+        private String m(long n) {
             long x = n / 100000;
             long mega = x / 10;
             long kilo = Math.abs(x % 10);

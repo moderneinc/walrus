@@ -599,11 +599,11 @@ public class H3ViewParameters {
 
     private final double m_pixelToMeterScale;
 
-    private static final float GENERAL_POINT_SIZE = 4.0f;
-    private static final float NODE_POINT_SIZE = 4.0f;
-    private static final float NODE_NEAR_POINT_SIZE = 5.0f;
-    private static final float NODE_MIDDLE_POINT_SIZE = 3.0f;
-    private static final float NODE_FAR_POINT_SIZE = 1.0f;
+    private static final float GENERAL_POINT_SIZE = 4.0F;
+    private static final float NODE_POINT_SIZE = 4.0F;
+    private static final float NODE_NEAR_POINT_SIZE = 5.0F;
+    private static final float NODE_MIDDLE_POINT_SIZE = 3.0F;
+    private static final float NODE_FAR_POINT_SIZE = 1.0F;
 
     private static final int NODE_RADIUS_PIXELS = 10;
     private final double m_nodeRadius;
@@ -614,7 +614,7 @@ public class H3ViewParameters {
     // overlapping node that is closest to the eye along the line of sight.
     private static final int PICK_RADIUS_PIXELS = 10;
     private static final int PICK_EQUIVALENCE_RADIUS_PIXELS = 2;
-    private static final float PICK_POINT_SIZE = 10.0f;
+    private static final float PICK_POINT_SIZE = 10.0F;
     private final double m_pickRadius;
     private final double m_pickEquivalenceRadius;
 

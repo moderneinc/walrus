@@ -135,6 +135,6 @@ public class H3WobblingRotationRequest
 
     private boolean m_isRotating;
 
-    private int m_position = 0;
+    private int m_position;
     private final Matrix4d[] m_rotations;
 }
