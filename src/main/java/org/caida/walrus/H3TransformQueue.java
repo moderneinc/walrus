@@ -100,7 +100,7 @@ public class H3TransformQueue {
     // PRIVATE FIELDS
     ////////////////////////////////////////////////////////////////////////
 
-    private int m_numElements = 0;
+    private int m_numElements;
     private final int[] m_elements;
     private final double[] m_radii;
 

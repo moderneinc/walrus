@@ -341,7 +341,7 @@ public class H3Transformer
     }
 
     private boolean markNodeVisited(int node, int iteration) {
-        boolean retval = (m_visited[node] == iteration);
+        boolean retval = m_visited[node] == iteration;
         if (!retval) {
             m_visited[node] = iteration;
         }
@@ -399,12 +399,12 @@ public class H3Transformer
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private int m_numPendingRequests = 0;
-    private boolean m_isRequestTurn = false;
+    private int m_numPendingRequests;
+    private boolean m_isRequestTurn;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private int m_iteration = 0;
+    private int m_iteration;
     // Whether a node has been visited in "traversal iteration" t > 0.
     private final int[] m_visited;
 
@@ -420,7 +420,7 @@ public class H3Transformer
     private final Matrix4d m_transform = new Matrix4d();
 
     private final List<Position> m_savedPositions =
-            new ArrayList<Position>(); // List<Position>
+            new ArrayList<>(); // List<Position>
 
     private final Matrix4d m_transformTemporary = new Matrix4d(); // scratch
     private final Point4d m_nodeCoordinates = new Point4d(); // scratch variable
@@ -429,7 +429,7 @@ public class H3Transformer
 
     private static final int NUM_PER_ITERATION = 100;
 
-    private int m_numTransformed = 0;
+    private int m_numTransformed;
 
     // A long in m_transformedData is a structure of two ints (a, b),
     // where ((a << 32) | b) equals the long, and has one of the following
