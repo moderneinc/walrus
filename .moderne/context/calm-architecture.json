@@ -1,0 +1,25 @@
+{
+  "nodes" : [ {
+    "uniqueId" : "h3-interactive-rotation-request-data",
+    "nodeType" : "data-asset",
+    "name" : "H3InteractiveRotationRequest",
+    "description" : "DTO h3 interactive rotation request with fields: m_isWaiting, m_isRotating, m_horizontal, m_vertical, m_rot"
+  }, {
+    "uniqueId" : "h3-repeating-rotation-request-data",
+    "nodeType" : "data-asset",
+    "name" : "H3RepeatingRotationRequest",
+    "description" : "DTO h3 repeating rotation request with fields: m_isRotating, m_horizontal, m_vertical, m_rot"
+  }, {
+    "uniqueId" : "h3-rotation-request-data",
+    "nodeType" : "data-asset",
+    "name" : "H3RotationRequest",
+    "description" : "DTO h3 rotation request"
+  }, {
+    "uniqueId" : "h3-wobbling-rotation-request-data",
+    "nodeType" : "data-asset",
+    "name" : "H3WobblingRotationRequest",
+    "description" : "DTO h3 wobbling rotation request with fields: RADIUS, NUM_SEGMENTS, m_isRotating, m_position, m_rotations"
+  } ],
+  "relationships" : [ ],
+  "$schema" : "https://calm.finos.org/draft/2025-03/meta/calm.json"
+}

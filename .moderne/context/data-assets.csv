@@ -1,0 +1,5 @@
+Source path,Class name,Simple name,Asset type,Description,Fields
+src/main/java/org/caida/walrus/H3InteractiveRotationRequest.java,org.caida.walrus.H3InteractiveRotationRequest,H3InteractiveRotationRequest,DTO,"DTO h3 interactive rotation request with fields: m_isWaiting, m_isRotating, m_horizontal, m_vertical, m_rot","m_isWaiting, m_isRotating, m_horizontal, m_vertical, m_rot"
+src/main/java/org/caida/walrus/H3RepeatingRotationRequest.java,org.caida.walrus.H3RepeatingRotationRequest,H3RepeatingRotationRequest,DTO,"DTO h3 repeating rotation request with fields: m_isRotating, m_horizontal, m_vertical, m_rot","m_isRotating, m_horizontal, m_vertical, m_rot"
+src/main/java/org/caida/walrus/H3RotationRequest.java,org.caida.walrus.H3RotationRequest,H3RotationRequest,DTO,DTO h3 rotation request,
+src/main/java/org/caida/walrus/H3WobblingRotationRequest.java,org.caida.walrus.H3WobblingRotationRequest,H3WobblingRotationRequest,DTO,"DTO h3 wobbling rotation request with fields: RADIUS, NUM_SEGMENTS, m_isRotating, m_position, m_rotations","RADIUS, NUM_SEGMENTS, m_isRotating, m_position, m_rotations"

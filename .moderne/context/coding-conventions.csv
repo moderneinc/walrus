@@ -1,0 +1,18 @@
+Convention type,Pattern,Example,Frequency,Scope
+naming,set* method naming pattern,setMaximumPrecision,,project-wide
+naming,get* method naming pattern,getPrecision,,project-wide
+naming,save* method naming pattern,saveDisplayPosition,,project-wide
+naming,UPPER_SNAKE_CASE for constants,DEBUG_PRINT,,project-wide
+naming,is* method naming pattern,isFinished,,project-wide
+naming,create* method naming pattern,createAxes,,project-wide
+naming,convert* method naming pattern,convertToDoubleCoordinates,,project-wide
+naming,load* method naming pattern,loadSpanningTreeQualifiers,,project-wide
+naming,find* method naming pattern,findSpanningTreeQualifierAttributes,,project-wide
+naming,Exception suffix for classes,InvalidGraphDataException,,project-wide
+naming,handle* method naming pattern,handleOpenFileRequest,,project-wide
+naming,update* method naming pattern,updateDisplayNarrowingMenusAndRefresh,,project-wide
+naming,Handler suffix for classes,NarrowingEventHandler,,project-wide
+comments,Methods have Javadoc documentation,updateSelectedFixedColorIndex,,project-wide
+naming,Configuration suffix for classes,RenderingConfiguration,,project-wide
+naming,validate* method naming pattern,validateFinite,,project-wide
+naming,build* method naming pattern,buildCanonicalOrientation,,project-wide

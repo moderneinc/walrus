@@ -9,3 +9,7 @@ bin/
 .classpath
 .settings/
 .DS_Store
+
+# Moderne CLI
+.moderne/*
+!.moderne/context/

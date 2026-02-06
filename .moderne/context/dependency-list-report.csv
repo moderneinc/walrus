@@ -1,0 +1,5 @@
+Build tool,Group id,Artifact id,Version,Dependency group id,Dependency artifact id,Dependency version,Direct Dependency,Resolution failure
+Gradle,,walrus,unspecified,org.jogamp.gluegen,gluegen-rt-main,2.3.2,true,
+Gradle,,walrus,unspecified,org.jogamp.gluegen,gluegen-rt,2.3.2,false,
+Gradle,,walrus,unspecified,org.jogamp.jogl,jogl-all-main,2.3.2,true,
+Gradle,,walrus,unspecified,org.jogamp.jogl,jogl-all,2.3.2,false,
