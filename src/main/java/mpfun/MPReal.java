@@ -55,7 +55,7 @@ public class MPReal {
     }
 
     public MPReal negate() {
-        real = real.multiply(new BigDecimal(-1));
+        real = real.multiply(BigDecimal.valueOf(-1));
         return this;
     }
 }

@@ -117,9 +117,9 @@ public class H3RenderQueue {
     ////////////////////////////////////////////////////////////////////////
 
     private final long[] m_data;
-    private int m_numElements = 0;
-    private boolean m_isComplete = false;
-    private boolean m_isWaitingForData = false;
+    private int m_numElements;
+    private boolean m_isComplete;
+    private boolean m_isWaitingForData;
 
     ////////////////////////////////////////////////////////////////////////
     // PUBLIC CLASSES

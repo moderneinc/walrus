@@ -201,5 +201,5 @@ public class H3CircleRenderer
     private final H3RenderQueue m_renderQueue;
     private final H3RenderList m_renderList;
 
-    private int m_numDisplayedElements = 0;
+    private int m_numDisplayedElements;
 }

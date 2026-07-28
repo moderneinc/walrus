@@ -277,7 +277,7 @@ public class H3GraphLayout {
             layout.phi[first.node] = totalPhi - firstPhi;
             layout.phi[second.node] = totalPhi - secondPhi;
 
-            double twist = ((level % 2) == 0 ? 0.0 : Math.PI / 2.0);
+            double twist = (level % 2) == 0 ? 0.0 : Math.PI / 2.0;
             layout.theta[first.node] = twist;
             layout.theta[second.node] = Math.PI + twist;
         } else if (SUBTREE_3_AVG && numChildren == 3) {
@@ -553,7 +553,7 @@ public class H3GraphLayout {
             Children.Child child = children.getChild(first + i);
             layout.theta[child.node] += delta;
 
-            if (false && !positiveTheta) {
+            if (false) {
                 layout.theta[child.node] =
                         H3Math.TWO_PI - layout.theta[child.node];
             }
@@ -1020,7 +1020,7 @@ public class H3GraphLayout {
 
         private static final int INITIAL_CAPACITY = 50;
 
-        private int m_numChildren = 0;
+        private int m_numChildren;
         private Child[] m_children = new Child[INITIAL_CAPACITY];
 
         ////////////////////////////////////////////////////////////////////
