@@ -679,11 +679,11 @@ public class H3AdaptiveRenderLoop
     };
 
     private int m_state = STATE_IDLE;
-    private int m_numPendingRequests = 0;
-    private boolean m_isRequestTurn = false;
-    private boolean m_isWaiting = false;
+    private int m_numPendingRequests;
+    private boolean m_isRequestTurn;
+    private boolean m_isWaiting;
 
-    private boolean m_isShutdown = false;
+    private boolean m_isShutdown;
 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
