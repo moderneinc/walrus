@@ -105,8 +105,8 @@ public class H3AdaptivePicker
 
     private final H3RenderQueue m_renderQueue;
 
-    private int m_numExaminedElements = 0;
-    private int m_numComputedPointsInEye = 0;
+    private int m_numExaminedElements;
+    private int m_numComputedPointsInEye;
 
     private final int[] m_nodesInEye;
 }

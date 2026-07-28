@@ -79,5 +79,5 @@ public class H3NonadaptivePicker
     ////////////////////////////////////////////////////////////////////////
 
     private final int m_numNodes;
-    private boolean m_computedPointsInEye = false;
+    private boolean m_computedPointsInEye;
 }
