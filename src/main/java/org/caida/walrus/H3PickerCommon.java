@@ -32,7 +32,7 @@ public abstract class H3PickerCommon
     // CONSTRUCTORS
     ////////////////////////////////////////////////////////////////////////
 
-    public H3PickerCommon(H3Graph graph, H3Canvas3D canvas,
+    protected H3PickerCommon(H3Graph graph, H3Canvas3D canvas,
                           H3ViewParameters parameters) {
         m_graph = graph;
         m_canvas = canvas;
@@ -256,7 +256,7 @@ public abstract class H3PickerCommon
             System.out.println("pick.time[" + (stopTime - startTime) + "]");
         }
 
-        return (closestIndex >= 0 ? getNodeInEye(closestIndex) : -1);
+        return closestIndex >= 0 ? getNodeInEye(closestIndex) : -1;
     }
 
     ////////////////////////////////////////////////////////////////////////

@@ -179,7 +179,7 @@ public class H3Graph {
 
     public int getNodeParent(int node) {
         int i = m_nodes.parent[node];
-        return (i == -1 ? -1 : m_links.source[i]);
+        return i == -1 ? -1 : m_links.source[i];
     }
 
     public int getNodeParentLink(int node) {
@@ -650,7 +650,7 @@ public class H3Graph {
     // The input node itself is assumed to have been taken care of.
     private void setNeighborhoodDisplayability
     (int node, int distance, int maxDistance) {
-        boolean isDisplayable = (distance < maxDistance);
+        boolean isDisplayable = distance < maxDistance;
 
         int start = getNodeChildIndex(node);
         int end = getNodeLinksEndIndex(node);
@@ -671,10 +671,10 @@ public class H3Graph {
     private final int m_numNodes;
     private final int m_numLinks;
 
-    private int m_numTreeLinks = 0;
-    private int m_numNontreeLinks = 0;
+    private int m_numTreeLinks;
+    private int m_numNontreeLinks;
 
-    private int m_rootNode = 0;
+    private int m_rootNode;
     private final Nodes m_nodes;
     private final Links m_links;
 
@@ -793,7 +793,7 @@ public class H3Graph {
             isSelected = new LinkProperty(numLinks, isTreeLink);
         }
 
-        public int nextIndex = 0;
+        public int nextIndex;
 
         ////////////////////////////////////////////////////////////////////
         // ESSENTIAL LINK ATTRIBUTES
@@ -854,11 +854,11 @@ public class H3Graph {
 
         // Returns true iff all nodes are visible.
         public boolean check() {
-            return (m_property == null || m_property.length() == 0);
+            return m_property == null || m_property.length() == 0;
         }
 
         public boolean check(int node) {
-            return (m_property == null || !m_property.get(node));
+            return m_property == null || !m_property.get(node);
         }
 
         public void set(int node, boolean value) {
@@ -936,11 +936,11 @@ public class H3Graph {
 
         // Returns true iff all links are visible.
         public boolean check() {
-            return (m_property == null || m_property.length() == 0);
+            return m_property == null || m_property.length() == 0;
         }
 
         public boolean check(int link) {
-            return (m_property == null || !m_property.get(link));
+            return m_property == null || !m_property.get(link);
         }
 
         public void set(int link, boolean value) {
