@@ -24,6 +24,7 @@ import org.jogamp.java3d.ColoringAttributes;
 import org.jogamp.java3d.GraphicsContext3D;
 import org.jogamp.java3d.TransparencyAttributes;
 import org.jogamp.java3d.utils.universe.*;
+import antlr.ANTLRException;
 import org.caida.libsea.*;
 
 import javax.swing.*;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Reader;
+import java.net.URL;
 import java.util.List;
 import java.util.*;
 
@@ -84,7 +86,7 @@ public class H3Main {
         m_frame.setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
         m_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        java.net.URL url = H3Main.class.getResource(SPLASH_ICON_PATH);
+        URL url = H3Main.class.getResource(SPLASH_ICON_PATH);
         if (url != null) {
             m_splashLabel = new JLabel(new ImageIcon(url));
         } else {
@@ -1300,7 +1302,7 @@ public class H3Main {
             if (DEBUG_PRINT_LOAD_MEMORY) {
                 m_memoryUsage.gatherAfterBufferLoaded();
             }
-        } catch (antlr.ANTLRException e) {
+        } catch (ANTLRException e) {
             // NOTE: ANTLRException.toMessage() doesn't include position.
             String msg = "Error parsing file `" + file.getPath() + "': "
                     + e;
