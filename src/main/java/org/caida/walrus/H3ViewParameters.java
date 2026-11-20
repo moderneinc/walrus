@@ -422,7 +422,7 @@ public class H3ViewParameters {
         double wm = screen.getPhysicalScreenWidth();
         double hm = screen.getPhysicalScreenHeight();
 
-        java.awt.Dimension d = screen.getSize();
+        Dimension d = screen.getSize();
         int wp = d.width;
         int hp = d.height;
 
